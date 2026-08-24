@@ -1,0 +1,20 @@
+{
+  "extends": ["expo/tsconfig.base", "@dominion/tooling/tsconfig-react-native"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@dominion/contracts": ["../../packages/contracts/src"],
+      "@dominion/contracts/*": ["../../packages/contracts/src/*"],
+      "@dominion/game-data": ["../../packages/game-data/src"],
+      "@dominion/localization": ["../../packages/localization/src"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": ["node_modules", ".expo", "dist", "ios", "android"]
+}

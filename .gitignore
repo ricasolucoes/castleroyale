@@ -1,0 +1,61 @@
+# --- Dependencies ------------------------------------------------------------
+node_modules/
+vendor/
+
+# --- Environment / secrets ---------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!**/public/*.key
+auth.json
+
+# --- Laravel -----------------------------------------------------------------
+apps/api/storage/*.key
+apps/api/storage/framework/cache/data/*
+apps/api/storage/framework/sessions/*
+apps/api/storage/framework/views/*
+apps/api/storage/logs/*
+apps/api/bootstrap/cache/*.php
+apps/api/public/storage
+apps/api/public/hot
+apps/api/database/*.sqlite
+apps/api/database/*.sqlite-journal
+apps/api/.phpunit.result.cache
+apps/api/.phpstan.cache/
+
+# --- Expo / React Native -----------------------------------------------------
+apps/mobile/.expo/
+apps/mobile/dist/
+apps/mobile/web-build/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/expo-env.d.ts
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+*.orig.*
+
+# --- Build / cache -----------------------------------------------------------
+.cache/
+coverage/
+*.tsbuildinfo
+.eslintcache
+
+# --- Infrastructure ----------------------------------------------------------
+infrastructure/terraform/.terraform/
+infrastructure/terraform/*.tfstate
+infrastructure/terraform/*.tfstate.*
+infrastructure/terraform/*.tfvars
+!infrastructure/terraform/*.tfvars.example
+
+# --- Editors / OS ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.example.json
+*.swp

@@ -1,0 +1,29 @@
+* text=auto eol=lf
+
+*.php text diff=php
+*.ts text
+*.tsx text
+*.json text
+*.md text diff=markdown
+*.yml text
+*.yaml text
+*.sh text eol=lf
+Makefile text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+
+# Generated — reviewable but collapsed by default in diffs.
+packages/contracts/src/generated/** linguist-generated=true
+apps/api/public/js/filament/** linguist-vendored=true
+apps/api/public/css/filament/** linguist-vendored=true

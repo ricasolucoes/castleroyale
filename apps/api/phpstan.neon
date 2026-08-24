@@ -1,0 +1,27 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: 8
+
+    # First-party code only. Laravel's stock `config/*.php` files are
+    # declarative arrays owned by the framework, and Pest's fluent test API
+    # (`$this->getJson()`, `arch()->expect()`) is not statically modelable
+    # without a dedicated plugin. Both are covered by other gates: config by
+    # `php artisan config:show`, tests by the suite itself.
+    # Tracked as debt DEBT-002 in docs/gsd/DECISIONS.md.
+    paths:
+        - app
+        - modules
+        - database
+        - routes
+
+    excludePaths:
+        analyse:
+            - bootstrap/cache
+            - storage
+
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: true
+

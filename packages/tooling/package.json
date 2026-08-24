@@ -1,0 +1,13 @@
+{
+  "name": "@dominion/tooling",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared build configuration: ESLint, TypeScript bases and the design token source of truth.",
+  "main": "index.js",
+  "exports": {
+    "./eslint": "./eslint/index.mjs",
+    "./tsconfig": "./typescript/base.json",
+    "./tsconfig-react-native": "./typescript/react-native.json",
+    "./design-tokens": "./design-tokens/index.ts"
+  }
+}

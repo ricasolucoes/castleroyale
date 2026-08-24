@@ -1,0 +1,12 @@
+{
+  "name": "@dominion/localization",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Translation catalogues for every surface: mobile, API-side notification copy and store metadata.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "validate": "node --experimental-strip-types src/validate.ts",
+    "typecheck": "tsc --noEmit"
+  }
+}
