@@ -17,7 +17,7 @@ files_modified:
   - docs/database/conventions.md
   - .planning/codebase/TESTING.md
 autonomous: true
-requirements: [REQ-06, REQ-12]
+requirements: [REQ-12]
 
 must_haves:
   truths:
@@ -43,7 +43,15 @@ must_haves:
     - path: "apps/api/tests/Postgres/PostgisExtensionTest.php"
       provides: "Proof that PostGIS is really enabled and geometry + GiST work"
       contains: "postgis_version"
+    - path: "docs/database/conventions.md"
+      provides: "One — and only one — documented way to declare id, world_id and the timed triple"
+      contains: "GameTable::worldScoped"
+      absent: "foreignUlid('world_id')->constrained()"
   key_links:
+    - from: "docs/database/conventions.md:## Mandatory columns"
+      to: "Game\\Shared\\Infrastructure\\Database\\GameTable"
+      via: "the mandatory-columns snippet calls the helpers instead of hand-rolling a FK"
+      pattern: "GameTable::entity"
     - from: "apps/api/modules/Platform/Interface/Http/HealthController.php"
       to: "postgis_version()"
       via: "driver-guarded readiness probe"
@@ -72,6 +80,17 @@ instead of prose.
 
 Purpose: satisfies ROADMAP Phase 01 success criterion 2, hardens criterion 5, and
 gives Phase 05 (world architecture, PostGIS geometry) something to build on.
+
+REQ-12 (full observability) is served concretely: the `postgis` entry this plan adds
+to `/api/v1/health` makes "is the spatial extension actually loaded" a reported fact
+instead of an assumption, on every environment, at runtime — not only at migrate time.
+REQ-06 is deliberately **not** claimed here; balance data belongs to plans 01-03
+(seeder boundary) and 01-04 (game-data validated in CI).
+
+Scope note: this plan lists 11 files, above the usual 5–8. Six of them are tests,
+config and documentation for the same three code artifacts (`GameTable`,
+`HasGameUlid`, the extension migration). The code surface is small; splitting it
+would separate a helper from the test that proves it.
 
 Output: the extension migration, `GameTable`, `HasGameUlid`, `phpunit.postgres.xml`
 and the first tests that only ever run against real PostgreSQL.
@@ -494,7 +513,7 @@ Run `./vendor/bin/pint`, `./vendor/bin/phpstan analyse --memory-limit=1G` and
     - apps/api/phpunit.xml (the SQLite host config — read every `<env>` entry; the new file mirrors it)
     - apps/api/tests/Pest.php (the file being modified — note the existing `->in('Feature')` / `->in('Architecture')` bindings)
     - .planning/codebase/TESTING.md (the file being modified — § "The suite runs on SQLite")
-    - docs/database/conventions.md (the file being modified — § Indexes, § Identifiers)
+    - docs/database/conventions.md (the file being modified — read § "Mandatory columns" in full; it currently contradicts what this task documents, and reconciling it is step 5a)
     - Makefile (§ `test-postgres` — this task must match the filename and database it expects)
   </read_first>
 
@@ -641,14 +660,69 @@ testsuite, so `./vendor/bin/pest` can never run them by accident.
 When you add PostGIS work, add the test there. Do not assume SQLite coverage.
 ```
 
-**5. Update `docs/database/conventions.md`.** Add a new section immediately before
-§ "Soft deletes":
+**5. Update `docs/database/conventions.md`.** Two edits, and **5a is not optional** —
+without it the file documents two incompatible schemas for the same column.
 
+**5a. Rewrite § "Mandatory columns" so it stops contradicting the helpers.**
+
+Today that section reads:
+
+````
+## Mandatory columns
+
+Every gameplay table carries:
+
+```php
+$table->ulid('id')->primary();
+$table->foreignUlid('world_id')->constrained()->cascadeOnDelete();
+$table->timestamps();   // created_at, updated_at — UTC
 ```
+
+`world_id` is non-negotiable (ADR-012). **Every query must filter on it.** A query
+that omits it is a cross-world data leak.
+````
+
+That snippet is not merely stale, it is **broken**: `->constrained()` emits a real
+foreign key against a `worlds` table that does not exist until Phase 05, so a
+migration author who follows it literally today fails at `migrate` time. Replace the
+whole section — heading kept, body replaced — with:
+
+````
+## Mandatory columns
+
+Every gameplay table carries a ULID primary key, `world_id`, and UTC timestamps.
+Declare them through the helpers rather than by hand:
+
+```php
+use Game\Shared\Infrastructure\Database\GameTable;
+
+GameTable::entity($table);        // ulid('id')->primary() + timestamps() — UTC
+GameTable::worldScoped($table);   // ulid('world_id')->index()
+```
+
+`world_id` is non-negotiable (ADR-012). **Every query must filter on it.** A query
+that omits it is a cross-world data leak.
+
+`worldScoped()` deliberately emits an **indexed column, not a foreign key**: the
+`worlds` table does not exist until Phase 05, and a foreign-key constraint declared
+before its target exists fails at migrate time. When Phase 05 creates `worlds`, it
+adds the constraint inside `worldScoped()` — one place — and every existing table
+picks it up through a follow-up migration. Until then, do not hand-roll a `world_id`
+foreign key: it will not run.
+````
+
+After this edit neither `foreignUlid` nor `constrained()` may appear anywhere in
+`docs/database/conventions.md` — not in the code block, and not in the prose. That is
+what makes the acceptance criteria below a real check rather than a hopeful one, and
+what lets a future lint grep for the forbidden shape across all of `docs/`.
+
+**5b. Add a new section immediately before § "Soft deletes":**
+
+````
 ## The helpers
 
 Do not hand-roll the shapes above. `Game\Shared\Infrastructure\Database\GameTable`
-encodes them:
+encodes them, and § "Mandatory columns" already calls two of the three:
 
 | Call | Adds |
 |------|------|
@@ -661,16 +735,19 @@ Models for ULID-keyed entities use
 and disables auto-increment in one place.
 
 `world_id` carries no foreign key constraint until the `worlds` table exists
-(Phase 05). Resource columns and their `CHECK (col >= 0)` constraints are not in
-`GameTable`: SQLite cannot add a constraint via `ALTER TABLE`, and the default suite
-runs on SQLite.
-```
+(Phase 05) — see § "Mandatory columns". Resource columns and their
+`CHECK (col >= 0)` constraints are not in `GameTable`: SQLite cannot add a constraint
+via `ALTER TABLE`, and the default suite runs on SQLite.
+````
+
+Change nothing else in the file — § Identifiers, § Naming, § Time, § Money, § Enums,
+§ Indexes, § Soft deletes, § Concurrency, § Audit and § JSONB stay byte-identical.
 
 Then run `./vendor/bin/pint --test` and `make test-postgres`.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && make test-postgres</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && ! grep -q "foreignUlid('world_id')" docs/database/conventions.md && grep -q 'GameTable::worldScoped' docs/database/conventions.md && grep -A6 '^## Mandatory columns' docs/database/conventions.md | grep -q 'GameTable::entity' && make test-postgres</automated>
   </verify>
 
   <acceptance_criteria>
@@ -685,9 +762,15 @@ Then run `./vendor/bin/pint --test` and `make test-postgres`.
     - `make test-postgres` exits 0 and reports 5 passing tests
     - `grep -q 'phpunit.postgres.xml' .planning/codebase/TESTING.md` succeeds
     - `grep -q 'GameTable::entity' docs/database/conventions.md` succeeds
+    - `grep -q 'GameTable::worldScoped' docs/database/conventions.md` succeeds
+    - **The contradiction is gone:** `grep -q "foreignUlid('world_id')" docs/database/conventions.md` returns **nothing** (exits 1), and so does `grep -q 'constrained()' docs/database/conventions.md`
+    - `grep -A6 '^## Mandatory columns' docs/database/conventions.md | grep -q 'GameTable::entity'` succeeds — the mandatory-columns section itself now calls the helper
+    - `grep -c '^## Mandatory columns' docs/database/conventions.md` returns 1 (the section was rewritten in place, not duplicated)
+    - `grep -q 'Phase 05' docs/database/conventions.md` succeeds (the deferred FK is stated, not implied)
+    - `grep -c '^## ' docs/database/conventions.md` returns 12 — the eleven original sections plus the new "The helpers"; nothing was dropped
   </acceptance_criteria>
 
-  <done>PostGIS-only tests exist, run green against real PostgreSQL through `make test-postgres`, and are structurally impossible for the SQLite host suite to pick up.</done>
+  <done>PostGIS-only tests exist, run green against real PostgreSQL through `make test-postgres`, are structurally impossible for the SQLite host suite to pick up, and `docs/database/conventions.md` now describes exactly one way to declare `world_id`.</done>
 </task>
 
 </tasks>
@@ -723,6 +806,7 @@ docker compose exec -T api curl -fsS http://localhost:8000/api/v1/health
 - `make test-postgres` runs 5 tests against real PostgreSQL and passes
 - The health endpoint reports `"postgis":true` inside Docker and omits the key on SQLite
 - `GameTable` and `HasGameUlid` exist under `Game\Shared\Infrastructure` with tests
+- `docs/database/conventions.md` documents one way to declare `world_id`: section "Mandatory columns" calls `GameTable`, and `foreignUlid('world_id')->constrained()` appears nowhere in the file
 - PHPStan level 8 reports 0 errors and Pint is clean
 </success_criteria>
 

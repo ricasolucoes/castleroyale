@@ -13,6 +13,7 @@ files_modified:
   - apps/api/tests/Feature/Database/SeederTest.php
   - apps/api/tests/Feature/Platform/TestFixturesTest.php
   - .planning/codebase/TESTING.md
+  - docs/gsd/DECISIONS.md
 autonomous: true
 requirements: [REQ-06]
 
@@ -24,6 +25,7 @@ must_haves:
     - "Reference data (buildings, units, technologies) is never seeded — it is imported from packages/game-data by its own command"
     - "Outside local/testing the staff seeder refuses to invent a password and creates nothing"
     - "A test can freeze the clock, act as a staff user, and assert an error envelope by ErrorCode without re-implementing any of it"
+    - "The one locked CONTEXT decision this plan does not follow literally is written down in docs/gsd/DECISIONS.md, not quietly designed around"
   artifacts:
     - path: "apps/api/database/seeders/DevelopmentUserSeeder.php"
       provides: "Idempotent development accounts, gated on the environment"
@@ -37,6 +39,9 @@ must_haves:
     - path: "apps/api/tests/Pest.php"
       provides: "freezeClock(), actingAsStaff(), toBeApiError() fixtures"
       contains: "toBeApiError"
+    - path: "docs/gsd/DECISIONS.md"
+      provides: "The record that the locked 'use updateOrCreate' decision was replaced, and why"
+      contains: "Phase 01 — Seeder idempotency"
   key_links:
     - from: "apps/api/database/seeders/DatabaseSeeder.php"
       to: "DevelopmentUserSeeder"
@@ -67,8 +72,15 @@ Purpose: satisfies ROADMAP Phase 01 success criterion 3, and enforces REQ-06 at 
 seeder boundary — balance data is imported from `packages/game-data`, never seeded
 from PHP.
 
-Output: a fixed staff seeder, an idempotent development seeder, factory states, and
-reusable Pest fixtures (`freezeClock`, `actingAsStaff`, `toBeApiError`).
+One locked CONTEXT decision does not survive that defect. `01-CONTEXT.md` § Seeds
+says *"use updateOrCreate"* — the mechanism that throws. The **requirement**
+(idempotent, safe to run twice) is kept and tested; the **mechanism** becomes
+`firstOrNew` + `forceFill` + `save`. Per the CONTEXT header, that swap is written into
+`docs/gsd/DECISIONS.md` in Task 1 rather than being silently designed around.
+
+Output: a fixed staff seeder, an idempotent development seeder, factory states,
+reusable Pest fixtures (`freezeClock`, `actingAsStaff`, `toBeApiError`), and a decision
+log entry.
 </objective>
 
 <execution_context>
@@ -154,7 +166,7 @@ There is never a `data` key alongside an `error` key.
 
 <task type="auto">
   <name>Task 1: Fix the staff seeder and add an idempotent development dataset</name>
-  <files>apps/api/database/seeders/StaffUserSeeder.php, apps/api/database/seeders/DevelopmentUserSeeder.php, apps/api/database/seeders/DatabaseSeeder.php</files>
+  <files>apps/api/database/seeders/StaffUserSeeder.php, apps/api/database/seeders/DevelopmentUserSeeder.php, apps/api/database/seeders/DatabaseSeeder.php, docs/gsd/DECISIONS.md</files>
 
   <read_first>
     - apps/api/database/seeders/StaffUserSeeder.php (the file being modified — note the existing environment guard and the `$this->command?->` null-safe calls)
@@ -162,7 +174,8 @@ There is never a `data` key alongside an `error` key.
     - apps/api/app/Models/User.php ($fillable does not include is_staff; canAccessPanel depends on it)
     - apps/api/app/Providers/AppServiceProvider.php (preventSilentlyDiscardingAttributes — the reason the current seeder throws)
     - apps/api/config/game.php (§ admin_seed)
-    - .planning/phases/01-engineering-foundation/01-CONTEXT.md (§ Seeds — idempotent, reference data NOT seeded)
+    - .planning/phases/01-engineering-foundation/01-CONTEXT.md (§ Seeds says "use updateOrCreate"; the header says an unworkable locked decision must be recorded, not designed around. Step 4 is that record.)
+    - docs/gsd/DECISIONS.md (the file being appended to — copy the entry format from § Format and match the existing Phase 00 entries)
   </read_first>
 
   <action>
@@ -284,12 +297,52 @@ the inline comment and replace it with:
             // additive and safe to re-run (GSD Phase 01, plan 01-03).
 ```
 
+**4. Record the departure from a locked decision in `docs/gsd/DECISIONS.md`.**
+
+`01-CONTEXT.md` § Seeds is locked and says *"Seeders must be idempotent — safe to run
+twice (use updateOrCreate)."* Steps 1 and 2 keep the requirement (idempotent) and drop
+the mechanism (`updateOrCreate`), because `updateOrCreate` genuinely cannot set
+`is_staff`: it mass-assigns, `is_staff` is not in `User::$fillable`, and
+`AppServiceProvider` enables `Model::preventSilentlyDiscardingAttributes()`. The
+CONTEXT header is explicit that a locked decision which proves unworkable gets written
+down rather than quietly worked around — so write it down.
+
+Append this entry to the end of `docs/gsd/DECISIONS.md`, after the last Phase 00
+entry, matching the § Format block already in that file. Use today's date
+(`date +%F`), not the literal below:
+
+```
+### YYYY-MM-DD — Phase 01 — Seeder idempotency uses firstOrNew + forceFill, not updateOrCreate
+
+**Type:** Change
+**What:** `01-CONTEXT.md` § Seeds specifies `updateOrCreate` as the idempotency
+mechanism for seeders. `StaffUserSeeder` and `DevelopmentUserSeeder` use
+`firstOrNew()` + `forceFill()` + `save()` instead. The requirement itself is
+unchanged and still tested: seeding twice produces the same rows with the same
+primary keys.
+**Why:** `updateOrCreate()` mass-assigns, and `is_staff` is deliberately absent from
+`User::$fillable` so no future registration endpoint can escalate a account to staff.
+`AppServiceProvider` enables `Model::preventSilentlyDiscardingAttributes()`, so the
+attribute is not silently dropped — it throws `MassAssignmentException` and
+`php artisan db:seed` fails outright. Adding `is_staff` to `$fillable` would trade a
+seeder convenience for a privilege-escalation surface. `forceFill()` bypasses
+mass-assignment protection at the one call site that is allowed to, inside a seeder.
+**Impact:** Every seeder in every later phase. The idempotency pattern for this
+project is `firstOrNew` + `forceFill` + `save`, with `$user->exists ?` guards on any
+attribute a re-run must not overwrite. Covered by
+`tests/Feature/Database/SeederTest.php`.
+**ADR:** none needed — an implementation detail of a seeder, not an architectural
+decision. ADR-016 and the mass-assignment posture are unchanged.
+```
+
+Do not edit any existing entry, the header, or the § Format block — append only.
+
 Then run `./vendor/bin/pint` and confirm `php artisan db:seed --force` completes
 inside Docker.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && make migrate-fresh && make seed && make seed && docker compose exec -T postgres psql -U dominion -d dominion -tc "select count(*) from users where is_staff = true" | grep -qE '\s2\s' && echo SEED_IDEMPOTENT_AND_STAFF_OK</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && make migrate-fresh && make seed && make seed && STAFF=$(docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]') && TOTAL=$(docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users" | tr -d '[:space:]') && echo "staff=$STAFF total=$TOTAL" && [ "$STAFF" = "2" ] && [ "$TOTAL" = "5" ] && grep -q 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md && echo SEED_IDEMPOTENT_AND_STAFF_OK</automated>
   </verify>
 
   <acceptance_criteria>
@@ -302,10 +355,15 @@ inside Docker.
     - `is_staff` is still absent from `User::$fillable` in `apps/api/app/Models/User.php` (`git diff --exit-code apps/api/app/Models/User.php` succeeds — this task must not touch the model)
     - `make seed` exits 0 twice in a row with no `MassAssignmentException`
     - `select count(*) from users` returns 5 after one seed and still 5 after a second seed
-    - `select count(*) from users where is_staff = true` returns 2 (admin + support)
+    - `docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]'` equals exactly `2` (admin + support). Use `-tAc` (unaligned): with psql's default aligned output the value is padded and a whitespace-anchored grep gives a false failure.
+    - **The locked decision is recorded, not worked around:** `grep -q 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md` succeeds
+    - `grep -q 'updateOrCreate' docs/gsd/DECISIONS.md` succeeds (the entry names the mechanism it replaced)
+    - `grep -A12 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md | grep -q 'preventSilentlyDiscardingAttributes'` succeeds (the entry gives the real reason, not "it didn't work")
+    - `grep -A20 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md | grep -qE '^\*\*(Type|What|Why|Impact|ADR):\*\*'` succeeds for all five fields — the entry follows the § Format block
+    - `git diff docs/gsd/DECISIONS.md | grep -c '^-' ` returns 1 (only the `---` diff header; the append removed nothing)
   </acceptance_criteria>
 
-  <done>`make seed` produces five browsable accounts, is safe to run twice, and the back-office accounts have `is_staff = true` in the database.</done>
+  <done>`make seed` produces five browsable accounts, is safe to run twice, the back-office accounts have `is_staff = true` in the database, and `docs/gsd/DECISIONS.md` records why the locked `updateOrCreate` decision was replaced.</done>
 </task>
 
 <task type="auto" tdd="true">
@@ -649,6 +707,9 @@ open http://localhost:8080/admin   # log in with ADMIN_SEED_EMAIL / password
 cd apps/api && ./vendor/bin/pest && ./vendor/bin/pint --test \
   && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
 cd ../.. && make test-postgres
+
+# The locked decision that was replaced is on the record
+grep -A20 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md
 ```
 </verification>
 
@@ -659,6 +720,7 @@ cd ../.. && make test-postgres
 - `grep -riE 'building|technolog|game-data' apps/api/database/seeders/` returns nothing (REQ-06)
 - `./vendor/bin/pest` is green, including 6 seeder tests and 5 fixture tests
 - `freezeClock`, `actingAsStaff` and `toBeApiError` exist in `tests/Pest.php` and are documented in `.planning/codebase/TESTING.md`
+- `docs/gsd/DECISIONS.md` carries a Phase 01 entry explaining why `updateOrCreate` (locked in `01-CONTEXT.md` § Seeds) was replaced by `firstOrNew` + `forceFill`
 - PHPStan level 8 reports 0 errors and Pint is clean
 </success_criteria>
 

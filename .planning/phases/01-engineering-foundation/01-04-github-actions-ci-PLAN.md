@@ -9,7 +9,7 @@ files_modified:
   - package.json
   - CONTRIBUTING.md
   - .planning/codebase/CONCERNS.md
-autonomous: false
+autonomous: true
 requirements: [REQ-06, REQ-12]
 
 must_haves:
@@ -20,6 +20,9 @@ must_haves:
     - "The infrastructure job validates docker-compose.yml, builds the API image and scans for committed secrets without needing a paid action licence"
     - "A failure in any job fails the aggregate `ci-status` job, so a single required check protects the branch"
     - "Every command the workflow runs also runs locally through `make ci`"
+    - "No secret reaches a public remote: a pinned gitleaks scan of the full history and working tree exits 0 before the repository is ever created"
+    - "The workflow has actually executed on GitHub — a completed run exists whose backend, mobile, infrastructure and ci-status jobs all conclude success"
+    - "The build demonstrably fails when a gate fails, proven by a run against a deliberately broken commit on a throwaway branch that no longer exists"
   artifacts:
     - path: ".github/workflows/ci.yml"
       provides: "Backend / mobile / infrastructure jobs plus the ci-status aggregate gate"
@@ -27,6 +30,9 @@ must_haves:
     - path: "package.json"
       provides: "Node engine range that matches what the toolchain actually needs"
       contains: "22.6"
+    - path: "CONTRIBUTING.md"
+      provides: "The repository URL, the single required check name, and why branch protection is not switched on yet"
+      contains: "ricasolucoes/project-dominion"
   key_links:
     - from: ".github/workflows/ci.yml:backend"
       to: "apps/api/phpunit.postgres.xml"
@@ -40,6 +46,10 @@ must_haves:
       to: "docker compose config"
       via: "compose validation with no apps/api/.env present"
       pattern: "docker compose config"
+    - from: "local working tree"
+      to: "github.com/ricasolucoes/project-dominion"
+      via: "gitleaks gate, then `gh repo create --public --source=. --push`"
+      pattern: "ricasolucoes/project-dominion"
 ---
 
 <objective>
@@ -58,11 +68,18 @@ against the repository as it actually is turns up four breakages:
 4. There is no PostGIS-only test step and no aggregating status check, so branch
    protection has three checks to configure instead of one.
 
+5. Nothing has ever run it: `git remote -v` is empty, so criterion 4 — *"GitHub
+   Actions runs … on push, and fails the build when any gate fails"* — has never
+   been observed. The user has resolved this: **create
+   `ricasolucoes/project-dominion` as a public repository, push, and watch the run.**
+   Task 3 does exactly that, behind a blocking secret scan.
+
 Purpose: satisfies ROADMAP Phase 01 success criterion 4 and puts REQ-06 (game data
 validated in CI) and REQ-12 (every quality gate observable) behind an automated gate.
 
-Output: a corrected workflow, a `make ci` that mirrors it exactly, and an honest
-record of the one thing that cannot be demonstrated locally.
+Output: a corrected workflow, a `make ci` that mirrors it exactly, a public repository
+whose first CI run is green, and a second run that is red on purpose — because a gate
+that has never failed has never been shown to be a gate.
 </objective>
 
 <execution_context>
@@ -126,6 +143,19 @@ ci: lint analyse test
 
 GitHub-hosted `ubuntu-latest` runners ship `docker`, `psql` (postgresql-client) and
 `gh` preinstalled. No setup step is needed for any of them.
+
+**Local GitHub environment — already verified, do not re-derive these:**
+```
+gh auth status   -> logged in to github.com as `ricardosierra`
+                    token scopes include: repo, read:org, delete_repo, admin:public_key
+                    git protocol: ssh
+gh api user/orgs -> `ricasolucoes` present and accessible
+git remote -v    -> empty
+package.json     -> "name": "project-dominion"
+```
+The repository slug for Task 3 is therefore **`ricasolucoes/project-dominion`**, and
+the user has chosen **public** visibility. Do not prompt for any of this and do not
+re-run `gh auth status` to "confirm" — spend the calls on the run instead.
 </interfaces>
 </context>
 
@@ -409,102 +439,250 @@ Then run `actionlint` and `make ci` locally.
     - `grep -q '">=22.6.0"' package.json` succeeds
     - `grep -q 'Mobile & packages' CONTRIBUTING.md` succeeds
     - `make ci` exits 0
-    - Deliberate-failure check: append `$x = 1 ;` (double space before the semicolon) to any file under `apps/api/modules/`, run `make lint`, confirm it exits non-zero, then revert the file with `git checkout --`
+    - Deliberate-failure check (**local only — commit nothing**): append `$x = 1 ;` (double space before the semicolon) to any file under `apps/api/modules/`, run `make lint`, confirm it exits non-zero, then revert with `git checkout --` and confirm `git status --porcelain` is empty. Task 3 repeats this proof on the real runner, on a throwaway branch; this one must never reach a commit.
   </acceptance_criteria>
 
   <done>Every job runs commands that actually exist on the runner it is given, no gate depends on a paid licence, and one aggregate check reflects all three jobs.</done>
 </task>
 
-<task type="checkpoint:decision" gate="blocking">
-  <name>Task 3: Decide how success criterion 4 is proven — this repository has no git remote</name>
-  <files>.planning/codebase/CONCERNS.md, CONTRIBUTING.md</files>
+<task type="auto">
+  <name>Task 3: Scan for secrets, publish the repository, and observe CI succeed and fail</name>
+  <files>CONTRIBUTING.md, .planning/codebase/CONCERNS.md</files>
 
   <read_first>
-    - .github/workflows/ci.yml (as completed by Tasks 1 and 2)
-    - .planning/ROADMAP.md (§ Phase 01, success criterion 4)
-    - .planning/codebase/CONCERNS.md (the file that will record this if it stays open)
+    - .github/workflows/ci.yml (as completed by Tasks 1 and 2 — you are about to run it for real)
+    - .planning/ROADMAP.md (§ Phase 01, success criterion 4 — both clauses: "runs on push" AND "fails the build when any gate fails")
+    - .planning/codebase/CONCERNS.md (§ Environment — the paragraph that says PostGIS is unverified; step 6 updates it)
+    - CONTRIBUTING.md (§ "Quality gates" — extended by Task 2; step 6 adds the repository and the required check)
+    - .gitignore (which secret files are supposed to be untracked — step 1 proves they actually are)
     - docs/gsd/EXECUTION_RULES.md (§ Definition of Done — "should work" is not a status)
   </read_first>
 
-  <decision>
-`git remote -v` returns nothing: this repository exists only on this machine. Success
-criterion 4 says *"GitHub Actions runs lint, static analysis, backend tests and mobile
-typecheck on push, and fails the build when any gate fails."* That cannot be observed
-without a remote, and whether this code is pushed to GitHub is the user's call, not
-Claude's.
-
-Everything that can be verified locally already has been: `actionlint` is clean, the
-YAML parses, and `make ci` runs the same commands the workflow runs and passes.
-  </decision>
-
-  <context>
-What is still unproven if no run happens: that the runner's `setup-php` extension list
-resolves, that the `postgis/postgis:16-3.4` service container becomes healthy in CI,
-that `npm ci` succeeds on a clean cache, and that the `ci-status` aggregation reports
-correctly. These are exactly the things that only a real run shows.
-  </context>
-
-  <options>
-    <option id="push-and-observe">
-      <name>Add a remote, push, and watch the run</name>
-      <pros>Criterion 4 becomes demonstrably true. `gh run watch` output goes straight into the SUMMARY. Every remaining unknown is resolved now rather than in Phase 50.</pros>
-      <cons>Publishes the repository (choose private). Requires the user to name the repository and confirm the push.</cons>
-    </option>
-    <option id="defer-with-debt">
-      <name>Accept local verification and record the gap as debt</name>
-      <pros>Nothing is published. `make ci` still gates every commit locally.</pros>
-      <cons>Criterion 4 stays unproven, so Phase 01 cannot honestly be marked complete against it. The first real run will surface its problems later, when more is riding on it.</cons>
-    </option>
-  </options>
-
   <action>
-If the user selects **push-and-observe**:
+The user has decided: create **`ricasolucoes/project-dominion`** as a **public**
+repository in the `ricasolucoes` organisation, push, and observe the run. Everything
+needed is already authenticated (see `<interfaces>`). Do not ask again.
+
+Publishing a public repository is **irreversible in practice** — GitHub caches it,
+forks and third-party mirrors appear, and code-search indexes pick it up within
+minutes. Deleting the repository afterwards does not retract what was indexed. That
+is why step 1 exists and why it comes first.
+
+---
+
+**1. SECRET SCAN GATE — blocking, and it runs before anything is created or pushed.**
+
+Do not create the repository, do not add a remote, do not push, until every check in
+this step has passed. This gate is never skipped, never bypassed, and never
+downgraded to a warning.
+
+**1a. Prove the gitignored secret files are genuinely untracked.**
 
 ```bash
-gh repo create <name> --private --source=. --remote=origin --push
-gh workflow run ci.yml --ref master
-gh run watch
-gh run view --log-failed        # only if something failed
+# Must FAIL (the file is not tracked). If it succeeds, apps/api/.env is in the index.
+git ls-files --error-unmatch apps/api/.env && { echo "BLOCKER: apps/api/.env is tracked"; exit 1; }
+
+# No .env variant other than the examples may be tracked, now or ever.
+LEAKED="$(git ls-files | grep -E '(^|/)\.env' | grep -vE '\.env\.example$' || true)"
+if [ -n "$LEAKED" ]; then
+  echo "BLOCKER: tracked secret files:"; echo "$LEAKED"; exit 1
+fi
 ```
 
-Paste the final `gh run view` summary into `01-04-SUMMARY.md`. Then flip the branch
-protection note in CONTRIBUTING.md from advice to fact.
+**1b. Scan the full git history and the working tree with pinned gitleaks.**
 
-If the user selects **defer-with-debt**:
+```bash
+# History (gitleaks `detect` walks every commit, not just HEAD)
+docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 \
+  detect --source=/repo --redact --exit-code 1
 
-Add a row to the "Accepted debt" table in `.planning/codebase/CONCERNS.md`:
-
-```
-| DEBT-008 | CI has never executed — the repository has no git remote | Workflow is lint-clean and mirrored by `make ci`, but the runner environment is unproven | The phase that adds the remote (at the latest Phase 50) |
-```
-
-and add a matching line under `## Environment`:
-
-```
-**GitHub Actions has never run.** `git remote -v` is empty. `.github/workflows/ci.yml`
-passes `actionlint` and every command it runs passes locally via `make ci`, but no run
-has been observed. Do not report "CI is green" until one has.
+# Working tree, including anything uncommitted or untracked
+docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 \
+  detect --source=/repo --no-git --redact --exit-code 1
 ```
 
-Then record in `01-04-SUMMARY.md` that ROADMAP Phase 01 success criterion 4 is
-**partially met**: the workflow is written and locally verified, the run is not
-observed. Do not mark it done.
+The first command is the one the user specified; the second is an addition, not a
+substitution — `detect` without `--no-git` reads git history, `--no-git` reads the
+filesystem, and a public repository is exposed to both. Run both.
+
+The pin here (`v8.18.4`) is deliberately independent of the tag the workflow uses
+(Task 2). This gate must be reproducible **now**, on this machine; the workflow's pin
+is the workflow's concern.
+
+**If either gitleaks command exits non-zero: STOP.** Do not create the repository.
+Do not push. Report a blocker naming the rule, the file and the commit, and hand it
+back. The only exception is a finding that is *demonstrably* a placeholder in a
+`*.example` file or a test fixture — in that case add a **path-and-rule-specific**
+entry to a new `.gitleaks.toml` allowlist (never a blanket rule, never
+`--exit-code 0`), quote the redacted finding in the SUMMARY, and re-run the two
+commands above unmodified until they exit 0. Anything that looks like a real
+credential is a STOP: rotating it and rewriting history is the user's call, not yours.
+
+---
+
+**2. Create the repository and push.**
+
+```bash
+gh repo create ricasolucoes/project-dominion --public --source=. --remote=origin --push
+git remote -v      # must now show ricasolucoes/project-dominion
+```
+
+This pushes the current branch (`master`), which the workflow's
+`on.push.branches: [master, develop]` trigger matches, so the run starts by itself.
+
+---
+
+**3. Observe the run and require every job to succeed.**
+
+A run does not appear instantly, and `gh run watch` errors out if the run has already
+finished — so poll for the id, then poll for completion. Do not `sleep`-and-hope.
+
+```bash
+# --branch master matters: step 4 deliberately creates a FAILING run, and an
+# unscoped `--limit 1` would later resolve to that one instead of this one.
+RUN_ID=""
+for _ in $(seq 1 30); do
+  RUN_ID="$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+  [ -n "$RUN_ID" ] && break
+  sleep 5
+done
+[ -n "$RUN_ID" ] || { echo "BLOCKER: no run was queued for master"; exit 1; }
+echo "run: $RUN_ID"
+
+for _ in $(seq 1 120); do
+  STATUS="$(gh run view "$RUN_ID" --json status --jq '.status')"
+  [ "$STATUS" = "completed" ] && break
+  sleep 15
+done
+
+gh run view "$RUN_ID"                    # paste this into the SUMMARY
+gh run view "$RUN_ID" --json url --jq '.url'   # the evidence link for the SUMMARY
+
+# Nothing may print here — every job, including the ci-status aggregate, is success.
+gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name'
+```
+
+The job list must contain all four: `Backend`, `Mobile & packages`, `Infrastructure`
+and `CI` (the `ci-status` aggregate).
+
+If a job fails, `gh run view "$RUN_ID" --log-failed` shows why. Fix the workflow, push
+the fix, and re-observe — then re-resolve `RUN_ID`, because it changes with each push.
+A red first run is normal; a red first run left red is not.
+
+---
+
+**4. Prove the second clause of criterion 4 — the build fails when a gate fails.**
+
+Task 2 already proves this locally (`make lint` on a deliberately broken file). This
+step proves it *on the real runner*. It must happen on a **throwaway branch through a
+pull request** — never on `master`:
+
+```bash
+# Start clean — the commit below must contain the break and nothing else.
+[ -z "$(git status --porcelain)" ] || { echo "BLOCKER: working tree dirty"; exit 1; }
+
+git checkout -b ci-negative-check
+printf '\n\n' >> apps/api/modules/Shared/Domain/Time/Clock.php   # trailing blank lines: a Pint violation
+git add apps/api/modules/Shared/Domain/Time/Clock.php              # add only this file, never -a
+git commit -m "test(ci): deliberately break lint to prove the gate fails"
+git push -u origin ci-negative-check
+gh pr create --base master --head ci-negative-check \
+  --title "CI negative check (do not merge)" \
+  --body "Deliberately broken formatting. Proves the CI gate fails. Closed immediately."
+
+BAD_ID=""
+for _ in $(seq 1 30); do
+  BAD_ID="$(gh run list --branch ci-negative-check --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+  [ -n "$BAD_ID" ] && break
+  sleep 5
+done
+[ -n "$BAD_ID" ] || { echo "BLOCKER: the pull_request trigger did not fire"; exit 1; }
+
+for _ in $(seq 1 120); do
+  STATUS="$(gh run view "$BAD_ID" --json status --jq '.status')"
+  [ "$STATUS" = "completed" ] && break
+  sleep 15
+done
+
+gh run view "$BAD_ID" --json conclusion --jq '.conclusion'   # must print: failure
+gh run view "$BAD_ID" --json url --jq '.url'                 # second evidence link
+```
+
+A `success` here is itself a blocker: it means the Pint gate did not actually run or
+did not actually fail, and criterion 4's second clause is unproven. Investigate before
+cleaning up.
+
+The `pull_request` trigger is what fires here — a plain push to `ci-negative-check`
+would not match `on.push.branches`.
+
+Then clean up completely, and verify the cleanup:
+
+```bash
+gh pr close ci-negative-check --delete-branch
+git checkout master
+git branch -D ci-negative-check
+git fetch origin --prune
+git status --porcelain               # must be empty
+git log origin/master --oneline -1   # must NOT be the "deliberately break lint" commit
+gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check   # must 404
+```
+
+The PR is **closed, never merged**, so `master` never carried the broken commit.
+
+---
+
+**5. Update `CONTRIBUTING.md`.** Append to § "Quality gates", after the paragraph
+Task 2 added:
+
+```
+The repository is <https://github.com/ricasolucoes/project-dominion>. CI runs on every
+push to `master` and `develop` and on every pull request.
+
+Branch protection is **not** enabled yet, deliberately: GSD phases commit directly to
+`master`, and requiring a pull request would stall the build-out. When it is turned
+on, the single required status check is **`CI`** (the `ci-status` aggregate) — not the
+three individual jobs:
+
+    gh api -X PUT repos/ricasolucoes/project-dominion/branches/master/protection \
+      -F required_status_checks[strict]=true \
+      -F 'required_status_checks[contexts][]=CI' \
+      -F enforce_admins=false -F required_pull_request_reviews= -F restrictions=
+```
+
+**6. Update `.planning/codebase/CONCERNS.md` § "Environment".** That section still
+claims PostGIS has *"never been executed on this machine"* and is *"unverified until
+Phase 01 … adds a CI job"*. Both halves are now false. Replace that paragraph with a
+statement of what is now proven and where the evidence is — the run URL from step 3,
+and the fact that migrations, a double seed and the PostGIS-only suite all ran against
+`postgis/postgis:16-3.4`. Keep the standing warning that the **local host** still has
+no `pdo_pgsql`, so a green `./vendor/bin/pest` on the host is still SQLite-only
+evidence. Do not add a DEBT row — there is no longer any debt here to record.
   </action>
 
-  <acceptance_criteria>
-    - Exactly one of the two branches above was executed, and the SUMMARY names which
-    - If **push-and-observe**: `gh run list --limit 1` shows a completed run and its conclusion is pasted verbatim into the SUMMARY
-    - If **defer-with-debt**: `grep -q 'DEBT-008' .planning/codebase/CONCERNS.md` succeeds AND `grep -q 'GitHub Actions has never run' .planning/codebase/CONCERNS.md` succeeds
-    - In either case the SUMMARY states explicitly whether criterion 4 is met or partially met — no ambiguous wording
-  </acceptance_criteria>
-
   <verify>
-    <automated>{ git remote -v | grep -q origin && gh run list --limit 1 | grep -qi completed; } || { grep -q 'DEBT-008' .planning/codebase/CONCERNS.md && grep -q 'GitHub Actions has never run' .planning/codebase/CONCERNS.md; }</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && ! git ls-files --error-unmatch apps/api/.env 2>/dev/null && docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1 && git remote -v | grep -q 'ricasolucoes/project-dominion' && RUN_ID=$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId') && [ -z "$(gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name')" ] && grep -q 'ricasolucoes/project-dominion' CONTRIBUTING.md && echo CI_OBSERVED_GREEN</automated>
   </verify>
 
-  <done>Either a real GitHub Actions run has been observed and its conclusion pasted into the SUMMARY, or DEBT-008 is recorded in CONCERNS.md and the SUMMARY states that criterion 4 is only partially met.</done>
+  <acceptance_criteria>
+    - **Gate ran first and passed:** `docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1` exits 0, and so does the `--no-git` variant. The SUMMARY records both exit codes.
+    - `git ls-files --error-unmatch apps/api/.env` exits **non-zero** (the file is untracked)
+    - `git ls-files | grep -E '(^|/)\.env' | grep -vE '\.env\.example$'` prints nothing
+    - `git remote -v | grep -c 'ricasolucoes/project-dominion'` returns 2 (fetch + push)
+    - `gh repo view ricasolucoes/project-dominion --json visibility --jq '.visibility'` prints `PUBLIC`
+    - `gh run list --branch master --limit 1 --json status --jq '.[0].status'` prints `completed`
+    - `gh run view "$RUN_ID" --json conclusion --jq '.conclusion'` prints `success` for the master run
+    - `gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name'` prints **nothing**
+    - `gh run view "$RUN_ID" --json jobs --jq '.jobs | length'` returns 4, and the names include `CI`
+    - **Negative proof:** `gh run view "$BAD_ID" --json conclusion --jq '.conclusion'` printed `failure`, and the SUMMARY names which job and which step failed
+    - **Cleanup complete:** `git branch --list ci-negative-check` prints nothing, `gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check` returns 404, and `git status --porcelain` is empty
+    - `grep -q 'ricasolucoes/project-dominion' CONTRIBUTING.md` succeeds
+    - `grep -q 'Branch protection is' CONTRIBUTING.md` and `grep -q 'ci-status' CONTRIBUTING.md` both succeed
+    - `grep -q 'never been executed on this machine' .planning/codebase/CONCERNS.md` returns **nothing** (the stale claim is gone)
+    - `grep -q 'pdo_pgsql' .planning/codebase/CONCERNS.md` still succeeds (the host limitation is still recorded)
+    - No `DEBT-008` row was added
+  </acceptance_criteria>
 
-  <resume-signal>Select: push-and-observe, or defer-with-debt</resume-signal>
+  <done>`ricasolucoes/project-dominion` exists and is public, its first CI run is green across backend, mobile, infrastructure and the `CI` aggregate, a deliberately broken commit on a now-deleted throwaway branch produced a red run, and no secret was published because the gitleaks gate ran and passed before the repository existed.</done>
 </task>
 
 </tasks>
@@ -529,6 +707,24 @@ mv apps/api/.env apps/api/.env.bak
 docker compose config --quiet
 test "$(docker compose config --services | wc -l)" -eq "$(docker compose config | grep -c 'healthcheck:')"
 mv apps/api/.env.bak apps/api/.env
+
+# Nothing secret is publishable (this is the gate, and it precedes publication)
+git ls-files --error-unmatch apps/api/.env    # MUST exit non-zero
+docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 \
+  detect --source=/repo --redact --exit-code 1
+docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 \
+  detect --source=/repo --no-git --redact --exit-code 1
+
+# The run actually happened and was green
+git remote -v | grep ricasolucoes/project-dominion
+gh repo view ricasolucoes/project-dominion --json visibility --jq '.visibility'   # PUBLIC
+RUN_ID="$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId')"
+gh run view "$RUN_ID"
+gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name'   # empty
+
+# The throwaway negative-check branch is gone
+git branch --list ci-negative-check                                    # empty
+gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check  # 404
 ```
 </verification>
 
@@ -539,12 +735,27 @@ mv apps/api/.env.bak apps/api/.env
 - The infrastructure job needs no paid licence and no developer `.env`
 - `ci-status` fails unless all three jobs report `success`
 - `make ci` exits 0, and `make lint` exits non-zero on a deliberately broken file
-- Task 3 resolved one way or the other, and the SUMMARY says plainly whether criterion 4 is met
+- The gitleaks gate ran **before** publication and exited 0 in both history and working-tree modes; `apps/api/.env` is untracked
+- `ricasolucoes/project-dominion` exists, is public, and `git remote -v` points at it
+- A completed run on `master` concludes `success` for backend, mobile, infrastructure and the `CI` aggregate — pasted into the SUMMARY, not summarised
+- A deliberately broken commit on the `ci-negative-check` branch produced a `failure` run through a pull request, and that branch no longer exists locally or remotely
+- ROADMAP Phase 01 success criterion 4 is **met**, both clauses, with a run URL as evidence
 </success_criteria>
 
 <output>
 After completion, create `.planning/phases/01-engineering-foundation/01-04-SUMMARY.md`.
-Paste the literal output of `actionlint`, of `make ci`, and of the deliberate-failure
-`make lint`. State the Task 3 decision and its consequence for success criterion 4 in
-the first paragraph — not buried at the end.
+
+Paste the literal output of: `actionlint`; `make ci`; the deliberate-failure
+`make lint`; both gitleaks invocations (including their exit codes); `gh run view`
+for the green master run; and `gh run view --json conclusion` for the red
+`ci-negative-check` run. Include both run URLs.
+
+The first paragraph must state, without hedging, that ROADMAP Phase 01 success
+criterion 4 is **met** — the workflow runs on push, and it fails the build when a gate
+fails — and link the two runs that prove each clause. "Should work" is not a status
+(`docs/gsd/EXECUTION_RULES.md`).
+
+If the gitleaks gate blocked publication, that is the SUMMARY's first paragraph
+instead: what was found, in which file and commit, and what the user must decide.
+Nothing was pushed, and criterion 4 stays unproven until it is.
 </output>

@@ -57,6 +57,12 @@ container has ever been started, `make dev` returns before anything is healthy, 
 Purpose: satisfies ROADMAP Phase 01 success criteria 1 and 5, and unblocks plans
 01-02, 01-03 and 01-04 which all run their verification through `docker compose exec`.
 
+REQ-12 (full observability) starts here, at the infrastructure layer: `make health`
+and `scripts/stack-smoke.sh` turn the state of every dependency — database, cache,
+redis, queue worker, websocket, object store, mail — into something a command
+*reports* rather than something a developer assumes. A stack whose health cannot be
+observed cannot have its logs, metrics or traces trusted either.
+
 Output: a compose file where every service declares a healthcheck, a Makefile whose
 targets actually run in the right order, and `scripts/stack-smoke.sh` which proves
 criteria 1 and 5 in one command.
@@ -469,7 +475,7 @@ and add this table immediately under the existing host-port table:
 | reverb | PHP `fsockopen` on 8081 |
 | horizon | `php artisan horizon:status` |
 | minio | `mc ready local` |
-    - `grep -q 'Healthcheck' docs/operations/environments.md` succeeds and the table lists all seven services
+| mailpit | `/mailpit readyz` |
 
 `make dev` uses `docker compose up -d --wait`, so it cannot return successfully while
 any service is unhealthy.
