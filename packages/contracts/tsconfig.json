@@ -2,7 +2,7 @@
   "extends": "@dominion/tooling/tsconfig",
   "compilerOptions": {
     "noEmit": true,
-    "lib": ["ESNext"]
+    "allowImportingTsExtensions": true
   },
   "include": ["src/**/*.ts"]
 }

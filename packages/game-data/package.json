@@ -7,6 +7,7 @@
   "types": "src/index.ts",
   "scripts": {
     "validate": "node --experimental-strip-types src/validate.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0"
   }
 }

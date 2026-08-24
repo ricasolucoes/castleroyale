@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # PostGIS, not plain postgres. This job exists specifically to run
+        # migrations against the real extension — the local suite uses SQLite
+        # in-memory and therefore cannot cover spatial work.
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: dominion_test
+          POSTGRES_USER: dominion
+          POSTGRES_PASSWORD: dominion
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U dominion -d dominion_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, pgsql, redis, bcmath, intl, zip
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: apps/api/vendor
+          key: composer-${{ hashFiles('apps/api/composer.lock') }}
+
+      - name: Install
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Formatting (Pint)
+        run: ./vendor/bin/pint --test
+
+      - name: Static analysis (PHPStan level 8 + strict rules)
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+      - name: Architecture rules
+        run: ./vendor/bin/pest --group=arch
+
+      - name: Tests
+        run: ./vendor/bin/pest
+
+      - name: Migrations against PostgreSQL + PostGIS
+        # The gate that the local SQLite suite cannot provide.
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: dominion_test
+          DB_USERNAME: dominion
+          DB_PASSWORD: dominion
+          CACHE_STORE: redis
+          REDIS_HOST: 127.0.0.1
+          QUEUE_CONNECTION: redis
+        run: |
+          php artisan migrate --force
+          php artisan migrate:rollback --force
+          php artisan migrate --force
+          php artisan db:seed --force
+
+  mobile:
+    name: Mobile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Contracts match the OpenAPI spec
+        run: npm run contracts:check
+
+  infrastructure:
+    name: Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate compose file
+        run: docker compose config --quiet
+
+      - name: Build API image
+        run: docker build -f infrastructure/docker/api/Dockerfile --target development .
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

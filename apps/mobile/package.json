@@ -53,5 +53,8 @@
     "test:watch": "jest --watch",
     "doctor": "npx expo-doctor"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "preset": "jest-expo"
+  }
 }

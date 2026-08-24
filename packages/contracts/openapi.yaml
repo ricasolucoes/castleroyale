@@ -1,0 +1,300 @@
+openapi: 3.1.0
+
+info:
+  title: Project Dominion API
+  version: 0.1.0
+  description: |
+    The contract between the Laravel API and the React Native client.
+
+    **This file is the source of truth.** TypeScript types are generated from it
+    (`npm run contracts:generate`) and CI fails if they drift. Backend contract
+    tests assert that real responses validate against these schemas.
+
+    Write the spec before the implementation — see ADR-017.
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local (Docker)
+
+tags:
+  - name: Platform
+    description: Health and metadata
+
+paths:
+  /health:
+    get:
+      tags: [Platform]
+      summary: Liveness and readiness
+      description: |
+        Unauthenticated and cheap — polled by the load balancer and by the
+        client's connectivity banner. Reports dependency status and the three
+        content versions the client pins against (ADR-015).
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Healthy
+          headers:
+            X-Request-Id:
+              $ref: '#/components/headers/XRequestId'
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/HealthData'
+                  meta:
+                    $ref: '#/components/schemas/HealthMeta'
+        '503':
+          description: One or more dependencies are down
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/HealthData'
+                  meta:
+                    $ref: '#/components/schemas/HealthMeta'
+
+components:
+  headers:
+    XRequestId:
+      description: Correlation id, echoed from the request or generated.
+      schema:
+        type: string
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        Client-generated ULID or UUID, unique per logical operation — **not**
+        per retry. A retry reuses the same key. See docs/api/idempotency.md.
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 64
+
+    ClientVersion:
+      name: X-Client-Version
+      in: header
+      required: false
+      schema:
+        type: string
+
+    ClientPlatform:
+      name: X-Client-Platform
+      in: header
+      required: false
+      schema:
+        type: string
+        enum: [ios, android]
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Sanctum access token. See docs/api/authentication.md.
+
+  schemas:
+    Ulid:
+      type: string
+      pattern: '^[0-9A-HJKMNP-TV-Z]{26}$'
+      description: Non-enumerable, time-sortable identifier (ADR-016).
+
+    ResourceType:
+      type: string
+      enum: [food, wood, stone, iron, gold]
+
+    ResourceBundle:
+      type: object
+      description: |
+        Whole units only — never fractional (ADR-010). Absent keys are zero.
+      additionalProperties: false
+      properties:
+        food: { type: integer, minimum: 0 }
+        wood: { type: integer, minimum: 0 }
+        stone: { type: integer, minimum: 0 }
+        iron: { type: integer, minimum: 0 }
+        gold: { type: integer, minimum: 0 }
+
+    ContentVersions:
+      type: object
+      required: [data, combat, economy]
+      description: |
+        Independent version counters. A client that does not understand the
+        current rules should prompt an update rather than misrender (ADR-015).
+      properties:
+        data: { type: integer }
+        combat: { type: integer }
+        economy: { type: integer }
+
+    HealthData:
+      type: object
+      required: [status, checks]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        checks:
+          type: object
+          additionalProperties:
+            type: boolean
+
+    HealthMeta:
+      type: object
+      required: [game, environment, server_time, versions]
+      properties:
+        game: { type: string }
+        environment: { type: string }
+        server_time:
+          type: string
+          format: date-time
+          description: UTC, ISO-8601 with explicit offset. The device clock is never authoritative.
+        versions:
+          $ref: '#/components/schemas/ContentVersions'
+
+    Pagination:
+      type: object
+      description: Cursor-based — the world changes under the reader.
+      properties:
+        next_cursor:
+          type: [string, 'null']
+        has_more:
+          type: boolean
+
+    ErrorCode:
+      type: string
+      description: |
+        The machine-readable failure catalogue. **The client branches on this,
+        never on `message`.** Codes are frozen once shipped; clients must also
+        handle unknown codes with a default branch, since new codes are additive
+        and not a breaking change (docs/api/versioning.md).
+
+        Mirrors `Game\Shared\Application\Error\ErrorCode`.
+      enum:
+        - VALIDATION_FAILED
+        - UNAUTHENTICATED
+        - FORBIDDEN
+        - NOT_FOUND
+        - CONFLICT
+        - RATE_LIMITED
+        - SERVER_ERROR
+        - SERVICE_UNAVAILABLE
+        - UNSUPPORTED_CLIENT_VERSION
+        - IDEMPOTENCY_KEY_REQUIRED
+        - IDEMPOTENCY_KEY_REUSED
+        - IDEMPOTENCY_REQUEST_IN_FLIGHT
+        - INVALID_CREDENTIALS
+        - ACCOUNT_BANNED
+        - ACCOUNT_SUSPENDED
+        - DEVICE_SESSION_REVOKED
+        - TOKEN_EXPIRED
+        - GUEST_UPGRADE_REQUIRED
+        - INSUFFICIENT_RESOURCES
+        - WAREHOUSE_CAPACITY_EXCEEDED
+        - LEDGER_IMBALANCE
+        - CITY_BUSY
+        - CITY_NOT_OWNED
+        - BUILDING_MAX_LEVEL
+        - BUILDING_REQUIREMENTS_NOT_MET
+        - BUILD_QUEUE_FULL
+        - BUILDING_SLOT_OCCUPIED
+        - RESEARCH_IN_PROGRESS
+        - TECHNOLOGY_LOCKED
+        - TECHNOLOGY_MAX_LEVEL
+        - MARCH_LIMIT_REACHED
+        - ARMY_ALREADY_DEPLOYED
+        - INSUFFICIENT_TROOPS
+        - INVALID_TARGET
+        - TARGET_OUT_OF_RANGE
+        - MARCH_NOT_CANCELLABLE
+        - TROOP_CAPACITY_EXCEEDED
+        - BATTLE_ALREADY_RESOLVED
+        - SIMULATION_VERSION_MISMATCH
+        - PLAYER_PROTECTED
+        - ATTACKER_PROTECTED
+        - POWER_DIFFERENCE_TOO_LARGE
+        - BEGINNER_ZONE_RESTRICTED
+        - ALLIANCE_PERMISSION_DENIED
+        - ALLIANCE_FULL
+        - ALREADY_IN_ALLIANCE
+        - NOT_IN_ALLIANCE
+        - ALLIANCE_NAME_TAKEN
+        - MARKET_ORDER_UNAVAILABLE
+        - TRADE_ROUTE_BUSY
+        - TRADE_LIMIT_REACHED
+        - TILE_OCCUPIED
+        - TILE_NOT_SETTLEABLE
+        - WORLD_CLOSED
+        - WORLD_FULL
+        - CHAT_MUTED
+        - CONTENT_REJECTED
+        - RECIPIENT_BLOCKED
+        - FEATURE_DISABLED
+        - EVENT_NOT_ACTIVE
+        - REWARD_ALREADY_CLAIMED
+        - PURCHASE_VERIFICATION_FAILED
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      description: |
+        The only failure shape. Produced by
+        `Game\Shared\Interface\Http\ApiResponse::error()`.
+      properties:
+        error:
+          type: object
+          required: [code, message, retryable]
+          properties:
+            code:
+              $ref: '#/components/schemas/ErrorCode'
+            message:
+              type: string
+              description: For developers and logs. Localised copy lives on the client, keyed by `code`.
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              description: Whether retrying the identical request could succeed.
+
+  responses:
+    Unauthorized:
+      description: Missing, expired or revoked credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Authenticated but not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: No such resource, or not visible to this player
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationFailed:
+      description: Invalid request payload
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+security:
+  - bearerAuth: []

@@ -8,6 +8,7 @@
     "./eslint": "./eslint/index.mjs",
     "./tsconfig": "./typescript/base.json",
     "./tsconfig-react-native": "./typescript/react-native.json",
-    "./design-tokens": "./design-tokens/index.ts"
+    "./design-tokens": "./design-tokens/index.ts",
+    "./tsconfig-node": "./typescript/node.json"
   }
 }

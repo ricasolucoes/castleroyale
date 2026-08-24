@@ -8,7 +8,8 @@
   "scripts": {
     "generate": "openapi-typescript openapi.yaml -o src/generated/api.ts",
     "check": "npm run generate && git diff --exit-code src/generated/api.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0"
   },
   "devDependencies": {
     "openapi-typescript": "^7.5.0"

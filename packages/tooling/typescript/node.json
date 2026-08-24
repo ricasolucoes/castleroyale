@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Dominion Node",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true,
+    // These packages run under `node --experimental-strip-types`, which
+    // requires explicit .ts specifiers on relative imports.
+    "allowImportingTsExtensions": true
+  }
+}

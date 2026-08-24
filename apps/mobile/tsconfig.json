@@ -1,20 +1,15 @@
 {
   "extends": ["expo/tsconfig.base", "@dominion/tooling/tsconfig-react-native"],
   "compilerOptions": {
-    "baseUrl": ".",
+    // No `baseUrl` — deprecated in TypeScript 6. Path mappings resolve
+    // relative to this file.
     "paths": {
       "@/*": ["./src/*"],
-      "@dominion/contracts": ["../../packages/contracts/src"],
-      "@dominion/contracts/*": ["../../packages/contracts/src/*"],
-      "@dominion/game-data": ["../../packages/game-data/src"],
-      "@dominion/localization": ["../../packages/localization/src"]
-    }
+      "@dominion/contracts": ["../../packages/contracts/src/index.ts"],
+      "@dominion/tooling/design-tokens": ["../../packages/tooling/design-tokens/index.ts"]
+    },
+    "allowImportingTsExtensions": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
   "exclude": ["node_modules", ".expo", "dist", "ios", "android"]
 }
