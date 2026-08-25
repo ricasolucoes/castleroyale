@@ -1228,3 +1228,173 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | Release Candidate | 50-52 | Reproducible production and a tested recovery path |
 | Launch | 53 | Publicly available |
 | LiveOps | 54 | Running as a live service |
+| Google Play Games & Gamification | 55-67 | Gamification engine and Google Play Games Sidekick integrated |
+
+### Phase 55: Google Play Sidekick: Fase 0 — Discovery
+
+**Goal:** Mapear o projeto inteiro (arquitetura, gameplay, backend, Android) e gerar a auditoria de compatibilidade inicial e riscos para o Google Play Games Sidekick.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 54
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 55 to break down)
+
+### Phase 56: Google Play Sidekick: Fase 1 — Fundação
+
+**Goal:** Estabelecer a infraestrutura básica (Domain Events, Gamification Service) e Feature Flags sem espalhar dependências do Google Play pelo código.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 55
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 56 to break down)
+
+### Phase 57: Google Play Sidekick: Fase 2 — Play Games Services
+
+**Goal:** Implementar robustamente o PGS v2 com fallback, tratamento de lifecycle, autenticação e Recall API.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 56
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 57 to break down)
+
+### Phase 58: Google Play Sidekick: Fase 3 — Achievements
+
+**Goal:** Criar uma Achievement Engine conectada ao Google Play com pelo menos 40 conquistas, incluindo 4 alcançáveis na primeira hora.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 57
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 58 to break down)
+
+### Phase 59: Google Play Sidekick: Fase 4 — Game Stats
+
+**Goal:** Instrumentar Game Stats avançados (Progress e Repetitive) gerando Schemas e CSVs compatíveis com Play Console.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 58
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 59 to break down)
+
+### Phase 60: Google Play Sidekick: Fase 5 — Gamificação avançada
+
+**Goal:** Criar XP centralizado, Levels, Quests, Streaks (loops diários e semanais), Collections e Rewards seguros.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 59
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 60 to break down)
+
+### Phase 61: Google Play Sidekick: Fase 6 — Social
+
+**Goal:** Integrar Leaderboards, Social Challenges e Progressão competitiva caso aplicável ao jogo.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 60
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 61 to break down)
+
+### Phase 62: Google Play Sidekick: Fase 7 — LiveOps
+
+**Goal:** Permitir configuração Server-Driven (Seasons, Daily/Weekly Quests) para operar o jogo sem depender de atualizações de app.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 61
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 62 to break down)
+
+### Phase 63: Google Play Sidekick: Fase 8 — Sidekick
+
+**Goal:** Validar UI, ciclo de vida e overlay do Play Games Sidekick em todos os fluxos e imersões sem quebrar UX/controles.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 62
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 63 to break down)
+
+### Phase 64: Google Play Sidekick: Fase 9 — Segurança
+
+**Goal:** Auditar e fechar vulnerabilidades de economy (reward abuse, replay, spoofing, cheating).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 63
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 64 to break down)
+
+### Phase 65: Google Play Sidekick: Fase 10 — QA
+
+**Goal:** Construir testes end-to-end de lifecycle (offline, sync, reconexão, reinstalação, dupla autenticação).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 64
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 65 to break down)
+
+### Phase 66: Google Play Sidekick: Fase 11 — Performance
+
+**Goal:** Monitorar e documentar métricas de Google Play Games Level Up (FPS, ANR, Battery, Memória).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 65
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 66 to break down)
+
+### Phase 67: Google Play Sidekick: Fase 12 — Release
+
+**Goal:** Orquestrar lançamento e rollout no Play Console (Internal -> Closed -> Production) e checklist de Rollback.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 66
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 67 to break down)
