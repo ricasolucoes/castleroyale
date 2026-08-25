@@ -121,9 +121,19 @@ that assumption rather than patched for it later.
 
 ## Current Understanding
 
-Phase 00 is done and committed. The next executable phase is Phase 01.
+Phases 00 and 01 are done and committed. The next executable phase is Phase 02.
 
-The plan is deliberately front-loaded: all 55 phases are specified in ROADMAP.md with
+Phase 01 (2026-08-25) made Docker the canonical environment — seven healthy services,
+migrations and a double seed proven against real PostGIS, `/api/v1/health` reporting every
+dependency, and GitHub Actions gating lint, static analysis, backend tests and mobile
+typecheck behind one `CI` check (green run + two recorded red runs). The repository is
+public at `ricasolucoes/project-dominion`. REQ-06 and REQ-12 are advanced (CI validates
+`packages/game-data`; health checks exist) but not yet validated — both span many phases.
+
+On 2026-08-25, 13 phases (55–67, "Google Play Sidekick") were appended to ROADMAP.md
+after Phase 54; the roadmap now lists 68 phases.
+
+The plan is deliberately front-loaded: all original 55 phases are specified in ROADMAP.md with
 goals, dependencies and observable success criteria, and every phase carries a
 pre-written CONTEXT.md locking its implementation decisions. Executing agents are expected
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded

@@ -16,15 +16,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-24)
+See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 01 — engineering-foundation
+**Current focus:** Phase 02 — design-system-mobile-shell
 
 ## Current Position
 
-Phase: 01 (engineering-foundation) — EXECUTING
-Plan: 2 of 4
+Phase: 02 (design-system-mobile-shell) — PLANNING
+Plan: 0 of 4 (roadmap outline)
+
+Phase 01 (engineering-foundation) completed 2026-08-25 — 4/4 plans, verification passed 5/5.
 
 ## Performance Metrics
 
@@ -39,10 +41,11 @@ Plan: 2 of 4
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 00. Repository Bootstrap | 4/4 | - | - |
+| 01. Engineering Foundation | 4/4 | ~2h | ~30min |
 
 **Recent Trend:**
 
-- Last 5 plans: Phase 00 only
+- Last 5 plans: Phase 01 (4 plans) + Phase 00
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -75,26 +78,25 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 00] The host PHP lacks `pdo_pgsql` and the Docker daemon may be stopped. Postgres/PostGIS
-  migrations must be validated inside Docker or CI, never assumed to run on the host. Phase 01
-  resolves this by making the Docker stack the canonical development environment.
-
-- [Phase 01] Plan 01-04 is `autonomous: false`: it STOPs before `gh repo create` and needs a live
-  human go-ahead for the public publish of `ricasolucoes/project-dominion`.
+- [Phase 00 → resolved in Phase 01] Host PHP still lacks `pdo_pgsql`; Docker is now the canonical
+  environment and CI runs migrations/seeds/PostGIS suite against `postgis/postgis:16-3.4`
+  (evidence in `.planning/codebase/CONCERNS.md` § Environment). Never trust a host-only green suite.
+- [Phase 01 → done] `ricasolucoes/project-dominion` is PUBLIC with `origin` configured; the publish
+  gate is closed. Auto-mode denies pushing new branches / opening PRs — plan negative CI checks as
+  human checkpoints, not autonomous steps.
+- [Housekeeping] Untracked `roadmap.json` (stray `roadmap analyze` dump) and the tracked SQLite file
+  `apps/api/dominion` (modified by runs) sit in the working tree; both should probably be removed /
+  gitignored — left untouched pending the user's call.
+- [Roadmap] Phases 55–67 (Google Play Sidekick, 13 phases) were appended to ROADMAP.md outside the
+  autonomous session and committed as `e04193d`; they depend on Phase 54 and will be picked up by
+  the autonomous loop after Phase 54 unless removed or moved to their own milestone.
 
 ## Session Continuity
 
-Last session: 2026-08-25T01:52:16.382Z
-Stopped at: Completed 01-engineering-foundation-01-PLAN.md
-Resume with: `/gsd:autonomous --from 1`
+Last session: 2026-08-25
+Stopped at: Phase 01 complete and verified; Phase 02 planning starting
+Resume with: `/gsd:autonomous --from 2`
 Resume file: None
 
-**Phase 01 artifacts on disk:**
-
-- `01-CONTEXT.md` (pre-written)
-- `01-01-docker-stack-PLAN.md` — wave 1, REQ-12, autonomous
-- `01-02-postgis-migrations-PLAN.md` — wave 2, REQ-12, autonomous
-- `01-03-seeders-fixtures-PLAN.md` — wave 3, REQ-06, autonomous
-- `01-04-github-actions-ci-PLAN.md` — wave 4, REQ-06 + REQ-12, **autonomous: false** (publish gate)
-
-Commits: `164cad8` (plans), `f38dd3c` (remove plan self-authorization, add STOP gate).
+**Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
+https://github.com/ricasolucoes/project-dominion/actions/runs/32802315288 (green, 4 jobs).
