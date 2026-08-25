@@ -33,15 +33,19 @@ final class StaffUserSeeder extends Seeder
             $password = 'password';
         }
 
-        User::query()->updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => 'Game Master',
-                'password' => Hash::make($password),
-                'is_staff' => true,
-                'remember_token' => Str::random(10),
-            ],
-        );
+        $user = User::query()->firstOrNew(['email' => $email]);
+
+        // forceFill, not fill: `is_staff` is deliberately absent from
+        // User::$fillable so no future registration endpoint can mass-assign it,
+        // and AppServiceProvider enables preventSilentlyDiscardingAttributes().
+        $user->forceFill([
+            'name' => 'Game Master',
+            'password' => Hash::make($password),
+            'is_staff' => true,
+            'email_verified_at' => $user->exists ? $user->email_verified_at : now(),
+            // Re-running the seeder must not invalidate an existing session.
+            'remember_token' => $user->exists ? $user->remember_token : Str::random(10),
+        ])->save();
 
         $this->command?->info("Staff user ready: {$email}");
     }

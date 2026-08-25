@@ -11,9 +11,9 @@ use Illuminate\Database\Seeder;
  *
  * Two distinct jobs, deliberately kept apart:
  *
- *   Reference data — buildings, units, technologies, heroes. Imported from
- *   `packages/game-data` by `php artisan game:import-data`, NOT seeded here.
- *   It is content, it is versioned, and production needs it too.
+ *   Reference content is imported by `php artisan game:import-data` from the shared
+ *   data package, NOT seeded here. It is versioned content and production needs it too.
+ *   See docs/database/conventions.md and ADR-013.
  *
  *   Development fixtures — a populated world with players, cities, armies and
  *   alliances so a developer can open the app and see a real game in the
@@ -31,9 +31,9 @@ final class DatabaseSeeder extends Seeder
 
         if (app()->environment(['local', 'testing', 'development'])) {
             // Populated by the phases that own each subsystem. Each seeder is
-            // additive and safe to re-run; see GSD Phase 01 task P01-BE-006.
+            // additive and safe to re-run (GSD Phase 01, plan 01-03).
             $this->call([
-                //
+                DevelopmentUserSeeder::class,
             ]);
         }
     }

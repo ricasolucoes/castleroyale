@@ -83,3 +83,24 @@ against SQLite only.
 CI job running migrations against real Postgres + PostGIS. Until that job is green,
 no PostGIS-specific behaviour should be described as verified.
 **ADR:** none needed — see ADR-004 for the PostGIS decision itself.
+### 2026-08-24 — Phase 01 — Seeder idempotency uses firstOrNew + forceFill, not updateOrCreate
+
+**Type:** Change
+**What:** `01-CONTEXT.md` § Seeds specifies `updateOrCreate` as the idempotency
+mechanism for seeders. `StaffUserSeeder` and `DevelopmentUserSeeder` use
+`firstOrNew()` + `forceFill()` + `save()` instead. The requirement itself is
+unchanged and still tested: seeding twice produces the same rows with the same
+primary keys.
+**Why:** `updateOrCreate()` mass-assigns, and `is_staff` is deliberately absent from
+`User::$fillable` so no future registration endpoint can escalate a account to staff.
+`AppServiceProvider` enables `Model::preventSilentlyDiscardingAttributes()`, so the
+attribute is not silently dropped — it throws `MassAssignmentException` and
+`php artisan db:seed` fails outright. Adding `is_staff` to `$fillable` would trade a
+seeder convenience for a privilege-escalation surface. `forceFill()` bypasses
+mass-assignment protection at the one call site that is allowed to, inside a seeder.
+**Impact:** Every seeder in every later phase. The idempotency pattern for this
+project is `firstOrNew` + `forceFill` + `save`, with `$user->exists ?` guards on any
+attribute a re-run must not overwrite. Covered by
+`tests/Feature/Database/SeederTest.php`.
+**ADR:** none needed — an implementation detail of a seeder, not an architectural
+decision. ADR-016 and the mass-assignment posture are unchanged.
