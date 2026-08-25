@@ -6,8 +6,8 @@ phase_name: Engineering Foundation
 plan: 0
 total_phases: 55
 completed_phases: 1
-status: Plans written — verification incomplete
-last_activity: 2026-08-24 — Phase 01 planned (4 plans); autonomous run stopped on API spend limit
+status: Plans verified — ready to execute
+last_activity: 2026-08-24 — Phase 01 plans passed independent checker (round 2); executing
 ---
 
 # Project State
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-08-24)
 **Current Plan:** 0
 **Total Phases:** 55
 **Total Plans in Phase:** 4
-**Status:** Plans written — checker round 2 did not run
-**Last Activity:** 2026-08-24 — Phase 01 planned; autonomous run stopped on API spend limit
+**Status:** Plans verified by checker — executing
+**Last Activity:** 2026-08-24 — Phase 01 checker round 2 passed; execution started
 
 **Progress:** [░░░░░░░░░░] 2% (1 of 55 phases)
 
@@ -76,22 +76,16 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 01] **Autonomous run stopped 2026-08-24: API monthly spend limit reached.**
-  Subagent spawning fails, which blocks both the plan checker and `gsd-executor`.
-  Weekly limit resets 4pm America/Sao_Paulo, or raise it at claude.ai/settings/usage.
-  Nothing is broken — this is an account limit, not a defect.
-- [Phase 01] Checker round 2 never produced a verdict. The planner reports both
-  blockers fixed (world_id doc contradiction; unrecorded DECISIONS.md deviation) but
-  **no independent check has read the revised plan content**. Re-run the checker
-  before executing.
 - [Phase 00] The host PHP lacks `pdo_pgsql` and the Docker daemon may be stopped. Postgres/PostGIS
   migrations must be validated inside Docker or CI, never assumed to run on the host. Phase 01
   resolves this by making the Docker stack the canonical development environment.
+- [Phase 01] Plan 01-04 is `autonomous: false`: it STOPs before `gh repo create` and needs a live
+  human go-ahead for the public publish of `ricasolucoes/project-dominion`.
 
 ## Session Continuity
 
 Last session: 2026-08-24
-Stopped at: Phase 01 — 4 plans written and structurally valid; independent re-check pending
+Stopped at: Phase 01 — plans verified (checker passed 2026-08-24); execution in progress
 Resume with: `/gsd:autonomous --from 1`
 Resume file: None
 
