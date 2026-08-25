@@ -29,7 +29,8 @@ services:
       REDIS_HOST: redis
       REVERB_HOST: reverb
     env_file:
-      - ./apps/api/.env
+      - path: ./apps/api/.env
+        required: false
     depends_on:
       postgres:
         condition: service_healthy
@@ -90,12 +91,21 @@ services:
       DB_HOST: postgres
       REDIS_HOST: redis
     env_file:
-      - ./apps/api/.env
+      - path: ./apps/api/.env
+        required: false
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      # `horizon:status` prints "Horizon is running." and exits 0 only when the
+      # master supervisor is up; a paused or crashed Horizon fails the grep.
+      test: ["CMD-SHELL", "php artisan horizon:status | grep -q running"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
     restart: unless-stopped
 
   reverb:
@@ -111,12 +121,21 @@ services:
       DB_HOST: postgres
       REDIS_HOST: redis
     env_file:
-      - ./apps/api/.env
+      - path: ./apps/api/.env
+        required: false
     ports:
       - "8081:8081"
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@fsockopen(\"127.0.0.1\", 8081) ? 0 : 1);'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
     restart: unless-stopped
 
   minio:
@@ -142,6 +161,12 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
 volumes:
