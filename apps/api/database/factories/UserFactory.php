@@ -44,4 +44,17 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * A back-office account.
+     *
+     * Factories run inside Model::unguarded(), so `is_staff` is settable here even
+     * though it is deliberately absent from User::$fillable.
+     */
+    public function staff(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_staff' => true,
+        ]);
+    }
 }
