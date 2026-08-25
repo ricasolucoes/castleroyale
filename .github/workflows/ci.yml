@@ -4,6 +4,10 @@ on:
   push:
     branches: [master, develop]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -79,8 +83,9 @@ jobs:
       - name: Tests
         run: ./vendor/bin/pest
 
-      - name: Migrations against PostgreSQL + PostGIS
-        # The gate that the local SQLite suite cannot provide.
+      - name: Migrations and seeds against PostgreSQL + PostGIS
+        # The gate the local SQLite suite cannot provide. Forward, back, forward
+        # proves every down() works; seeding twice proves idempotency.
         env:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
@@ -96,16 +101,43 @@ jobs:
           php artisan migrate:rollback --force
           php artisan migrate --force
           php artisan db:seed --force
+          php artisan db:seed --force
+
+      - name: PostGIS extension is really enabled
+        run: |
+          PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+            -tAc "select postgis_version();" | tee /tmp/postgis.txt
+          test -s /tmp/postgis.txt
+
+      - name: Seeds are idempotent
+        run: |
+          COUNT=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+            -tAc "select count(*) from users;")
+          STAFF=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+            -tAc "select count(*) from users where is_staff;")
+          echo "users=$COUNT staff=$STAFF"
+          test "$COUNT" -eq 5
+          test "$STAFF" -eq 2
+
+      - name: PostGIS-only test suite
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_USERNAME: dominion
+          DB_PASSWORD: dominion
+        run: ./vendor/bin/pest --configuration=phpunit.postgres.xml
 
   mobile:
-    name: Mobile
+    name: Mobile & packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # 22.6+ — packages/game-data validates through
+          # `node --experimental-strip-types`, which does not exist on Node 20.
+          node-version: '22'
           cache: npm
 
       - run: npm ci
@@ -122,19 +154,56 @@ jobs:
       - name: Contracts match the OpenAPI spec
         run: npm run contracts:check
 
+      - name: Game data is valid
+        # REQ-06: balance lives in packages/game-data and is validated here, never
+        # hand-checked. Exits 0 with "no datasets yet" until Phase 09.
+        run: npm run gamedata:validate
+
   infrastructure:
     name: Infrastructure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate compose file
+      - name: Lint the workflows themselves
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color
+
+      - name: Validate compose file without a developer .env
+        # apps/api/.env is gitignored, so it is absent here. The compose file marks
+        # it `required: false` (plan 01-01) precisely so this works.
         run: docker compose config --quiet
+
+      - name: Every service declares a healthcheck
+        run: |
+          services=$(docker compose config --services | wc -l)
+          probes=$(docker compose config | grep -c 'healthcheck:')
+          echo "services=$services probes=$probes"
+          test "$services" -eq "$probes"
 
       - name: Build API image
         run: docker build -f infrastructure/docker/api/Dockerfile --target development .
 
       - name: Scan for committed secrets
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The marketplace action requires a paid licence for organisation-owned
+        # repositories; the image does not.
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.21.2 \
+            detect --source=/repo --redact --verbose --exit-code 1
+
+  ci-status:
+    name: CI
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [backend, mobile, infrastructure]
+    steps:
+      - name: Fail if any gate failed
+        # One required status check for branch protection instead of three, and it
+        # cannot pass by a job being skipped or cancelled.
+        run: |
+          echo "backend=${{ needs.backend.result }}"
+          echo "mobile=${{ needs.mobile.result }}"
+          echo "infrastructure=${{ needs.infrastructure.result }}"
+          test "${{ needs.backend.result }}" = "success"
+          test "${{ needs.mobile.result }}" = "success"
+          test "${{ needs.infrastructure.result }}" = "success"

@@ -42,6 +42,13 @@ npm run typecheck && npm run lint && npm test
 npm run contracts:check
 ```
 
+The same gates run in GitHub Actions as three parallel jobs — **Backend**,
+**Mobile & packages**, **Infrastructure** — behind one aggregate check, **CI**.
+Make that single check the required one in branch protection.
+
+`make ci` runs the same commands locally, including the PostgreSQL-only suite that
+the SQLite host suite cannot cover.
+
 ## Code review checklist
 
 - [ ] Does it trust the client anywhere? (cost, duration, result, quantity)

@@ -49,10 +49,12 @@ it('rejects a malformed correlation id and generates its own', function (): void
 });
 
 it('omits the postgis check on a non-postgres connection', function (): void {
+    if (DB::connection()->getDriverName() !== 'sqlite') {
+        test()->markTestSkipped('This test is for the SQLite host suite.');
+    }
+
     // The host suite runs on SQLite in-memory; probing postgis there would report
     // a permanently degraded API. See .planning/codebase/CONCERNS.md.
-    expect(DB::connection()->getDriverName())->toBe('sqlite');
-
     $checks = $this->getJson('/api/v1/health')->json('data.checks');
 
     expect($checks)->not->toHaveKey('postgis')
