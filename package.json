@@ -36,6 +36,7 @@
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "prettier": "^3.4.2",
+    "react-test-renderer": "^19.2.8",
     "typescript": "~6.0.3"
   },
   "prettier": {
