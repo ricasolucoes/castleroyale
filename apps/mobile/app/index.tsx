@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Link } from 'expo-router';
 
 import { apiRequest, ApiError } from '@/api/client';
 import { useTheme } from '@/theme';
@@ -73,6 +74,16 @@ export default function Index() {
         ) : (
           <Text style={styles.ok}>Connected — {data.status}</Text>
         )}
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Development Navigation</Text>
+        <Link href="/(tabs)/city" style={{ color: theme.color.accent.bronze, marginTop: theme.spacing.sm }}>
+          Enter App (Tabs)
+        </Link>
+        <Link href="/gallery" style={{ color: theme.color.accent.bronze, marginTop: theme.spacing.sm }}>
+          Component Gallery
+        </Link>
       </View>
     </View>
   );
