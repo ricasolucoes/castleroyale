@@ -33,11 +33,10 @@ Declared values (must be multiples of 4):
 |-------|-------|-------|
 | xs | 4px | Icon gaps, inline padding |
 | sm | 8px | Compact element spacing |
-| md | 12px | Default element spacing |
-| lg | 16px | Section padding |
-| xl | 24px | Layout gaps |
-| 2xl | 32px | Major section breaks |
-| 3xl | 48px | Page-level spacing |
+| md | 16px | Default element spacing |
+| lg | 24px | Layout gaps |
+| xl | 32px | Major section breaks |
+| 2xl | 48px | Page-level spacing |
 
 Exceptions: Touch targets are strictly 44px minimum (`MIN_TOUCH_TARGET = 44`).
 
@@ -47,13 +46,10 @@ Exceptions: Touch targets are strictly 44px minimum (`MIN_TOUCH_TARGET = 44`).
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Display | 32px | 700 (bold) | 1.25 (40px) |
-| Title | 24px | 700 (bold) | 1.33 (32px) |
-| Heading | 18px | 600 (semibold) | 1.33 (24px) |
+| Display | 32px | 600 (semibold) | 1.25 (40px) |
+| Title | 24px | 600 (semibold) | 1.33 (32px) |
 | Body | 16px | 400 (regular) | 1.50 (24px) |
-| Label | 14px | 500 (medium) | 1.43 (20px) |
-| Caption | 12px | 400 (regular) | 1.33 (16px) |
-| Numeric | 16px | 600 (semibold) | 1.25 (20px) (tabular-nums) |
+| Caption | 14px | 400 (regular) | 1.43 (20px) |
 
 ---
 
@@ -75,9 +71,9 @@ Accent reserved for: Primary interactive elements (buttons, active tabs), progre
 | Element | Copy |
 |---------|------|
 | Primary CTA | View Component Gallery |
-| Empty state heading | No Data |
-| Empty state body | There is nothing to display here yet. |
-| Error state | Something went wrong — please try again. |
+| Empty state heading | No Components |
+| Empty state body | No components loaded in gallery. |
+| Error state | Failed to load component. Check your connection and tap to retry. |
 | Destructive confirmation | None: no destructive actions in this phase |
 
 ---
