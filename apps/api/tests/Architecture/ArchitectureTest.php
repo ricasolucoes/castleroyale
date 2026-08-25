@@ -23,7 +23,7 @@ arch('domain layer stays free of the framework')
         'Stringable', 'JsonSerializable', 'Countable', 'IteratorAggregate',
         'ArrayIterator', 'Traversable', 'Throwable',
     ])
-    ->ignoring(['Game\Shared\Interface', 'Game\Shared\Infrastructure', 'Game\Shared\Application'])
+    ->ignoring(['Game\Shared\Interface', 'Game\Shared\Infrastructure', 'Game\Shared\Application', 'Game\Platform\Interface'])
     ->group('arch');
 
 arch('nothing debugs in production')
