@@ -1,142 +1,85 @@
 # Phase 02: Design System & Mobile Shell - Context
 
-**Gathered:** 2026-08-24
-**Status:** Ready for planning
-**Source:** Pre-written during Phase 00. These decisions are locked — do not re-open them
-in discussion. If one is genuinely unworkable, write an ADR and record it in
-`docs/gsd/DECISIONS.md` rather than quietly designing around it.
+**Gathered:** 2026-08-25
+**Status:** Ready for planning (Auto-generated)
 
 <domain>
 ## Phase Boundary
 
-A navigable, themed app shell with a documented component library the rest of the client is built from.
-
-**Depends on:** Phase 00
-**Milestone:** Foundation
-
-This phase is complete when every success criterion in `.planning/ROADMAP.md`
-(Phase 02) is demonstrably true. Those criteria are the contract; anything
-beyond them is out of scope for this phase.
-
-**Planned work** (from the roadmap — the planner may split further, not wider):
-
-1. Design tokens and theme provider
-2. Core primitive components and the gallery screen
-3. Expo Router navigation shell with the five primary tabs
-4. Typography, iconography and haptic feedback primitives
+This phase establishes the foundational mobile UI architecture: typed Expo Router navigation for the five primary tabs, a strict design token system for all styling, light/dark mode support, and a library of atomic core components (Button, Card, Panel, BottomSheet, ResourceCounter, Timer, Badge, Skeleton) showcased in a gallery screen. It ensures all touch targets meet the 44x44pt accessibility requirement.
 
 </domain>
 
 <decisions>
 ## Implementation Decisions
 
-### Design tokens are the single source
-- Tokens live in packages/tooling/design-tokens/index.ts and are imported by the app. No screen hardcodes a colour, spacing, radius or font size.
-- Palette direction: parchment, stone, bronze (#B4762E), gold, steel, deep blue (#2B4B7A), military red (#A4212B) on a dark ground (#0E1116). Original identity — do not imitate any existing game.
-- Both light and dark themes are defined from the same token names; components never branch on theme.
+### Navigation Shell
+- Use Expo Router with typed routes (`expo-router`).
+- The five primary tabs will be defined as a bottom tab navigator.
 
-### Navigation
-- Expo Router with typedRoutes. Five primary tabs: City, Map, Army, Heroes, Alliance.
-- Secondary destinations (research, inventory, quests, events, ranking, market, reports, mail, profile, settings) reach through a contextual menu, not more tabs.
-- One-handed use is the constraint: primary actions sit in the lower third of the screen.
+### Styling & Tokens
+- Use Restyle (`@shopify/restyle`) for strict, type-safe design tokens.
+- Do not use Tailwind/NativeWind to avoid runtime overhead and keep strict token enforcement via TS.
+- Dark mode will be implemented as an alternate Restyle theme swapped at the root provider based on system preference or override.
 
-### Component library
-- Build only what later phases need: Button, Card, Panel, BottomSheet, Tabs, ProgressBar, ResourceCounter, Badge, RarityIndicator, Timer, Skeleton.
-- Prefer bottom sheets over modals (project UX rule). Modals are for destructive confirmation only.
-- Every interactive element is at least 44x44pt. A test sweeps for violations.
+### Component Architecture
+- Components will be atomic, built strictly using Restyle layout boxes (`Box`, `Text`).
+- No hardcoded colors or spacing allowed inside component files; all values must map to a token.
+- Touch target sizes (44x44pt min) enforced via consistent `minHeight` / `minWidth` and padding tokens on interactive elements.
 
-### State discipline
-- TanStack Query for all server state. Zustand only for ephemeral UI state (selection, drafts, sheet open/closed).
-- Set this up correctly now — later phases inherit the pattern.
-
-### Non-negotiables (apply to every phase)
-
-These are enforced by tests. Breaking one fails the build, so do not work around them.
-
-- **The server owns the truth.** The client sends intent; the server computes the
-  outcome. Never accept a cost, duration, result or quantity from the client.
-- **Time comes from the injected `Clock`.** Never `now()`, never a client timestamp.
-- **Money is integer.** Use `ResourceAmount` / `ResourceBundle`. No float, ever.
-- **Every gameplay query filters `world_id`.** Omitting it is a cross-world leak.
-- **Spending resources means:** transaction → `lockForUpdate` → recompute cost
-  server-side → re-check affordability *inside* the lock → mutate + write ledger.
-- **Mutating commands accept `Idempotency-Key`** and are tested for double-submit.
-- **Queued jobs that grant value are idempotent**, guarded on `completed_at IS NULL`.
-- **Balance numbers live in `packages/game-data/`**, never in PHP.
-- **New errors are added to the `ErrorCode` enum and to `openapi.yaml`** — never
-  invented inline.
-- **Broadcast channels deny by default** and both allow and deny paths are tested.
-
-### Claude's Discretion
-- File and class layout within the module, as long as the layering rule holds
-  and layers are not created ceremonially (ADR-001).
-- Test structure and naming, as long as the obligations in
-  `.planning/codebase/TESTING.md` are covered.
-- How work is split across plans.
+### Gallery Screen
+- A hidden or developer-only route `/gallery` will be created to mount and showcase all core components for easy visual regression and testing.
 
 </decisions>
-
-<specifics>
-## Specific Ideas
-
-No additional product references beyond the success criteria and the decisions
-above. Follow the documented design direction; do not imitate any existing game.
-
-</specifics>
 
 <canonical_refs>
 ## Canonical References
 
-**Read these before planning or implementing.**
+**Downstream agents MUST read these before planning or implementing.**
 
-### Always
-- `.planning/codebase/ARCHITECTURE.md` — The non-negotiables and the layering rule
-- `.planning/codebase/CONVENTIONS.md` — PHP/TS style, naming, commits, versioning
-- `.planning/codebase/TESTING.md` — What every phase must test and how to run the gates
-- `.planning/codebase/CONCERNS.md` — Known debt and traps that have already cost time
+### Architecture
+- `.planning/codebase/ARCHITECTURE.md` — Core frontend state and styling guidelines
+- `docs/adr/010-economy-math.md` — Formatting constraints for ResourceCounters (integers only)
 
-### This phase
-- `docs/design-system/tokens.md` — Token names and the palette
-- `docs/mobile/architecture.md` — App structure and the state boundary
-- `docs/mobile/navigation.md` — Tab structure and one-handed rules
-- `docs/ui/screens.md` — Screen inventory this shell must host
-- `docs/adr/003-react-native-mobile.md` — Why Skia, why not WebView, the Metro traps
-
-### The plan itself
-- `.planning/ROADMAP.md` §Phase 02 — goal, dependencies and success criteria
-- `.planning/PROJECT.md` — requirements, constraints and key decisions
-- `docs/gsd/EXECUTION_RULES.md` — how to execute a phase and when to stop
+### UI Design
+- `~/.gemini/antigravity/get-shit-done/references/ui-brand.md` — General MMO mobile UI brand instructions
 
 </canonical_refs>
 
 <code_context>
 ## Existing Code Insights
 
-### Reusable assets
-- `Game\Shared\Domain\Time\Clock` — inject for any time. `FrozenClock` in tests.
-- `Game\Shared\Domain\Economy\ResourceAmount` / `ResourceBundle` — all economy maths.
-- `Game\Shared\Application\Error\ErrorCode` / `GameException` — player-safe failures.
-- `Game\Shared\Interface\Http\ApiResponse` — the only response envelope.
-- `tests/Architecture/ArchitectureTest.php` — extend when this phase adds a boundary.
+### Reusable Assets
+- `apps/mobile/src/shared/` — Target directory for placing atomic components and tokens.
+- `apps/mobile/app/` — Expo router directory for defining the tabs.
 
-### Established patterns
-- Modules live in `apps/api/modules/<Module>/` under the `Game\` namespace.
-- Timed work = delayed job + idempotent completion + scheduled reconciler.
-- Cross-module communication is domain events, never direct model access.
+### Established Patterns
+- Strict TypeScript enforcement (existing `typecheck` CI gate).
+- ESLint rules are active; component code must pass standard React Native linting.
+
+### Integration Points
+- Root `app/_layout.tsx` must wrap the app in the Restyle `ThemeProvider`.
 
 </code_context>
+
+<specifics>
+## Specific Ideas
+
+- ResourceCounters must support MMO-scale numbers (e.g. 1M, 1.2K) elegantly.
+- BottomSheet should use `@gorhom/bottom-sheet` for native-feeling interactions.
+- Timer components need to be aware of the frozen clock testing utility for future integration.
+
+</specifics>
 
 <deferred>
 ## Deferred Ideas
 
-**Explicitly out of scope for this phase:**
-- Any API integration (no endpoints exist yet beyond health)
-- The map canvas (Phase 06)
-- Localisation wiring (Phase 42) — but write new strings through a catalogue-shaped helper from the start
-
-**Belongs to a later phase:**
-- Audio and haptics — Phase 43
-- Full accessibility sweep — Phase 41
-- Visual polish and particles — Phase 44
+- Server-synced time ticks for the Timer (Phase 03/04).
+- Animations beyond simple layout transitions (Skia integrations deferred to Phase 06).
 
 </deferred>
+
+---
+
+*Phase: 02-design-system-mobile-shell*
+*Context gathered: 2026-08-25 (Auto-generated)*
