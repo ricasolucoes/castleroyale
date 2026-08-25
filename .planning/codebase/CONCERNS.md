@@ -4,14 +4,17 @@ Known limitations and debt. Each has an owner phase.
 
 ## Environment
 
-**`pdo_pgsql` is missing on the host and Docker may be stopped.**
-PostgreSQL/PostGIS migrations have **never been executed on this machine**;
-migrations were verified against SQLite only. Anything PostGIS-specific is
-unverified until Phase 01 makes Docker canonical and adds a CI job running
-migrations against real Postgres + PostGIS.
+**PostGIS is proven in CI and in the Docker stack; the host still cannot run it.**
+On every push the Backend job runs migrations forward, back and forward again,
+seeds twice, asserts `postgis_version()` and runs the PostGIS-only suite
+(`phpunit.postgres.xml`) against `postgis/postgis:16-3.4`. Evidence — all four
+jobs green, including the `CI` aggregate:
+<https://github.com/ricasolucoes/project-dominion/actions/runs/32802315288>.
+Locally the same suite runs inside the stack with `make test-postgres`.
 
-Do not claim a PostGIS migration works because the test suite is green — the
-suite runs on SQLite.
+The **local host** still has no `pdo_pgsql`, so a green `./vendor/bin/pest` on the
+host is SQLite-only evidence. Do not claim a PostGIS migration works from the host
+suite — use `make test-postgres` or the CI run.
 
 ## Accepted debt
 
