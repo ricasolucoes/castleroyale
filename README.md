@@ -159,6 +159,7 @@ needed for running backend tooling directly on the host.
 git clone <repo> && cd MmoMobile
 make setup     # build images, install deps, migrate, seed
 make dev       # start the stack
+make smoke     # prove it: every service healthy, health endpoint ok
 ```
 
 | Service | URL |
@@ -186,6 +187,9 @@ Environment variables are documented inline in `apps/api/.env.example`.
 
 ```bash
 make dev · stop · migrate · seed · reset · logs · shell
+make health          # /api/v1/health returns 200 with every check true
+make smoke           # every service healthy + health endpoint ok
+make test-postgres   # PostGIS-only tests against real PostgreSQL
 ```
 
 ---
@@ -258,6 +262,10 @@ The test suite uses SQLite in-memory, which is why it runs on the host.
 **Tests pass but a PostGIS migration fails in CI**
 Expected. The suite runs on SQLite and cannot cover PostGIS. Tag Postgres-only
 tests for the CI job — see `.planning/codebase/TESTING.md`.
+
+**`make setup` fails with "service api is not running"**
+Fixed in Phase 01: `setup` now runs `docker compose up -d --wait` before any
+`exec`-based target. If you see this on an old checkout, run `make dev` first.
 
 **Metro cannot resolve a workspace package / duplicate React errors**
 `metro.config.js` must keep `watchFolders`, `nodeModulesPaths` and

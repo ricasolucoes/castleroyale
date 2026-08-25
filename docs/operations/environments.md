@@ -39,7 +39,8 @@ Docker is the canonical environment (Phase 01) — the host may lack `pdo_pgsql`
 
 ```bash
 make setup   # build images, install deps, migrate, seed
-make dev     # start the stack
+make dev     # start the stack, wait for healthy, assert /api/v1/health
+make smoke   # prove criteria 1 and 5 in one command
 make test    # run the suite
 ```
 
@@ -51,6 +52,19 @@ make test    # run the suite
 | Redis | 6379 |
 | MinIO | 9000 |
 | Mailpit | 8025 |
+
+| Service | Healthcheck |
+|---------|-------------|
+| api | `curl -fsS http://localhost:8000/api/v1/health` |
+| postgres | `pg_isready -U dominion -d dominion` |
+| redis | `redis-cli ping` |
+| reverb | PHP `fsockopen` on 8081 |
+| horizon | `php artisan horizon:status` |
+| minio | `mc ready local` |
+| mailpit | `/mailpit readyz` |
+
+`make dev` uses `docker compose up -d --wait`, so it cannot return successfully while
+any service is unhealthy.
 
 ## Production
 
