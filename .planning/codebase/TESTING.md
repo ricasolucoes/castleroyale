@@ -34,8 +34,15 @@ suite runs on a host without `pdo_pgsql`.
 
 **Consequence:** a migration or query using PostgreSQL-only syntax (PostGIS types,
 `ILIKE`, JSONB operators, `EXPLAIN` assertions) **cannot be covered by the default
-suite.** Those tests are tagged and run in CI against real Postgres + PostGIS.
-When adding PostGIS work, add the CI-only test — do not assume SQLite coverage.
+suite.** Those tests live in `tests/Postgres/` and are loaded **only** by
+`apps/api/phpunit.postgres.xml`, which forces `DB_CONNECTION=pgsql` and
+`DB_DATABASE=dominion_test`. `phpunit.xml` does not declare that directory as a
+testsuite, so `./vendor/bin/pest` can never run them by accident.
+
+    make test-postgres    # local, through Docker
+    ./vendor/bin/pest --configuration=phpunit.postgres.xml    # CI
+
+When you add PostGIS work, add the test there. Do not assume SQLite coverage.
 
 ## What every phase must test
 

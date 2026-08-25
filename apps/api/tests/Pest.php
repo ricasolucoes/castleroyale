@@ -24,6 +24,19 @@ pest()->extend(TestCase::class)->in('Architecture');
 
 /*
 |--------------------------------------------------------------------------
+| PostgreSQL-only tests
+|--------------------------------------------------------------------------
+|
+| Loaded only by phpunit.postgres.xml — the default suite's testsuites
+| do not include this directory. See .planning/codebase/TESTING.md.
+|
+*/
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Postgres');
+
+/*
+|--------------------------------------------------------------------------
 | Custom expectations
 |--------------------------------------------------------------------------
 */

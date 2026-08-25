@@ -28,16 +28,25 @@ Never expose an auto-increment id in an API response.
 
 ## Mandatory columns
 
-Every gameplay table carries:
+Every gameplay table carries a ULID primary key, `world_id`, and UTC timestamps.
+Declare them through the helpers rather than by hand:
 
 ```php
-$table->ulid('id')->primary();
-$table->foreignUlid('world_id')->constrained()->cascadeOnDelete();
-$table->timestamps();   // created_at, updated_at — UTC
+use Game\Shared\Infrastructure\Database\GameTable;
+
+GameTable::entity($table);        // ulid('id')->primary() + timestamps() — UTC
+GameTable::worldScoped($table);   // ulid('world_id')->index()
 ```
 
 `world_id` is non-negotiable (ADR-012). **Every query must filter on it.** A query
 that omits it is a cross-world data leak.
+
+`worldScoped()` deliberately emits an **indexed column, not a foreign key**: the
+`worlds` table does not exist until Phase 05, and a foreign-key constraint declared
+before its target exists fails at migrate time. When Phase 05 creates `worlds`, it
+adds the constraint inside `worldScoped()` — one place — and every existing table
+picks it up through a follow-up migration. Until then, do not hand-roll a `world_id`
+foreign key: it will not run.
 
 ## Time
 
@@ -80,6 +89,26 @@ them requires a migration, which defeats ADR-013.
   **GiST** index.
 - **Prove it**: any migration adding a spatial or composite index for a hot query
   must be accompanied by a test asserting the plan uses it via `EXPLAIN`.
+
+## The helpers
+
+Do not hand-roll the shapes above. `Game\Shared\Infrastructure\Database\GameTable`
+encodes them, and § "Mandatory columns" already calls two of the three:
+
+| Call | Adds |
+|------|------|
+| `GameTable::entity($table)` | `ulid('id')->primary()` + `timestamps()` |
+| `GameTable::worldScoped($table)` | `ulid('world_id')->index()` |
+| `GameTable::timed($table)` | `started_at`, `finishes_at`, `completed_at` + `index(['finishes_at','completed_at'])` |
+
+Models for ULID-keyed entities use
+`Game\Shared\Infrastructure\Eloquent\Concerns\HasGameUlid`, which sets the key type
+and disables auto-increment in one place.
+
+`world_id` carries no foreign key constraint until the `worlds` table exists
+(Phase 05) — see § "Mandatory columns". Resource columns and their
+`CHECK (col >= 0)` constraints are not in `GameTable`: SQLite cannot add a constraint
+via `ALTER TABLE`, and the default suite runs on SQLite.
 
 ## Soft deletes
 
