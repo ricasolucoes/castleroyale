@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, type PressableProps, type ViewStyle, StyleSheet } from 'react-native';
+import { Pressable, type PressableProps, type ViewStyle } from 'react-native';
 import { useTheme } from '@/theme';
 import { Box } from './Box';
 import { Text } from './Text';
@@ -15,7 +15,7 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
 export function Button({ title, variant = 'primary', style, ...rest }: ButtonProps) {
   const theme = useTheme();
 
-  const getBackgroundColor = (pressed: boolean) => {
+  const getBackgroundColor = () => {
     switch (variant) {
       case 'primary':
         return theme.color.accent.bronze;
@@ -53,7 +53,7 @@ export function Button({ title, variant = 'primary', style, ...rest }: ButtonPro
               minHeight: theme.minTouchTarget,
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: getBackgroundColor(pressed),
+              backgroundColor: getBackgroundColor(),
               opacity: pressed ? 0.8 : 1,
             },
             variant === 'secondary' && {

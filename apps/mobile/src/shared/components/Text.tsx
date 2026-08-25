@@ -1,4 +1,4 @@
-import { Text as RNText, type TextProps as RNTextProps } from 'react-native';
+import { Text as RNText, type TextProps as RNTextProps, type TextStyle } from 'react-native';
 import { useTheme } from '@/theme';
 
 export type TextVariant = 'display' | 'title' | 'heading' | 'body' | 'label' | 'caption' | 'numeric';
@@ -18,10 +18,10 @@ export function Text({ style, variant = 'body', color, ...rest }: TextProps) {
         { 
           color: color || theme.color.text.primary,
           fontSize: typo.size,
-          fontWeight: typo.weight as any,
+          fontWeight: typo.weight as TextStyle['fontWeight'],
           lineHeight: typo.lineHeight,
         },
-        // @ts-ignore variant isn't perfectly mapped in rn types sometimes
+        // @ts-expect-error variant isn't perfectly mapped in rn types sometimes
         typo.variant ? { fontVariant: [typo.variant] } : undefined,
         style
       ]} 
