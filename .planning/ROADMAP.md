@@ -30,7 +30,7 @@ reserved for a mature product in production, not the first release.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 00: Repository Bootstrap** - Monorepo, Laravel API, Expo app, quality gates, full GSD plan
-- [ ] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile
+- [x] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile (completed 2026-08-25)
 - [ ] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
 - [ ] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in
 - [ ] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel
@@ -120,10 +120,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: Docker development stack and Makefile targets
-- [ ] 01-02: PostgreSQL + PostGIS connection, migration baseline and ULID conventions
-- [ ] 01-03: Development seeders and reusable test fixtures
-- [ ] 01-04: GitHub Actions CI for backend, mobile and infrastructure
+- [x] 01-01: Docker development stack and Makefile targets
+- [x] 01-02: PostgreSQL + PostGIS connection, migration baseline and ULID conventions
+- [x] 01-03: Development seeders and reusable test fixtures
+- [x] 01-04: GitHub Actions CI for backend, mobile and infrastructure
 
 ### Phase 02: Design System & Mobile Shell
 **Goal**: A navigable, themed app shell with a documented component library the rest of the client is built from.
@@ -1158,7 +1158,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 00. Repository Bootstrap | 4/4 | Complete | 2026-08-24 |
-| 01. Engineering Foundation | 1/4 | In Progress|  |
+| 01. Engineering Foundation | 4/4 | Complete   | 2026-08-25 |
 | 02. Design System & Mobile Shell | 0/4 | Not started | - |
 | 03. Identity & Authentication | 0/4 | Not started | - |
 | 04. Player Profile & Onboarding | 0/4 | Not started | - |
@@ -1238,7 +1238,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 **Milestone**: Google Play Games & Gamification
 **Success Criteria**:
   1. (Ver objetivos definidos em CONTEXT.md)
-**Plans:** 0 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 55 to break down)
