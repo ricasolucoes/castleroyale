@@ -63,7 +63,19 @@ and that an old battle replays correctly under a newer balance version.
 
 ## Custom expectations
 
-`toBeApiSuccess()` asserts status plus the `data` key. Defined in `tests/Pest.php`.
+`toBeApiSuccess()` asserts status plus the `data` key.
+`toBeApiError(ErrorCode $code, ?int $status = null)` asserts the status implied by the
+code, `error.code`, and that no `data` key leaked alongside the error.
+
+Fixtures, also in `tests/Pest.php`:
+
+| Helper | Does |
+|--------|------|
+| `freezeClock(string $iso8601)` | Binds a `FrozenClock` over `Clock::class` and returns it |
+| `actingAsStaff(?User $user)` | Creates (or takes) a staff account and authenticates as it |
+
+Assert on `error.code`, never on the message — the message is localised and may
+change at any time.
 
 ## Coverage
 
