@@ -45,7 +45,7 @@ it('generates a 26 character ulid primary key on create', function (): void {
         protected $fillable = ['world_id', 'label'];
     };
 
-    $saved = $model->newInstance(['world_id' => (string) \Illuminate\Support\Str::ulid(), 'label' => 'probe']);
+    $saved = $model->newInstance(['world_id' => (string) Illuminate\Support\Str::ulid(), 'label' => 'probe']);
     $saved->save();
 
     expect($saved->getKey())->toBeString()
