@@ -6,8 +6,8 @@ phase_name: Engineering Foundation
 plan: 0
 total_phases: 55
 completed_phases: 1
-status: Ready to plan
-last_activity: 2026-08-24 — Phase 00 completed; full 55-phase plan written
+status: Plans written — verification incomplete
+last_activity: 2026-08-24 — Phase 01 planned (4 plans); autonomous run stopped on API spend limit
 ---
 
 # Project State
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-08-24)
 **Current Plan:** 0
 **Total Phases:** 55
 **Total Plans in Phase:** 4
-**Status:** Ready to plan
-**Last Activity:** 2026-08-24 — Phase 00 completed; monorepo, API, mobile app and the full 55-phase plan committed
+**Status:** Plans written — checker round 2 did not run
+**Last Activity:** 2026-08-24 — Phase 01 planned; autonomous run stopped on API spend limit
 
 **Progress:** [░░░░░░░░░░] 2% (1 of 55 phases)
 
@@ -62,6 +62,13 @@ Recent decisions affecting current work:
 - [Phase 00]: Server-authoritative time via a `Clock` contract; game rules never call `now()` (ADR-006)
 - [Phase 00]: PHPStan analyses first-party code only — Laravel's stock config and Pest's fluent API are excluded (DEBT-002)
 - [Phase 00]: GSD `research` disabled — every phase ships with CONTEXT.md and canonical references
+- [Phase 01]: Repository will be published as **public** at `ricasolucoes/project-dominion`
+  (user decision, 2026-08-24). The publish is gated: gitleaks scan runs autonomously,
+  then the executor STOPS and hands back for a live human go-ahead before
+  `gh repo create`. Plan files are explicitly not authorization for this.
+- [Phase 01]: Plan 01-03 replaces the locked `updateOrCreate` seeder mechanism with
+  `firstOrNew` + `forceFill` — `preventSilentlyDiscardingAttributes()` throws on the
+  non-fillable `is_staff`. To be recorded in `docs/gsd/DECISIONS.md` during execution.
 
 ### Pending Todos
 
@@ -69,6 +76,14 @@ None yet.
 
 ### Blockers/Concerns
 
+- [Phase 01] **Autonomous run stopped 2026-08-24: API monthly spend limit reached.**
+  Subagent spawning fails, which blocks both the plan checker and `gsd-executor`.
+  Weekly limit resets 4pm America/Sao_Paulo, or raise it at claude.ai/settings/usage.
+  Nothing is broken — this is an account limit, not a defect.
+- [Phase 01] Checker round 2 never produced a verdict. The planner reports both
+  blockers fixed (world_id doc contradiction; unrecorded DECISIONS.md deviation) but
+  **no independent check has read the revised plan content**. Re-run the checker
+  before executing.
 - [Phase 00] The host PHP lacks `pdo_pgsql` and the Docker daemon may be stopped. Postgres/PostGIS
   migrations must be validated inside Docker or CI, never assumed to run on the host. Phase 01
   resolves this by making the Docker stack the canonical development environment.
@@ -76,5 +91,15 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-08-24
-Stopped at: Phase 00 complete — repository, applications, documentation and the full GSD plan committed
+Stopped at: Phase 01 — 4 plans written and structurally valid; independent re-check pending
+Resume with: `/gsd:autonomous --from 1`
 Resume file: None
+
+**Phase 01 artifacts on disk:**
+- `01-CONTEXT.md` (pre-written)
+- `01-01-docker-stack-PLAN.md` — wave 1, REQ-12, autonomous
+- `01-02-postgis-migrations-PLAN.md` — wave 2, REQ-12, autonomous
+- `01-03-seeders-fixtures-PLAN.md` — wave 3, REQ-06, autonomous
+- `01-04-github-actions-ci-PLAN.md` — wave 4, REQ-06 + REQ-12, **autonomous: false** (publish gate)
+
+Commits: `164cad8` (plans), `f38dd3c` (remove plan self-authorization, add STOP gate).
