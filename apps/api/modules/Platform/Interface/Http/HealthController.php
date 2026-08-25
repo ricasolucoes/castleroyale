@@ -35,6 +35,13 @@ final class HealthController
             $checks['redis'] = $this->check(static fn () => Redis::connection()->command('ping', []));
         }
 
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            // Proof at runtime, not just at migration time: a database without the
+            // extension cannot serve the world map (ADR-004). Guarded on the driver
+            // because the test suite runs on SQLite.
+            $checks['postgis'] = $this->check(static fn () => DB::select('select postgis_version()'));
+        }
+
         $healthy = ! in_array(false, $checks, true);
 
         return ApiResponse::success(

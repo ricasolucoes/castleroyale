@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
+
 it('reports healthy with the standard success envelope', function (): void {
     $response = $this->getJson('/api/v1/health');
 
@@ -44,4 +46,15 @@ it('rejects a malformed correlation id and generates its own', function (): void
     $response = $this->getJson('/api/v1/health', ['X-Request-Id' => 'bad id with spaces!']);
 
     expect($response->headers->get('X-Request-Id'))->not->toBe('bad id with spaces!');
+});
+
+it('omits the postgis check on a non-postgres connection', function (): void {
+    // The host suite runs on SQLite in-memory; probing postgis there would report
+    // a permanently degraded API. See .planning/codebase/CONCERNS.md.
+    expect(DB::connection()->getDriverName())->toBe('sqlite');
+
+    $checks = $this->getJson('/api/v1/health')->json('data.checks');
+
+    expect($checks)->not->toHaveKey('postgis')
+        ->and($checks['database'])->toBeTrue();
 });
