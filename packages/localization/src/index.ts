@@ -19,6 +19,10 @@ export function isSupportedLocale(value: string): value is Locale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
 
+import enNavigation from '../locales/en/navigation.json';
+import esNavigation from '../locales/es/navigation.json';
+import ptBRNavigation from '../locales/pt-BR/navigation.json';
+
 /**
  * Resolve a requested locale to one we actually ship, falling back to the
  * language subtag before giving up (`pt-PT` -> `pt-BR` is deliberate: closer
@@ -33,3 +37,9 @@ export function resolveLocale(requested: string | undefined): Locale {
 
   return match ?? DEFAULT_LOCALE;
 }
+
+export const CATALOGUES = {
+  en: { navigation: enNavigation },
+  es: { navigation: esNavigation },
+  'pt-BR': { navigation: ptBRNavigation },
+};
