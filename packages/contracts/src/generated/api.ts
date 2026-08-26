@@ -77,6 +77,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List active device sessions */
+        get: operations["authListSessions"];
+        put?: never;
+        post?: never;
+        /** Revoke a device session */
+        delete: operations["authRevokeSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -84,6 +102,16 @@ export interface components {
         AuthTokens: {
             access_token: string;
             refresh_token: string;
+        };
+        DeviceSession: {
+            id: components["schemas"]["Ulid"];
+            device_name: string;
+            platform: string;
+            ip: string;
+            /** Format: date-time */
+            last_seen_at: string;
+            /** Format: date-time */
+            revoked_at?: string | null;
         };
         /** @description Non-enumerable, time-sortable identifier (ADR-016). */
         Ulid: string;
@@ -344,6 +372,58 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Logged out successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    authListSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sessions listed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["DeviceSession"][];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    authRevokeSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                id: components["schemas"]["Ulid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session revoked successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
