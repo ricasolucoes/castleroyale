@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 00: Repository Bootstrap** - Monorepo, Laravel API, Expo app, quality gates, full GSD plan
 - [x] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile (completed 2026-08-25)
-- [ ] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
+- [x] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
 - [ ] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in
 - [ ] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel
 - [ ] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries
@@ -139,10 +139,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: Design tokens and theme provider
-- [ ] 02-02: Core primitive components and the gallery screen
-- [ ] 02-03: Expo Router navigation shell with the five primary tabs
-- [ ] 02-04: Typography, iconography and haptic feedback primitives
+- [x] 02-01: Design tokens and theme provider
+- [x] 02-02: Core primitive components and the gallery screen
+- [x] 02-03: Expo Router navigation shell with the five primary tabs
+- [x] 02-04: Typography, iconography and haptic feedback primitives
 
 ### Phase 03: Identity & Authentication
 **Goal**: A player can create an account, sign in on a device, stay signed in securely, and revoke other sessions.
