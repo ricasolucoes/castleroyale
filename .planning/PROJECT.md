@@ -25,7 +25,8 @@ this is not.
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — nothing has shipped)
+- [x] **REQ-08** — Premium-feeling mobile UI at 60 FPS, one-handed, offline-aware (Validated in Phase 02: Design System & Mobile Shell)
+- [x] **REQ-13** — Localisation-ready from the first screen (pt-BR, en, es) (Validated in Phase 02: Design System & Mobile Shell)
 
 ### Active
 
@@ -38,12 +39,10 @@ this is not.
 - [ ] **REQ-05** — Timed gameplay (build/research/train/march) anchored to server time only
 - [ ] **REQ-06** — Data-driven balancing: no balance number hardcoded in application code
 - [ ] **REQ-07** — Alliances with permission-based authority, rallies, territory and diplomacy
-- [ ] **REQ-08** — Premium-feeling mobile UI at 60 FPS, one-handed, offline-aware
 - [ ] **REQ-09** — Idempotent, concurrency-safe commands; no double-spend under any race
 - [ ] **REQ-10** — New-player protection so beginners are not farmed by veterans
 - [ ] **REQ-11** — LiveOps: events, seasons and feature flags without a backend deploy
 - [ ] **REQ-12** — Full observability: structured logs, metrics, tracing, economy/combat telemetry
-- [ ] **REQ-13** — Localisation-ready from the first screen (pt-BR, en, es)
 - [ ] **REQ-14** — Back office with audited game-master tooling and moderation
 - [ ] **REQ-15** — Multi-world sharding so population can scale horizontally
 
@@ -121,7 +120,9 @@ that assumption rather than patched for it later.
 
 ## Current Understanding
 
-Phases 00 and 01 are done and committed. The next executable phase is Phase 02.
+Phases 00, 01, and 02 are done and committed. The next executable phase is Phase 03.
+
+Phase 02 (2026-08-26) implemented the design system and mobile shell, validating REQ-08 (touch targets, tokens, premium UI) and REQ-13 (localization pt-BR, en, es). The mobile app now contains core components (built strictly with `@shopify/restyle`), an Expo Router tab shell, light/dark mode support, and an automated touch-target testing suite.
 
 Phase 01 (2026-08-25) made Docker the canonical environment — seven healthy services,
 migrations and a double seed proven against real PostGIS, `/api/v1/health` reporting every
@@ -138,3 +139,5 @@ goals, dependencies and observable success criteria, and every phase carries a
 pre-written CONTEXT.md locking its implementation decisions. Executing agents are expected
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded
 as an ADR or a DECISIONS entry — it is not silently designed around.
+
+Last updated: 2026-08-26
