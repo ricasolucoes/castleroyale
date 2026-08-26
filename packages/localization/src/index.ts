@@ -19,9 +19,9 @@ export function isSupportedLocale(value: string): value is Locale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
 
-import enNavigation from '../locales/en/navigation.json';
-import esNavigation from '../locales/es/navigation.json';
-import ptBRNavigation from '../locales/pt-BR/navigation.json';
+import enNavigation from '../locales/en/navigation.json' with { type: 'json' };
+import esNavigation from '../locales/es/navigation.json' with { type: 'json' };
+import ptBRNavigation from '../locales/pt-BR/navigation.json' with { type: 'json' };
 
 /**
  * Resolve a requested locale to one we actually ship, falling back to the
