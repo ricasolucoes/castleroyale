@@ -1,8 +1,10 @@
 import { Tabs } from 'expo-router';
 import { useTheme } from '@/theme';
+import { useTranslation } from '@/i18n/useTranslation';
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -19,31 +21,31 @@ export default function TabLayout() {
       <Tabs.Screen
         name="city"
         options={{
-          title: 'City',
+          title: t('navigation.tabs.city'),
         }}
       />
       <Tabs.Screen
         name="world"
         options={{
-          title: 'World',
+          title: t('navigation.tabs.world'),
         }}
       />
       <Tabs.Screen
         name="military"
         options={{
-          title: 'Military',
+          title: t('navigation.tabs.military'),
         }}
       />
       <Tabs.Screen
         name="alliance"
         options={{
-          title: 'Alliance',
+          title: t('navigation.tabs.alliance'),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t('navigation.tabs.profile'),
         }}
       />
     </Tabs>
