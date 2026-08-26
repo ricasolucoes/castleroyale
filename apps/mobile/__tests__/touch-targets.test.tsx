@@ -1,17 +1,15 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Button } from '../src/shared/components/Button';
 import { BottomSheet } from '../src/shared/components/BottomSheet';
 import { MIN_TOUCH_TARGET } from '@dominion/tooling/design-tokens';
 import { Text, View } from 'react-native';
+import React, { forwardRef } from 'react';
 
 jest.mock('@gorhom/bottom-sheet', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  const BottomSheet = React.forwardRef((props: any, ref: any) => <View testID="gorhom-bottom-sheet" {...props} />);
+  const BottomSheetMock = forwardRef<unknown, Record<string, unknown>>((props, _ref) => <View testID="gorhom-bottom-sheet" {...props} />);
   return {
     __esModule: true,
-    default: BottomSheet,
+    default: BottomSheetMock,
   };
 });
 

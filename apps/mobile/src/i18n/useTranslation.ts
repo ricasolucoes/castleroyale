@@ -7,7 +7,11 @@ export function useTranslation() {
   const locale = resolveLocale(languageTag);
   
   const t = (key: string): string => {
-    return key.split('.').reduce((o: any, i: string) => o?.[i], CATALOGUES[locale]) ?? key;
+    const value = key.split('.').reduce(
+      (o: unknown, i: string) => (o && typeof o === 'object' && i in o ? (o as Record<string, unknown>)[i] : undefined),
+      CATALOGUES[locale]
+    );
+    return typeof value === 'string' ? value : key;
   };
   
   return { t, locale };
