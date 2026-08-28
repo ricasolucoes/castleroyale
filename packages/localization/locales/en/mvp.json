@@ -31,6 +31,16 @@
     "social_token_placeholder": "Paste the token provided by the identity provider",
     "back_to_sign_in": "Back to sign in",
     "biometric_required": "Confirm your identity to access this session.",
+    "onboarding_title": "Choose your world",
+    "onboarding_subtitle": "Name your governor and choose where your story begins.",
+    "player_name": "Governor name",
+    "player_name_placeholder": "E.g. Aurelian",
+    "enter_world": "Enter world",
+    "entering_world": "Founding your city...",
+    "world_population": "{population} / {capacity} governors",
+    "world_open": "Open",
+    "world_full": "Full",
+    "world_closed": "Closed",
     "social_unavailable": "Social sign-in will be available when the provider is configured.",
     "loading": "Preparing your dominion...",
     "network_error": "The realm could not be reached.",
@@ -133,6 +143,10 @@
     "ALREADY_IN_ALLIANCE": "You are already in an alliance.",
     "TOKEN_EXPIRED": "Your session has expired.",
     "DEVICE_SESSION_REVOKED": "This session was revoked."
+    ,"WORLD_FULL": "This world is full.",
+    "WORLD_CLOSED": "This world is closed.",
+    "CONTENT_REJECTED": "Choose another governor name.",
+    "CONFLICT": "This choice is no longer available."
   },
   "common": {
     "retry": "Try again",

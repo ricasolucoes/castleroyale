@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Game\Player\Interface\Http;
+namespace Game\World\Interface\Http;
 
 use Game\Identity\Domain\Account;
 use Game\Player\Application\GameBootstrapService;
@@ -10,13 +10,18 @@ use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Application\Error\GameException;
 use Game\Shared\Application\Idempotency\IdempotencyService;
 use Game\Shared\Interface\Http\ApiResponse;
+use Game\World\Application\WorldSelectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-final readonly class GameBootstrapController
+final readonly class WorldSelectionController
 {
-    public function __construct(private GameBootstrapService $bootstrap, private IdempotencyService $idempotency) {}
+    public function __construct(
+        private WorldSelectionService $worlds,
+        private GameBootstrapService $bootstrap,
+        private IdempotencyService $idempotency,
+    ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
@@ -25,16 +30,22 @@ final readonly class GameBootstrapController
             throw GameException::of(ErrorCode::Unauthenticated, 'Authentication is required.');
         }
 
-        /** @var array{world_id?: string, name?: string} $input */
+        return ApiResponse::success($this->worlds->list($account));
+    }
+
+    public function select(Request $request, string $worldId): JsonResponse
+    {
+        $account = $request->user();
+        if (! $account instanceof Account) {
+            throw GameException::of(ErrorCode::Unauthenticated, 'Authentication is required.');
+        }
+
+        /** @var array{name?: string|null} $input */
         $input = Validator::make($request->all(), [
-            'world_id' => ['nullable', 'string', 'size:26'],
             'name' => ['nullable', 'string'],
         ])->validate();
-
-        $worldId = isset($input['world_id']) && is_string($input['world_id']) ? $input['world_id'] : null;
-        $payload = $request->json()->all();
-        $name = array_key_exists('name', $payload)
-            ? (is_string($input['name'] ?? null) ? $input['name'] : '')
+        $name = array_key_exists('name', $input)
+            ? (is_string($input['name']) ? $input['name'] : '')
             : null;
 
         return $this->idempotency->run($request, fn (): JsonResponse => ApiResponse::success(

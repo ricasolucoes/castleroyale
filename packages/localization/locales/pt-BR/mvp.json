@@ -31,6 +31,16 @@
     "social_token_placeholder": "Cole o token fornecido pelo provedor",
     "back_to_sign_in": "Voltar para o login",
     "biometric_required": "Confirme sua identidade para acessar a sessão.",
+    "onboarding_title": "Escolha seu mundo",
+    "onboarding_subtitle": "Dê um nome ao seu governador e escolha onde sua história começa.",
+    "player_name": "Nome do governador",
+    "player_name_placeholder": "Ex.: Aureliano",
+    "enter_world": "Entrar no mundo",
+    "entering_world": "Fundando sua cidade...",
+    "world_population": "{population} / {capacity} governadores",
+    "world_open": "Aberto",
+    "world_full": "Lotado",
+    "world_closed": "Fechado",
     "social_unavailable": "A autenticação social estará disponível quando o provedor estiver configurado.",
     "loading": "Preparando seu domínio...",
     "network_error": "Não foi possível conectar ao reino.",
@@ -133,6 +143,10 @@
     "ALREADY_IN_ALLIANCE": "Você já pertence a uma aliança.",
     "TOKEN_EXPIRED": "Sua sessão expirou.",
     "DEVICE_SESSION_REVOKED": "Esta sessão foi revogada."
+    ,"WORLD_FULL": "Este mundo está lotado.",
+    "WORLD_CLOSED": "Este mundo está fechado.",
+    "CONTENT_REJECTED": "Escolha outro nome de governador.",
+    "CONFLICT": "Essa escolha não está mais disponível."
   },
   "common": {
     "retry": "Tentar novamente",

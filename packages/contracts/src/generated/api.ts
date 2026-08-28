@@ -179,6 +179,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/game/worlds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List worlds available for onboarding */
+        get: operations["gameWorlds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/worlds/{worldId}/select": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Join an open world and create the starter city */
+        post: operations["gameWorldSelect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/game/city": {
         parameters: {
             query?: never;
@@ -288,6 +322,23 @@ export interface components {
             name: string;
             world_id: components["schemas"]["Ulid"];
         };
+        GameBootstrapRequest: {
+            world_id?: components["schemas"]["Ulid"];
+            name?: string;
+        };
+        WorldOption: {
+            id: components["schemas"]["Ulid"];
+            code: string;
+            name: string;
+            population: number;
+            capacity: number;
+            /** @enum {string} */
+            status: "open" | "full" | "closed";
+            has_player: boolean;
+        };
+        WorldList: {
+            worlds: components["schemas"]["WorldOption"][];
+        };
         World: {
             id: components["schemas"]["Ulid"];
             code: string;
@@ -326,6 +377,20 @@ export interface components {
             player: components["schemas"]["Player"];
             world: components["schemas"]["World"];
             city: components["schemas"]["CityIdentity"];
+            versions: {
+                data: number;
+                economy: number;
+                combat: number;
+            };
+            realtime: {
+                key: string;
+                host: string;
+                port: number;
+                /** @enum {string} */
+                scheme: "http" | "https";
+                /** Format: uri */
+                auth_endpoint: string;
+            };
         };
         CityData: {
             player: components["schemas"]["Player"];
@@ -473,6 +538,15 @@ export interface components {
         };
     };
     responses: {
+        /** @description The requested game action cannot be applied */
+        BadRequest: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorResponse"];
+            };
+        };
         /** @description Missing, expired or revoked credentials */
         Unauthorized: {
             headers: {
@@ -860,7 +934,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GameBootstrapRequest"];
+            };
+        };
         responses: {
             /** @description Starter game state created or restored */
             201: {
@@ -874,6 +952,76 @@ export interface operations {
                 };
             };
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameWorlds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description World population and availability */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorldList"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameWorldSelect: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                worldId: components["schemas"]["Ulid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    name?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description World membership and starter city created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["GameBootstrap"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            409: components["responses"]["Conflict"];
+            /** @description The selected world is closed */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     gameCity: {

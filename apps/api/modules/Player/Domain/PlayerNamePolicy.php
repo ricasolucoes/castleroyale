@@ -20,10 +20,13 @@ final readonly class PlayerNamePolicy
     public function normalise(string $name): string
     {
         $collapsed = preg_replace('/\s+/u', ' ', trim($name));
-        $normalised = $collapsed === false ? trim($name) : $collapsed;
+        $normalised = is_string($collapsed) ? $collapsed : trim($name);
 
         if (class_exists(Normalizer::class)) {
-            $normalised = Normalizer::normalize($normalised, Normalizer::FORM_C) ?: $normalised;
+            $unicodeNormalised = Normalizer::normalize($normalised, Normalizer::FORM_C);
+            if (is_string($unicodeNormalised)) {
+                $normalised = $unicodeNormalised;
+            }
         }
 
         return $normalised;

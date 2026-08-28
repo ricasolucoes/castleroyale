@@ -22,7 +22,13 @@ final readonly class GameBootstrapService
     public function __construct(private Clock $clock, private GameDataCatalog $catalog) {}
 
     /**
-     * @return array<string, mixed>
+     * @return array{
+     *     player: array<string, mixed>,
+     *     world: array<string, mixed>,
+     *     city: array<string, mixed>,
+     *     versions: array<string, mixed>,
+     *     realtime: array<string, mixed>
+     * }
      */
     public function handle(Account $account, ?string $worldId = null, ?string $requestedName = null): array
     {
@@ -40,7 +46,7 @@ final readonly class GameBootstrapService
                 } else {
                     $worldQuery->where('code', $worldCode);
                 }
-                $worldQuery->lockForUpdate();
+                $worldQuery->getQuery()->lockForUpdate();
                 /** @var World|null $world */
                 $world = $worldQuery->first();
                 if ($world === null) {
@@ -56,6 +62,14 @@ final readonly class GameBootstrapService
                         'spawn_index' => 0,
                         'is_open' => true,
                     ]);
+                }
+
+                if ($worldId !== null && ! $world->is_open) {
+                    throw GameException::of(ErrorCode::WorldClosed, 'This world is closed.');
+                }
+
+                if ($worldId !== null && (int) $world->population >= (int) $world->capacity) {
+                    throw GameException::of(ErrorCode::WorldFull, 'This world is full.');
                 }
 
                 /** @var Player|null $player */
@@ -204,9 +218,15 @@ final readonly class GameBootstrapService
     {
         $candidate = $base;
         $suffix = 1;
-        while (Player::query()->where('world_id', $world->getKey())->where('name', $candidate)->exists()) {
+        $nameQuery = Player::query()
+            ->where('world_id', $world->getKey())
+            ->where('name', $candidate);
+        while ($nameQuery->getQuery()->exists()) {
             $suffix++;
             $candidate = $base.' '.$suffix;
+            $nameQuery = Player::query()
+                ->where('world_id', $world->getKey())
+                ->where('name', $candidate);
         }
 
         return $candidate;

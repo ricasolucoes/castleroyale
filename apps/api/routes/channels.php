@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+use Game\Identity\Domain\Account;
+use Game\Player\Infrastructure\Player;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -29,28 +30,31 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('player.{playerId}', static function (User $user, string $playerId): bool {
-    // Phase 04 replaces this with a real player-ownership check.
-    return false;
+Broadcast::channel('player.{playerId}', static function (Account $account, string $playerId): bool {
+    $playerQuery = Player::query()
+        ->whereKey($playerId)
+        ->where('account_id', $account->getKey());
+
+    return $playerQuery->getQuery()->exists();
 });
 
-Broadcast::channel('city.{cityId}', static function (User $user, string $cityId): bool {
+Broadcast::channel('city.{cityId}', static function (Account $account, string $cityId): bool {
     // Phase 07: the viewer must own the city, or be reinforcing it.
     return false;
 });
 
-Broadcast::channel('alliance.{allianceId}', static function (User $user, string $allianceId): bool {
+Broadcast::channel('alliance.{allianceId}', static function (Account $account, string $allianceId): bool {
     // Phase 22: membership check plus per-channel alliance permission.
     return false;
 });
 
-Broadcast::channel('battle.{battleId}', static function (User $user, string $battleId): bool {
+Broadcast::channel('battle.{battleId}', static function (Account $account, string $battleId): bool {
     // Phase 17: participant, reinforcer, or alliance spectator.
     return false;
 });
 
 Broadcast::channel('world.{worldId}.region.{regionId}', static function (
-    User $user,
+    Account $account,
     string $worldId,
     string $regionId,
 ): bool {

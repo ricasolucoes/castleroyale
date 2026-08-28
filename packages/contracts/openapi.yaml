@@ -315,6 +315,12 @@ paths:
       operationId: gameBootstrap
       parameters:
         - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameBootstrapRequest'
       responses:
         '201':
           description: Starter game state created or restored
@@ -328,6 +334,71 @@ paths:
                     $ref: '#/components/schemas/GameBootstrap'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /game/worlds:
+    get:
+      tags: [Game]
+      summary: List worlds available for onboarding
+      operationId: gameWorlds
+      responses:
+        '200':
+          description: World population and availability
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WorldList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /game/worlds/{worldId}/select:
+    post:
+      tags: [Game]
+      summary: Join an open world and create the starter city
+      operationId: gameWorldSelect
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: worldId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Ulid'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 24
+      responses:
+        '201':
+          description: World membership and starter city created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GameBootstrap'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '503':
+          description: The selected world is closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /game/city:
     get:
@@ -549,6 +620,48 @@ components:
         world_id:
           $ref: '#/components/schemas/Ulid'
 
+    GameBootstrapRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        world_id:
+          $ref: '#/components/schemas/Ulid'
+        name:
+          type: string
+          minLength: 3
+          maxLength: 24
+
+    WorldOption:
+      type: object
+      required: [id, code, name, population, capacity, status, has_player]
+      properties:
+        id:
+          $ref: '#/components/schemas/Ulid'
+        code:
+          type: string
+        name:
+          type: string
+        population:
+          type: integer
+          minimum: 0
+        capacity:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum: [open, full, closed]
+        has_player:
+          type: boolean
+
+    WorldList:
+      type: object
+      required: [worlds]
+      properties:
+        worlds:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorldOption'
+
     World:
       type: object
       required: [id, code, name]
@@ -622,7 +735,7 @@ components:
 
     GameBootstrap:
       type: object
-      required: [player, world, city]
+      required: [player, world, city, versions, realtime]
       properties:
         player:
           $ref: '#/components/schemas/Player'
@@ -630,6 +743,22 @@ components:
           $ref: '#/components/schemas/World'
         city:
           $ref: '#/components/schemas/CityIdentity'
+        versions:
+          type: object
+          required: [data, economy, combat]
+          properties:
+            data: { type: integer }
+            economy: { type: integer }
+            combat: { type: integer }
+        realtime:
+          type: object
+          required: [key, host, port, scheme, auth_endpoint]
+          properties:
+            key: { type: string }
+            host: { type: string }
+            port: { type: integer }
+            scheme: { type: string, enum: [http, https] }
+            auth_endpoint: { type: string, format: uri }
 
     CityData:
       type: object
@@ -971,6 +1100,12 @@ components:
               description: Whether retrying the identical request could succeed.
 
   responses:
+    BadRequest:
+      description: The requested game action cannot be applied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Missing, expired or revoked credentials
       content:
