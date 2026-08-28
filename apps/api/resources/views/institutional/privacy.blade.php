@@ -1,11 +1,13 @@
 @extends('layouts.institutional')
 
 @section('title', __('institutional.privacy.title'))
+@section('description', __('institutional.meta.privacy.description'))
 
 @section('content')
     <section class="site-page-intro site-container" aria-labelledby="privacy-title">
         <p class="site-eyebrow">{{ __('institutional.privacy.eyebrow') }}</p>
         <h1 id="privacy-title" class="site-display">{{ __('institutional.privacy.title') }}</h1>
+        <p class="site-field-hint">{{ __('institutional.privacy.updated') }}: {{ config('institutional.content_updated_at') }}</p>
     </section>
     <section class="site-section site-container site-legal" aria-label="{{ __('institutional.privacy.title') }}">
         @foreach (__('institutional.privacy.sections') as $section)

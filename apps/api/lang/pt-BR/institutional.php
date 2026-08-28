@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 return [
+    'meta' => [
+        'home' => ['description' => 'Descubra uma experiência de estratégia histórica para celular, com cidades vivas, alianças e um mundo compartilhado.'],
+        'features' => ['description' => 'Conheça as cidades, fronteiras, alianças e campanhas que formam a experiência de estratégia.'],
+        'support' => ['description' => 'Encontre ajuda e fale com a equipe de suporte de forma segura.'],
+        'privacy' => ['description' => 'Leia como os dados necessários para operar o serviço são tratados e protegidos.'],
+        'terms' => ['description' => 'Leia as regras de uso responsável do serviço e os princípios do suporte.'],
+    ],
     'nav' => [
         'game' => 'O jogo',
         'support' => 'Suporte',

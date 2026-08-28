@@ -1,6 +1,7 @@
 @extends('layouts.institutional')
 
 @section('title', __('institutional.features.title'))
+@section('description', __('institutional.meta.features.description'))
 
 @section('content')
     <section class="site-page-intro site-container" aria-labelledby="features-title">

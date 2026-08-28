@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 return [
+    'meta' => [
+        'home' => ['description' => 'Discover a historical strategy experience for mobile, with living cities, alliances and a shared world.'],
+        'features' => ['description' => 'Explore the cities, borders, alliances and campaigns that shape the strategy experience.'],
+        'support' => ['description' => 'Find help and contact the support team safely.'],
+        'privacy' => ['description' => 'Read how the data needed to operate the service is handled and protected.'],
+        'terms' => ['description' => 'Read the rules for responsible service use and the principles of support.'],
+    ],
     'nav' => [
         'game' => 'The game', 'support' => 'Support', 'legal' => 'Legal',
         'privacy' => 'Privacy', 'terms' => 'Terms', 'play' => 'Play on mobile',

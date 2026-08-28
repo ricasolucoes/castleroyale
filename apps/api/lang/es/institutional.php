@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 return [
+    'meta' => [
+        'home' => ['description' => 'Descubre una experiencia de estrategia histórica para móviles, con ciudades vivas, alianzas y un mundo compartido.'],
+        'features' => ['description' => 'Conoce las ciudades, fronteras, alianzas y campañas que forman la experiencia de estrategia.'],
+        'support' => ['description' => 'Encuentra ayuda y contacta con el equipo de soporte de forma segura.'],
+        'privacy' => ['description' => 'Lee cómo se tratan y protegen los datos necesarios para operar el servicio.'],
+        'terms' => ['description' => 'Lee las reglas de uso responsable del servicio y los principios del soporte.'],
+    ],
     'nav' => [
         'game' => 'El juego', 'support' => 'Soporte', 'legal' => 'Legal',
         'privacy' => 'Privacidad', 'terms' => 'Términos', 'play' => 'Juega en el móvil',

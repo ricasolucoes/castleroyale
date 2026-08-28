@@ -12,4 +12,6 @@ Route::middleware(SetInstitutionalLocale::class)->group(function (): void {
     Route::get('/support', [InstitutionalSiteController::class, 'support'])->name('site.support');
     Route::get('/privacy', [InstitutionalSiteController::class, 'privacy'])->name('site.privacy');
     Route::get('/terms', [InstitutionalSiteController::class, 'terms'])->name('site.terms');
+    Route::get('/sitemap.xml', [InstitutionalSiteController::class, 'sitemap'])->name('site.sitemap');
+    Route::get('/robots.txt', [InstitutionalSiteController::class, 'robots'])->name('site.robots');
 });
