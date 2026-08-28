@@ -43,6 +43,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/guest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a guest session */
+        post: operations["authGuest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -54,6 +71,40 @@ export interface paths {
         put?: never;
         /** Refresh tokens */
         post: operations["authRefresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/social": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign in with a verified Apple or Google identity */
+        post: operations["authSocial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/upgrade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upgrade a guest account without changing its id */
+        post: operations["authUpgrade"];
         delete?: never;
         options?: never;
         head?: never;
@@ -88,8 +139,127 @@ export interface paths {
         get: operations["authListSessions"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
         /** Revoke a device session */
         delete: operations["authRevokeSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/bootstrap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create or restore the player's starter city */
+        post: operations["gameBootstrap"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/city": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the authoritative city state */
+        get: operations["gameCity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/world": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the bounded world view around the player's city */
+        get: operations["gameWorld"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/military": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the player's server-authoritative military overview */
+        get: operations["gameMilitary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/alliance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the player's alliance membership */
+        get: operations["gameAlliance"];
+        put?: never;
+        /** Create an alliance and become its leader */
+        post: operations["gameCreateAlliance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/game/city/buildings/{code}/upgrade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a server-computed building upgrade */
+        post: operations["gameUpgradeBuilding"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -112,6 +282,125 @@ export interface components {
             last_seen_at: string;
             /** Format: date-time */
             revoked_at?: string | null;
+        };
+        Player: {
+            id: components["schemas"]["Ulid"];
+            name: string;
+            world_id: components["schemas"]["Ulid"];
+        };
+        World: {
+            id: components["schemas"]["Ulid"];
+            code: string;
+            name: string;
+        };
+        CityIdentity: {
+            id: components["schemas"]["Ulid"];
+            name_key: string;
+            x: number;
+            y: number;
+        };
+        CityResources: {
+            current: components["schemas"]["ResourceBundle"];
+            capacity: components["schemas"]["ResourceBundle"];
+        };
+        CityBuilding: {
+            code: string;
+            name_key: string;
+            category: string;
+            level: number;
+            max_level: number;
+            next_level_cost: components["schemas"]["ResourceBundle"];
+            build_time_seconds: number;
+        };
+        Construction: {
+            id: components["schemas"]["Ulid"];
+            building_code: string;
+            from_level: number;
+            target_level: number;
+            /** Format: date-time */
+            started_at: string;
+            /** Format: date-time */
+            finishes_at: string;
+        };
+        GameBootstrap: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            city: components["schemas"]["CityIdentity"];
+        };
+        CityData: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            city: components["schemas"]["CityIdentity"];
+            resources: components["schemas"]["CityResources"];
+            buildings: components["schemas"]["CityBuilding"][];
+            construction: components["schemas"]["Construction"] | null;
+            /** Format: date-time */
+            server_time: string;
+        };
+        WorldMapCity: {
+            id: components["schemas"]["Ulid"];
+            name_key: string;
+            x: number;
+            y: number;
+            is_player_city: boolean;
+        };
+        WorldData: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            center: {
+                x: number;
+                y: number;
+            };
+            radius: number;
+            cities: components["schemas"]["WorldMapCity"][];
+            /** Format: date-time */
+            server_time: string;
+        };
+        MilitaryUnit: {
+            code: string;
+            name_key: string;
+            unit_class: string;
+            quantity: number;
+            power_per_unit: number;
+            total_power: number;
+        };
+        MilitaryData: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            city: {
+                id: components["schemas"]["Ulid"];
+                name_key: string;
+            };
+            units: components["schemas"]["MilitaryUnit"][];
+            total_power: number;
+            /** Format: date-time */
+            server_time: string;
+        };
+        AllianceSummary: {
+            id: components["schemas"]["Ulid"];
+            name: string;
+            tag: string;
+            role: string;
+            member_count: number;
+            max_members: number;
+        };
+        AllianceMember: {
+            player_id: components["schemas"]["Ulid"];
+            player_name: string;
+            role: string;
+        };
+        AllianceData: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            alliance: components["schemas"]["AllianceSummary"] | null;
+            members: components["schemas"]["AllianceMember"][];
+            can_create: boolean;
+            /** Format: date-time */
+            server_time: string;
+        };
+        CreateAllianceRequest: {
+            name: string;
+            tag: string;
         };
         /** @description Non-enumerable, time-sortable identifier (ADR-016). */
         Ulid: string;
@@ -229,6 +518,15 @@ export interface components {
                 "application/json": components["schemas"]["ErrorResponse"];
             };
         };
+        /** @description The requested state conflicts with the current game state */
+        Conflict: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorResponse"];
+            };
+        };
     };
     parameters: {
         /**
@@ -321,6 +619,35 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
         };
     };
+    authGuest: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Guest session created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AuthTokens"];
+                    };
+                };
+            };
+            429: components["responses"]["RateLimited"];
+        };
+    };
     authRefresh: {
         parameters: {
             query?: never;
@@ -356,6 +683,87 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
         };
     };
+    authSocial: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    provider: "apple" | "google";
+                    identity_token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Signed in successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AuthTokens"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    authUpgrade: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    password: string;
+                } | {
+                    /** @enum {string} */
+                    provider: "apple" | "google";
+                    identity_token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Guest account upgraded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+        };
+    };
     authLogout: {
         parameters: {
             query?: never;
@@ -377,7 +785,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: unknown[];
+                    };
                 };
             };
             401: components["responses"]["Unauthorized"];
@@ -429,10 +839,203 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: unknown[];
+                    };
                 };
             };
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameBootstrap: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Starter game state created or restored */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["GameBootstrap"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameCity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current city state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CityData"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameWorld: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current world view */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorldData"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameMilitary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current military overview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["MilitaryData"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameAlliance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current alliance overview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AllianceData"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameCreateAlliance: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAllianceRequest"];
+            };
+        };
+        responses: {
+            /** @description Alliance created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AllianceData"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationFailed"];
+        };
+    };
+    gameUpgradeBuilding: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated ULID or UUID, unique per logical operation — **not**
+                 *     per retry. A retry reuses the same key. See docs/api/idempotency.md.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Construction started */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            construction: components["schemas"]["Construction"];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationFailed"];
         };
     };
 }
