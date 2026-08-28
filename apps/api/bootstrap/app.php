@@ -5,13 +5,17 @@ declare(strict_types=1);
 use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Application\Error\GameException;
 use Game\Shared\Interface\Http\ApiResponse;
+use Game\World\Interface\Console\GenerateWorldCommand;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -24,7 +28,26 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
         apiPrefix: 'api',
+        then: function (): void {
+            Broadcast::routes([
+                'middleware' => ['api', 'auth:sanctum', App\Http\Middleware\CheckDeviceSession::class],
+            ]);
+
+            RateLimiter::for('auth', function (Request $request) {
+                return Limit::perMinute(max(1, (int) config('game.auth.rate_limit_per_minute', 10)))
+                    ->by($request->ip().'|'.($request->input('email') ?? $request->input('device_id')));
+            });
+
+            RateLimiter::for('institutional-support', function (Request $request) {
+                $email = mb_strtolower(trim((string) $request->input('email', '')));
+                $key = hash('sha256', $email.'|'.$request->ip());
+
+                return Limit::perMinute(max(1, (int) config('institutional.support_rate_limit_per_minute', 5)))
+                    ->by($key);
+            });
+        },
     )
+    ->withCommands([GenerateWorldCommand::class])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
             Game\Shared\Interface\Http\Middleware\AttachRequestContext::class,

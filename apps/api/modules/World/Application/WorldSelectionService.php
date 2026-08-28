@@ -74,6 +74,7 @@ final readonly class WorldSelectionService
         return World::create([
             'code' => $code,
             'name' => (string) ($worldConfig['name'] ?? $code),
+            'seed' => (string) ($worldConfig['seed'] ?? config('game.world.generation_seed', $code)),
             'population' => 0,
             'capacity' => max(1, (int) config('game.world.capacity')),
             'spawn_index' => 0,

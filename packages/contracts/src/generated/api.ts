@@ -247,6 +247,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/game/world/viewport": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read a bounded persisted world viewport */
+        get: operations["gameWorldViewport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/game/military": {
         parameters: {
             query?: never;
@@ -420,6 +437,25 @@ export interface components {
             cities: components["schemas"]["WorldMapCity"][];
             /** Format: date-time */
             server_time: string;
+        };
+        WorldTile: {
+            id: components["schemas"]["Ulid"];
+            region_id: components["schemas"]["Ulid"];
+            x: number;
+            y: number;
+            /** @enum {string} */
+            terrain: "plains" | "forest" | "hills" | "mountains" | "river" | "road";
+        };
+        WorldViewport: {
+            player: components["schemas"]["Player"];
+            world: components["schemas"]["World"];
+            bounds: {
+                min_x: number;
+                max_x: number;
+                min_y: number;
+                max_y: number;
+            };
+            tiles: components["schemas"]["WorldTile"][];
         };
         MilitaryUnit: {
             code: string;
@@ -1068,6 +1104,35 @@ export interface operations {
                 };
             };
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameWorldViewport: {
+        parameters: {
+            query: {
+                min_x: number;
+                max_x: number;
+                min_y: number;
+                max_y: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Persisted terrain tiles in the requested bounds */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorldViewport"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            422: components["responses"]["ValidationFailed"];
         };
     };
     gameMilitary: {

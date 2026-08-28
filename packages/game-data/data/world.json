@@ -1,0 +1,16 @@
+{
+  "code": "default-world-generation",
+  "map_width": 64,
+  "map_height": 64,
+  "region_width": 16,
+  "region_height": 16,
+  "seed": "aurora-v1",
+  "terrain": {
+    "plains": 600,
+    "forest": 160,
+    "hills": 100,
+    "mountains": 70,
+    "river": 40,
+    "road": 30
+  }
+}

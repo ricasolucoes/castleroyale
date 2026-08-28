@@ -438,6 +438,48 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /game/world/viewport:
+    get:
+      tags: [Game]
+      summary: Read a bounded persisted world viewport
+      operationId: gameWorldViewport
+      parameters:
+        - name: min_x
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: max_x
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: min_y
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: max_y
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Persisted terrain tiles in the requested bounds
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WorldViewport'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+
   /game/military:
     get:
       tags: [Game]
@@ -823,6 +865,43 @@ components:
         server_time:
           type: string
           format: date-time
+
+    WorldTile:
+      type: object
+      required: [id, region_id, x, y, terrain]
+      properties:
+        id:
+          $ref: '#/components/schemas/Ulid'
+        region_id:
+          $ref: '#/components/schemas/Ulid'
+        x:
+          type: integer
+        y:
+          type: integer
+        terrain:
+          type: string
+          enum: [plains, forest, hills, mountains, river, road]
+
+    WorldViewport:
+      type: object
+      required: [player, world, bounds, tiles]
+      properties:
+        player:
+          $ref: '#/components/schemas/Player'
+        world:
+          $ref: '#/components/schemas/World'
+        bounds:
+          type: object
+          required: [min_x, max_x, min_y, max_y]
+          properties:
+            min_x: { type: integer }
+            max_x: { type: integer }
+            min_y: { type: integer }
+            max_y: { type: integer }
+        tiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorldTile'
 
     MilitaryUnit:
       type: object

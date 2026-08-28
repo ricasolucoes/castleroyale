@@ -13,6 +13,7 @@ use Game\Platform\Interface\Http\HealthController;
 use Game\Player\Interface\Http\GameBootstrapController;
 use Game\World\Interface\Http\WorldController;
 use Game\World\Interface\Http\WorldSelectionController;
+use Game\World\Interface\Http\WorldViewportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +53,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             ->name('game.worlds.select');
         Route::get('/game/city', CityController::class)->name('game.city');
         Route::get('/game/world', WorldController::class)->name('game.world');
+        Route::get('/game/world/viewport', WorldViewportController::class)->name('game.world.viewport');
         Route::get('/game/military', MilitaryController::class)->name('game.military');
         Route::get('/game/alliance', AllianceController::class)->name('game.alliance');
         Route::post('/game/alliance', CreateAllianceController::class)->name('game.alliance.create');

@@ -13,7 +13,7 @@ final class World extends Model
 
     protected $table = 'worlds';
 
-    protected $fillable = ['code', 'name', 'population', 'capacity', 'spawn_index', 'is_open'];
+    protected $fillable = ['code', 'name', 'seed', 'population', 'capacity', 'spawn_index', 'is_open'];
 
     protected function casts(): array
     {
