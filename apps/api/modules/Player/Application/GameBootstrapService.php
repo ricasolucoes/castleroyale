@@ -1,0 +1,234 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Game\Player\Application;
+
+use Game\City\Infrastructure\City;
+use Game\City\Infrastructure\CityBuilding;
+use Game\Economy\Infrastructure\EconomyLedger;
+use Game\Identity\Domain\Account;
+use Game\Player\Domain\PlayerNamePolicy;
+use Game\Player\Infrastructure\Player;
+use Game\Shared\Application\Error\ErrorCode;
+use Game\Shared\Application\Error\GameException;
+use Game\Shared\Domain\Time\Clock;
+use Game\Shared\Infrastructure\GameData\GameDataCatalog;
+use Game\World\Infrastructure\World;
+use Illuminate\Support\Facades\DB;
+
+final readonly class GameBootstrapService
+{
+    public function __construct(private Clock $clock, private GameDataCatalog $catalog) {}
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(Account $account, ?string $worldId = null, ?string $requestedName = null): array
+    {
+        try {
+            return DB::transaction(function () use ($account, $worldId, $requestedName): array {
+                $starter = $this->catalog->starter();
+                $worldConfig = is_array($starter['world'] ?? null) ? $starter['world'] : [];
+                $playerConfig = is_array($starter['player'] ?? null) ? $starter['player'] : [];
+                $cityConfig = is_array($starter['city'] ?? null) ? $starter['city'] : [];
+                $worldCode = (string) config('game.world.default_code');
+
+                $worldQuery = World::query();
+                if ($worldId !== null) {
+                    $worldQuery->whereKey($worldId);
+                } else {
+                    $worldQuery->where('code', $worldCode);
+                }
+                $worldQuery->lockForUpdate();
+                /** @var World|null $world */
+                $world = $worldQuery->first();
+                if ($world === null) {
+                    if ($worldId !== null) {
+                        throw GameException::of(ErrorCode::NotFound, 'The selected world does not exist.');
+                    }
+
+                    $world = World::create([
+                        'code' => $worldCode,
+                        'name' => (string) ($worldConfig['name'] ?? $worldCode),
+                        'population' => 0,
+                        'capacity' => max(1, (int) config('game.world.capacity')),
+                        'spawn_index' => 0,
+                        'is_open' => true,
+                    ]);
+                }
+
+                /** @var Player|null $player */
+                $player = Player::query()
+                    ->where('world_id', $world->getKey())
+                    ->where('account_id', $account->getKey())
+                    ->first();
+
+                if (! $world->is_open && $player === null) {
+                    throw GameException::of(ErrorCode::WorldClosed, 'This world is closed.');
+                }
+
+                if ($player !== null && ($worldId !== null || $requestedName !== null)) {
+                    throw GameException::of(ErrorCode::Conflict, 'This account already has a player in this world.');
+                }
+
+                if ($player === null && (int) $world->population >= (int) $world->capacity) {
+                    throw GameException::of(ErrorCode::WorldFull, 'This world is full.');
+                }
+
+                if ($player === null) {
+                    $playerName = $requestedName === null
+                        ? $this->availableDefaultName((string) ($playerConfig['default_name'] ?? 'Governor'), $world)
+                        : $this->validatedName($requestedName);
+                    $nameQuery = Player::query()
+                        ->where('world_id', $world->getKey())
+                        ->where('name', $playerName);
+                    if ($nameQuery->getQuery()->exists()) {
+                        throw GameException::of(ErrorCode::Conflict, 'That player name is already in use in this world.');
+                    }
+
+                    $player = Player::create([
+                        'world_id' => $world->getKey(),
+                        'account_id' => $account->getKey(),
+                        'name' => $playerName,
+                    ]);
+                }
+
+                /** @var City|null $city */
+                $city = City::query()
+                    ->where('world_id', $world->getKey())
+                    ->where('player_id', $player->getKey())
+                    ->first();
+
+                if ($city === null) {
+                    $origin = is_array($cityConfig['origin'] ?? null) ? $cityConfig['origin'] : [];
+                    $spawnStep = (int) ($worldConfig['spawn_step'] ?? 1);
+                    $spawnIndex = (int) $world->spawn_index;
+                    $resources = $this->catalog->starterValues('resources');
+                    $capacity = $this->catalog->starterValues('capacity');
+                    $city = City::create([
+                        'world_id' => $world->getKey(),
+                        'player_id' => $player->getKey(),
+                        'name_key' => (string) ($cityConfig['name_key'] ?? 'city.starter_name'),
+                        'x' => (int) ($origin['x'] ?? 0) + ($spawnIndex * $spawnStep),
+                        'y' => (int) ($origin['y'] ?? 0),
+                        'last_accrued_at' => $this->clock->now(),
+                        ...$resources,
+                        'food_capacity' => $capacity['food'],
+                        'wood_capacity' => $capacity['wood'],
+                        'stone_capacity' => $capacity['stone'],
+                        'iron_capacity' => $capacity['iron'],
+                        'gold_capacity' => $capacity['gold'],
+                    ]);
+
+                    foreach ($this->catalog->starterBuildings() as $building) {
+                        CityBuilding::create([
+                            'world_id' => $world->getKey(),
+                            'city_id' => $city->getKey(),
+                            'building_code' => $building['code'],
+                            'level' => $building['level'],
+                        ]);
+                    }
+
+                    foreach ($resources as $resource => $amount) {
+                        if ($amount === 0) {
+                            continue;
+                        }
+
+                        EconomyLedger::create([
+                            'world_id' => $world->getKey(),
+                            'city_id' => $city->getKey(),
+                            'resource' => $resource,
+                            'amount' => $amount,
+                            'overflow_amount' => 0,
+                            'reason' => 'starter.grant',
+                            'reference' => $account->getKey(),
+                            'economy_version' => (int) config('game.versions.economy', 1),
+                        ]);
+                    }
+
+                    $world->forceFill([
+                        'population' => (int) $world->population + 1,
+                        'spawn_index' => $spawnIndex + 1,
+                    ])->save();
+                }
+
+                return [
+                    'player' => [
+                        'id' => (string) $player->getKey(),
+                        'name' => (string) $player->name,
+                        'world_id' => (string) $world->getKey(),
+                    ],
+                    'world' => [
+                        'id' => (string) $world->getKey(),
+                        'code' => (string) $world->code,
+                        'name' => (string) $world->name,
+                        'population' => (int) $world->population,
+                        'capacity' => (int) $world->capacity,
+                        'status' => ! $world->is_open
+                            ? 'closed'
+                            : ((int) $world->population >= (int) $world->capacity ? 'full' : 'open'),
+                    ],
+                    'city' => [
+                        'id' => (string) $city->getKey(),
+                        'world_id' => (string) $world->getKey(),
+                        'player_id' => (string) $player->getKey(),
+                        'name_key' => (string) $city->name_key,
+                        'x' => (int) $city->x,
+                        'y' => (int) $city->y,
+                    ],
+                    'versions' => [
+                        'data' => (int) config('game.versions.data'),
+                        'economy' => (int) config('game.versions.economy'),
+                        'combat' => (int) config('game.versions.combat'),
+                    ],
+                    'realtime' => [
+                        'key' => (string) config('broadcasting.connections.reverb.key', ''),
+                        'host' => (string) config('broadcasting.connections.reverb.options.host', ''),
+                        'port' => (int) config('broadcasting.connections.reverb.options.port', 443),
+                        'scheme' => (string) config('broadcasting.connections.reverb.options.scheme', 'https'),
+                        'auth_endpoint' => rtrim((string) config('app.url'), '/').'/broadcasting/auth',
+                    ],
+                ];
+            });
+        } catch (\Illuminate\Database\QueryException $exception) {
+            if (in_array($exception->getCode(), ['23000', '23505'], true)) {
+                throw GameException::of(ErrorCode::Conflict, 'The player could not be created because it already exists.');
+            }
+
+            throw $exception;
+        }
+    }
+
+    private function availableDefaultName(string $base, World $world): string
+    {
+        $candidate = $base;
+        $suffix = 1;
+        while (Player::query()->where('world_id', $world->getKey())->where('name', $candidate)->exists()) {
+            $suffix++;
+            $candidate = $base.' '.$suffix;
+        }
+
+        return $candidate;
+    }
+
+    private function validatedName(string $name): string
+    {
+        $deniedNames = config('game.player.denied_names', []);
+        if (! is_array($deniedNames)) {
+            $deniedNames = [];
+        }
+
+        $policy = new PlayerNamePolicy(
+            minimumLength: (int) config('game.player.name_min_length'),
+            maximumLength: (int) config('game.player.name_max_length'),
+            deniedNames: array_values(array_map(static fn (mixed $name): string => (string) $name, $deniedNames)),
+        );
+        $normalised = $policy->normalise($name);
+        if (! $policy->accepts($normalised)) {
+            throw GameException::of(ErrorCode::ContentRejected, 'That player name is not allowed.');
+        }
+
+        return $normalised;
+    }
+}
