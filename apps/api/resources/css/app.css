@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '../../../../packages/tooling/design-tokens/institutional.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,4 +7,352 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.site-body {
+    min-block-size: 100vh;
+    background: var(--token-bg-base);
+    color: var(--token-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--token-type-body-size);
+    line-height: var(--token-type-body-line);
+}
+
+.site-container {
+    inline-size: min(100% - (var(--token-space-lg) * 2), 72rem);
+    margin-inline: auto;
+}
+
+.site-header {
+    border-block-end: thin solid var(--token-border-subtle);
+}
+
+.site-header-inner,
+.site-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--token-space-lg);
+    padding-block: var(--token-space-lg);
+}
+
+.site-mark,
+.site-nav,
+.site-header-actions,
+.site-footer-nav,
+.site-actions,
+.site-locale {
+    display: flex;
+    align-items: center;
+    gap: var(--token-space-md);
+}
+
+.site-mark {
+    color: var(--token-text-primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.site-mark-symbol,
+.site-card-index,
+.site-feature-marker {
+    color: var(--token-accent-gold);
+}
+
+.site-nav a,
+.site-footer-nav a,
+.site-locale a,
+.site-link {
+    color: var(--token-accent-steel);
+    text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-footer-nav a:hover,
+.site-locale a:hover,
+.site-link:hover {
+    color: var(--token-accent-gold);
+}
+
+.site-locale a[aria-current='true'] {
+    color: var(--token-text-primary);
+    font-weight: 700;
+}
+
+.site-main {
+    overflow: hidden;
+}
+
+.site-hero,
+.site-page-intro {
+    padding-block: var(--token-space-3xl);
+}
+
+.site-hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    align-items: center;
+    gap: var(--token-space-3xl);
+}
+
+.site-hero-copy,
+.site-page-intro,
+.site-feature-list,
+.site-legal {
+    max-inline-size: 48rem;
+}
+
+.site-eyebrow {
+    color: var(--token-accent-gold);
+    font-size: var(--token-type-label-size);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-display,
+.site-title,
+.site-heading {
+    margin-block: 0;
+    font-weight: 700;
+}
+
+.site-display {
+    font-size: var(--token-type-display-size);
+    line-height: var(--token-type-display-line);
+}
+
+.site-title {
+    font-size: var(--token-type-title-size);
+    line-height: var(--token-type-title-line);
+}
+
+.site-heading {
+    font-size: var(--token-type-heading-size);
+    line-height: var(--token-type-heading-line);
+}
+
+.site-lead {
+    color: var(--token-text-secondary);
+    font-size: var(--token-type-body-size);
+    line-height: var(--token-type-body-line);
+}
+
+.site-actions {
+    flex-wrap: wrap;
+    margin-block-start: var(--token-space-xl);
+}
+
+.site-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--token-space-3xl);
+    padding-inline: var(--token-space-xl);
+    border: thin solid transparent;
+    border-radius: var(--token-radius-md);
+    font-size: var(--token-type-label-size);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color var(--token-motion-base), color var(--token-motion-base), border-color var(--token-motion-base);
+}
+
+.site-button-primary {
+    background: var(--token-accent-bronze);
+    color: var(--token-text-inverse);
+}
+
+.site-button-secondary {
+    border-color: var(--token-border-strong);
+    color: var(--token-text-primary);
+}
+
+.site-button-compact {
+    min-block-size: var(--token-space-2xl);
+    padding-inline: var(--token-space-md);
+}
+
+.site-button:hover {
+    background: var(--token-accent-gold);
+    color: var(--token-text-inverse);
+}
+
+.site-hero-art {
+    position: relative;
+    min-block-size: 20rem;
+    overflow: hidden;
+    border-radius: var(--token-radius-xl);
+    background: var(--token-bg-sunken);
+}
+
+.site-art-sun,
+.site-art-horizon,
+.site-art-tower {
+    position: absolute;
+    display: block;
+}
+
+.site-art-sun {
+    inset-block-start: var(--token-space-3xl);
+    inset-inline-end: var(--token-space-3xl);
+    inline-size: var(--token-space-3xl);
+    block-size: var(--token-space-3xl);
+    border-radius: var(--token-radius-full);
+    background: var(--token-accent-gold);
+}
+
+.site-art-horizon {
+    inset-block-end: 0;
+    inline-size: 100%;
+    block-size: 45%;
+    background: var(--token-accent-steel);
+    clip-path: polygon(0 45%, 20% 20%, 38% 44%, 62% 8%, 82% 35%, 100% 0, 100% 100%, 0 100%);
+}
+
+.site-art-tower {
+    inset-block-end: 18%;
+    inset-inline-start: 45%;
+    inline-size: var(--token-space-2xl);
+    block-size: 48%;
+    border: thin solid var(--token-accent-gold);
+    background: var(--token-text-primary);
+}
+
+.site-section {
+    padding-block: var(--token-space-3xl);
+}
+
+.site-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--token-space-lg);
+    margin-block-start: var(--token-space-xl);
+}
+
+.site-card {
+    padding: var(--token-space-xl);
+    border: thin solid var(--token-border-subtle);
+    border-radius: var(--token-radius-lg);
+    background: var(--token-surface-raised);
+}
+
+.site-card-index {
+    display: block;
+    margin-block-end: var(--token-space-lg);
+    font-size: var(--token-type-caption-size);
+}
+
+.site-trust {
+    background: var(--token-bg-sunken);
+}
+
+.site-trust-inner,
+.site-support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--token-space-3xl);
+    align-items: start;
+}
+
+.site-feature-list,
+.site-legal {
+    display: grid;
+    gap: var(--token-space-3xl);
+}
+
+.site-feature {
+    display: grid;
+    grid-template-columns: var(--token-space-lg) 1fr;
+    gap: var(--token-space-lg);
+}
+
+.site-feature-marker {
+    inline-size: var(--token-space-lg);
+    block-size: var(--token-space-lg);
+    margin-block-start: var(--token-space-sm);
+    border-radius: var(--token-radius-full);
+    background: currentColor;
+}
+
+.site-form {
+    display: grid;
+    gap: var(--token-space-lg);
+}
+
+.site-field {
+    display: grid;
+    gap: var(--token-space-xs);
+}
+
+.site-field label {
+    font-size: var(--token-type-label-size);
+    font-weight: 500;
+}
+
+.site-field input,
+.site-field textarea {
+    inline-size: 100%;
+    padding: var(--token-space-md);
+    border: thin solid var(--token-border-strong);
+    border-radius: var(--token-radius-sm);
+    background: var(--token-surface-overlay);
+    color: var(--token-text-primary);
+}
+
+.site-field-hint,
+.site-field-error {
+    color: var(--token-text-secondary);
+    font-size: var(--token-type-caption-size);
+    line-height: var(--token-type-caption-line);
+}
+
+.site-field-error {
+    color: var(--token-danger);
+}
+
+.site-footer {
+    border-block-start: thin solid var(--token-border-subtle);
+}
+
+.site-footer-note {
+    color: var(--token-text-secondary);
+    font-size: var(--token-type-caption-size);
+}
+
+.site-skip-link,
+.site-visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.site-skip-link:focus {
+    inset-block-start: var(--token-space-sm);
+    inset-inline-start: var(--token-space-sm);
+    inline-size: auto;
+    block-size: auto;
+    clip-path: none;
+    padding: var(--token-space-sm) var(--token-space-md);
+    background: var(--token-surface-raised);
+    color: var(--token-text-primary);
+    z-index: 1;
+}
+
+:where(a, button, input, textarea):focus-visible {
+    outline: var(--token-space-xs) solid var(--token-accent-gold);
+    outline-offset: var(--token-space-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: var(--token-motion-instant) !important;
+        animation-duration: var(--token-motion-instant) !important;
+        animation-iteration-count: 1 !important;
+    }
 }

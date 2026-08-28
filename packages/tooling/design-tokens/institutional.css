@@ -1,0 +1,65 @@
+/* Generated semantic export of index.ts. Keep literal token values in index.ts. */
+:root {
+    color-scheme: light;
+    --token-bg-base: #F4EEE2;
+    --token-bg-sunken: #E8DFCC;
+    --token-surface-raised: #FFFFFF;
+    --token-surface-overlay: #FFFFFF;
+    --token-border-subtle: #D8CDB6;
+    --token-border-strong: #B9A984;
+    --token-text-primary: #1A1712;
+    --token-text-secondary: #5B5344;
+    --token-text-inverse: #F4EEE2;
+    --token-accent-bronze: #B4762E;
+    --token-accent-gold: #C08A2E;
+    --token-accent-steel: #2B4B7A;
+    --token-danger: #A4212B;
+    --token-success: #3F7A4F;
+    --token-space-xs: 4px;
+    --token-space-sm: 8px;
+    --token-space-md: 12px;
+    --token-space-lg: 16px;
+    --token-space-xl: 24px;
+    --token-space-2xl: 32px;
+    --token-space-3xl: 48px;
+    --token-radius-sm: 4px;
+    --token-radius-md: 8px;
+    --token-radius-lg: 12px;
+    --token-radius-xl: 20px;
+    --token-radius-full: 9999px;
+    --token-type-display-size: 32px;
+    --token-type-display-line: 40px;
+    --token-type-title-size: 24px;
+    --token-type-title-line: 32px;
+    --token-type-heading-size: 18px;
+    --token-type-heading-line: 24px;
+    --token-type-body-size: 16px;
+    --token-type-body-line: 24px;
+    --token-type-label-size: 14px;
+    --token-type-label-line: 20px;
+    --token-type-caption-size: 12px;
+    --token-type-caption-line: 16px;
+    --token-motion-instant: 0ms;
+    --token-motion-fast: 120ms;
+    --token-motion-base: 200ms;
+    --token-motion-slow: 320ms;
+    --token-motion-deliberate: 500ms;
+}
+
+[data-theme='dark'] {
+    color-scheme: dark;
+    --token-bg-base: #0E1116;
+    --token-bg-sunken: #080A0E;
+    --token-surface-raised: #161B22;
+    --token-surface-overlay: #1C222B;
+    --token-border-subtle: #242B35;
+    --token-border-strong: #39424F;
+    --token-text-primary: #ECE6DA;
+    --token-text-secondary: #9AA3B0;
+    --token-text-inverse: #0E1116;
+    --token-accent-bronze: #C98C3E;
+    --token-accent-gold: #DBA748;
+    --token-accent-steel: #3D6299;
+    --token-danger: #C4323D;
+    --token-success: #4F9463;
+}
