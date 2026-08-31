@@ -16,3 +16,7 @@ Toda funcionalidade nova deve possuir feature flag (ex: `google_play_sidekick`, 
 
 ## 4. Analytics e Telemetria
 Instrumentar o sistema com eventos analíticos essenciais (`gamification_viewed`, `achievement_unlocked`, `quest_completed`, etc.) e estabelecer KPIs para medir D1, D7, D30, sessões, etc.
+
+
+## Referência de Gamificação
+Consulte o arquivo `docs/google-play/banlek-gamification-imported.md` para ver as missões diárias, semanais e mensais traduzidas do painel da Banlek e implementar o MissionRuleEngine adaptado.
