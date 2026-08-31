@@ -1,23 +1,19 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import type { WorldData } from '@dominion/contracts';
-import type { WorldTile } from '@dominion/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { MapCanvas } from '@/features/world/components/MapCanvas';
 import { useWorldViewport } from '@/features/world/data/useWorldViewport';
+import { useCameraStore } from '@/features/world/state/cameraStore';
 import { WorldTileDetailSheet } from '@/features/world/components/WorldTileDetailSheet';
-import { Badge } from '@/shared/components/Badge';
 import { Button } from '@/shared/components/Button';
 import { Card } from '@/shared/components/Card';
 import { Skeleton } from '@/shared/components/Skeleton';
 import { Text } from '@/shared/components/Text';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
-
-type WorldCity = WorldData['cities'][number];
 
 function errorKey(error: unknown): string {
   return error instanceof ApiError ? `errors.${error.code}` : 'errors.network';
@@ -27,9 +23,9 @@ export default function WorldScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const [selectedCity, setSelectedCity] = useState<WorldCity | null>(null);
-  const [selectedTile, setSelectedTile] = useState<WorldTile | null>(null);
-  const [detailOpen, setDetailOpen] = useState(false);
+  const selectedX = useCameraStore((state) => state.selectedX);
+  const selectedY = useCameraStore((state) => state.selectedY);
+  const clearSelection = useCameraStore((state) => state.clearSelection);
   const styles = StyleSheet.create({
     content: {
       flexGrow: 1,
@@ -111,6 +107,13 @@ export default function WorldScreen() {
     maxY: playerY + radius,
   };
 
+  const selectedCity = selectedX !== null && selectedY !== null 
+    ? world.cities.find((city) => city.x === selectedX && city.y === selectedY) ?? null
+    : null;
+  const selectedTile = selectedX !== null && selectedY !== null 
+    ? viewportQuery.data?.viewport.tiles.find((tile) => tile.x === selectedX && tile.y === selectedY) ?? null
+    : null;
+
   return (
     <ScrollView
       contentContainerStyle={[
@@ -140,14 +143,7 @@ export default function WorldScreen() {
           bounds={mapBounds}
           playerX={playerX}
           playerY={playerY}
-          onTilePress={(x, y) => {
-            const city = world.cities.find((candidate) => candidate.x === x && candidate.y === y);
-            setSelectedCity(city ?? null);
-            setSelectedTile(
-              viewportQuery.data?.viewport.tiles.find((tile) => tile.x === x && tile.y === y) ?? null,
-            );
-            setDetailOpen(true);
-          }}
+          cities={world.cities}
         />
         {selectedCity && (
           <View style={[styles.selected, { marginTop: theme.spacing.md }]}>
@@ -169,10 +165,13 @@ export default function WorldScreen() {
       />
       <WorldTileDetailSheet
         tile={selectedTile}
-        status={selectedTile ? 'ready' : viewportQuery.isPending ? 'loading' : 'empty'}
-        open={detailOpen}
-        onClose={() => setDetailOpen(false)}
+        status={selectedTile ? 'ready' : (viewportQuery.isPending || viewportQuery.isRefetching) ? 'loading' : viewportQuery.isError ? 'error' : viewportQuery.data?.cacheStatus === 'stale' ? 'stale' : 'empty'}
+        open={selectedX !== null && selectedY !== null}
+        onClose={clearSelection}
         onRetry={() => void viewportQuery.refetch()}
+        onReset={() => {
+          useCameraStore.getState().resetTo(playerX, playerY);
+        }}
       />
     </ScrollView>
   );

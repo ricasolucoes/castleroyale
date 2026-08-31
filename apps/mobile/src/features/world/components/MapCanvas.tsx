@@ -25,6 +25,7 @@ export type MapCanvasProps = {
   bounds: TileBounds;
   playerX: number;
   playerY: number;
+  cities?: readonly { x: number; y: number; is_player_city: boolean }[];
   onTilePress?: (x: number, y: number) => void;
 };
 
@@ -37,7 +38,7 @@ const TERRAIN_COLORS = {
   road: 'accent.bronze',
 } as const;
 
-export function MapCanvas({ tiles, bounds, playerX, playerY, onTilePress }: MapCanvasProps) {
+export function MapCanvas({ tiles, bounds, playerX, playerY, cities = [], onTilePress }: MapCanvasProps) {
   const theme = useTheme();
   const { t } = useTranslation();
   const zoom = useSharedValue(1);
@@ -120,8 +121,21 @@ export function MapCanvas({ tiles, bounds, playerX, playerY, onTilePress }: MapC
             style={styles.canvas}
             onTouchEnd={(event) => {
               const { locationX, locationY } = event.nativeEvent;
-              const x = Math.floor(locationX / tileSize) + bounds.minX;
-              const y = Math.floor(locationY / tileSize) + bounds.minY;
+              let x = Math.floor(locationX / tileSize) + bounds.minX;
+              let y = Math.floor(locationY / tileSize) + bounds.minY;
+              
+              let closestDist = Infinity;
+              for (const city of cities) {
+                const cx = (city.x - bounds.minX + 0.5) * tileSize;
+                const cy = (city.y - bounds.minY + 0.5) * tileSize;
+                const dist = Math.sqrt((locationX - cx)**2 + (locationY - cy)**2);
+                if (dist <= theme.minTouchTarget / 2 && dist < closestDist) {
+                  closestDist = dist;
+                  x = city.x;
+                  y = city.y;
+                }
+              }
+
               selectCoordinate(x, y);
               onTilePress?.(x, y);
             }}
@@ -134,12 +148,15 @@ export function MapCanvas({ tiles, bounds, playerX, playerY, onTilePress }: MapC
                   color={theme.color[TERRAIN_COLORS[terrain] as keyof typeof theme.color] as string}
                 />
               ))}
-              <Circle
-                cx={(playerX - bounds.minX + 0.5) * tileSize}
-                cy={(playerY - bounds.minY + 0.5) * tileSize}
-                r={tileSize / 3}
-                color={theme.color.accent.gold}
-              />
+              {cities.map((city) => (
+                <Circle
+                  key={`${city.x},${city.y}`}
+                  cx={(city.x - bounds.minX + 0.5) * tileSize}
+                  cy={(city.y - bounds.minY + 0.5) * tileSize}
+                  r={tileSize / 3}
+                  color={city.is_player_city ? theme.color.accent.gold : theme.color.accent.steel}
+                />
+              ))}
             </Group>
           </Canvas>
         </AnimatedView>
