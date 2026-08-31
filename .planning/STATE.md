@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 02-05-localization-integration-PLAN.md
-last_updated: "2026-08-26T03:30:36.253Z"
+stopped_at: Completed 05-04-spatial-index-and-benchmark-PLAN.md
+last_updated: "2026-08-31T03:33:11.629Z"
 progress:
-  total_phases: 68
-  completed_phases: 2
-  total_plans: 10
-  completed_plans: 11
+  total_phases: 69
+  completed_phases: 6
+  total_plans: 30
+  completed_plans: 28
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 02 — design-system-mobile-shell
+**Current focus:** Phase 06 — world-map-rendering
 
 ## Current Position
 
-Phase: 02 (design-system-mobile-shell) — EXECUTING
-Plan: 6 of 6
+Phase: 06 (world-map-rendering) — EXECUTING
+Plan: 1 of 4
 
 ## Performance Metrics
 
@@ -54,8 +54,15 @@ Plan: 6 of 6
 | Phase 02-design-system-mobile-shell P02-04-navigation-shell | 5 min | 3 tasks | 8 files |
 | Phase 02-design-system-mobile-shell P02-06-touch-target-tests | 2 min | 1 tasks | 1 files |
 | Phase 02-design-system-mobile-shell P05-localization-integration | 4 min | 4 tasks | 10 files |
+| Phase 02.1 P01 | 5 min | 2 tasks | 13 files |
+| Phase 02.1 P02 | 8 min | 2 tasks | 16 files |
+| Phase 06 P01 | 15 min | 2 tasks | 4 files |
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 02.1 inserted after Phase 02: Institutional Site and Public Backend Surface (URGENT)
 
 ### Decisions
 
@@ -78,6 +85,12 @@ Recent decisions affecting current work:
 
 - [Phase 02]: Removed @shopify/restyle to adhere strictly to local @dominion/tooling/design-tokens with minimal runtime overhead
 - [Phase 02]: Mocked `@gorhom/bottom-sheet` instead of `react-native-reanimated` because the failure originates deep in the reanimated/worklets setup, and for the purpose of the touch target test, we only need to verify that our wrapper correctly passes props down and mounts.
+- [Phase 02.1]: Use query-string locale selection with an allow-list and restore the previous application locale after every request.
+- [Phase 02.1]: Keep institutional copy in versioned Laravel locale catalogues and render every page through one shared Blade layout.
+- [Phase 02.1]: Use a checked-in CSS artifact adjacent to the TypeScript token source so Laravel Vite can consume the same semantic vocabulary without changing the mobile contract.
+- [Phase 02.1]: Build canonical and hreflang URLs from configured app.url and explicit locale query parameters.
+- [Phase 03]: Use Sanctum token families with rotating refresh secrets; a replay revokes the family before returning TOKEN_EXPIRED.
+- [Phase 03]: Verify Apple and Google identity tokens server-side against configured issuer, audience and JWKS; persist only the verified subject.
 
 ### Pending Todos
 
@@ -103,9 +116,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-26T03:13:16.610Z
-Stopped at: Completed 02-05-localization-integration-PLAN.md
-Resume with: `/gsd:autonomous --from 2`
+Last session: 2026-08-28T22:20:00.000Z
+Stopped at: Completed 05-04-spatial-index-and-benchmark-PLAN.md
+Resume with: `/gsd:autonomous --from 3`
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
