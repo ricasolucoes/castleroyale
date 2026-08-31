@@ -4,12 +4,12 @@ milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
 stopped_at: Completed 05-04-spatial-index-and-benchmark-PLAN.md
-last_updated: "2026-08-31T03:33:11.629Z"
+last_updated: "2026-08-31T03:47:32.085Z"
 progress:
   total_phases: 69
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 30
-  completed_plans: 28
+  completed_plans: 31
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 
 ## Current Position
 
-Phase: 06 (world-map-rendering) — EXECUTING
-Plan: 2 of 4
+Phase: 06 (world-map-rendering) — COMPLETED
+Plan: 4 of 4
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Plan: 2 of 4
 | Phase 02.1 P02 | 8 min | 2 tasks | 16 files |
 | Phase 06 P01 | 15 min | 2 tasks | 4 files |
 | Phase 06 P02 | 3 min | 2 tasks | 7 files |
+| Phase 06-world-map-rendering P06-04 | 30 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Recent decisions affecting current work:
 - [Phase 02.1]: Build canonical and hreflang URLs from configured app.url and explicit locale query parameters.
 - [Phase 03]: Use Sanctum token families with rotating refresh secrets; a replay revokes the family before returning TOKEN_EXPIRED.
 - [Phase 03]: Verify Apple and Google identity tokens server-side against configured issuer, audience and JWKS; persist only the verified subject.
+- [Phase 06]: Used Zustand to store only selected coordinates; derived the selected tile directly from TanStack Query's viewport cache.
+- [Phase 06]: Added 44pt circular hit testing inside the Skia canvas onTouchEnd to reliably intercept taps near compact markers.
+- [Phase 06]: Delegated interaction resolution logic to Skia's tap handler, skipping separate React Native pressables for map entities.
 
 ### Pending Todos
 
@@ -117,9 +121,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-28T22:20:00.000Z
-Stopped at: Completed 05-04-spatial-index-and-benchmark-PLAN.md
-Resume with: `/gsd:autonomous --from 3`
+Last session: 2026-08-31T03:46:00.000Z
+Stopped at: Completed 06-04-markers-selection-detail-PLAN.md
+Resume with: `/gsd:autonomous --from 4`
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
