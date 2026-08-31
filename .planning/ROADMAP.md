@@ -1276,7 +1276,7 @@ Plans:
 **Plans:** 0 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 56 to break down)
+- [x] Phase 1 Foundation
 
 ### Phase 57: Google Play Sidekick: Fase 2 — Play Games Services
 
