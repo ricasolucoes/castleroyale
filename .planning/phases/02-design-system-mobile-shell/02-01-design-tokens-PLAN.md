@@ -3,31 +3,24 @@ wave: 1
 requirements_addressed: [REQ-08, REQ-13]
 ---
 
-# Plan 02-01: Design Tokens & Base Primitives
+# Plan 02-01: Connect Design Tokens
 
 <objective>
-Establish the strict, type-safe design token system using Restyle and create the fundamental building blocks (`Box`, `Text`) for all future components, ensuring light and dark mode support.
+Adopt the existing design tokens from `@dominion/tooling/design-tokens` and create the foundational layout primitives (`Box` and `Text`) using `@shopify/restyle`, enforcing strict type-safe design tokens and implementing light/dark mode support.
 </objective>
 
 <context>
-- **Phase 02 Context**: `.planning/phases/02-design-system-mobile-shell/02-CONTEXT.md`
-- No hardcoded styling is permitted outside the `theme.ts`.
+- Phase 02 Context: `.planning/phases/02-design-system-mobile-shell/02-CONTEXT.md`
+- Dark mode will be implemented as an alternate Restyle theme swapped at the root provider.
+- We will strictly use `@shopify/restyle` for all design tokens and avoid standard `StyleSheet`.
 </context>
 
 <tasks>
-## Task 1: Install and configure Restyle
-1. Install `@shopify/restyle`.
-2. Create `apps/mobile/src/shared/theme/theme.ts`.
-3. Define the base `theme` (light mode) with tokens for `colors`, `spacing` (e.g., s: 8, m: 16), `breakpoints`, `textVariants`, `borderRadii`, and `zIndices`.
-4. Define `darkTheme` mapping dark mode colors.
-5. Export `Theme` type.
+## Task 1: Restyle Theme Configuration
+1. Define the base (light) and dark themes in `apps/mobile/src/shared/theme/theme.ts` using `createTheme` from `@shopify/restyle`.
+2. Configure the root provider in `apps/mobile/app/_layout.tsx` to wrap the app in the Restyle `ThemeProvider`, switching between light and dark themes based on system preference.
 
-## Task 2: Root ThemeProvider
-1. Modify `apps/mobile/app/_layout.tsx` (or create if missing) to wrap the app in the Restyle `ThemeProvider`.
-2. Use a stub or context to toggle dark/light mode for testing.
-
-## Task 3: Base Primitives
-1. Create `apps/mobile/src/shared/components/Box.tsx` using `createBox`.
-2. Create `apps/mobile/src/shared/components/Text.tsx` using `createText`.
-3. Ensure these are exported for use across the app.
+## Task 2: Base Components
+1. Create `apps/mobile/src/shared/components/Box.tsx` using `createBox` from `@shopify/restyle`.
+2. Create `apps/mobile/src/shared/components/Text.tsx` using `createText` from `@shopify/restyle` to apply typography tokens.
 </tasks>

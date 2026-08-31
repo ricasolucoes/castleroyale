@@ -1,15 +1,10 @@
-
 # Fase 11 — Performance
 
-**Objetivo:** Certificar de que a Game Engine Gamificada e Sidekick não impactam a experiência real do jogador.
+**Objetivo:** Monitorar métricas do Google Play Games Level Up (FPS, ANR, Battery, Memória) para garantir que a gamificação não afeta a performance.
 
-Medir:
-* FPS;
-* CPU;
-* GPU;
-* memory;
-* battery;
-* startup;
-* ANR;
-* crash rate.
-    
+## 1. Impacto da Gamificação
+Usar event-driven, batch processing e caches locais em vez de validações custosas frame-a-frame. Não deteriorar o gameplay.
+
+## 2. Android Quality
+Auditar crashes, ANRs, frame pacing, startup time e network payload.
+Verificar conformidade com requisitos de qualidade do Level Up e criar `/docs/google-play/level-up-quality.md`.

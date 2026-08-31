@@ -9,7 +9,7 @@ in discussion. If one is genuinely unworkable, write an ADR and record it in
 <domain>
 ## Phase Boundary
 
-A player can create an account, sign in on a device, stay signed in securely, and revoke other sessions.
+Authenticated players can maintain identity across sessions using device-native biometrics and secure token storage.
 
 **Depends on:** Phase 01
 **Milestone:** Playable Prototype
@@ -51,6 +51,7 @@ beyond them is out of scope for this phase.
 ### Client storage
 - Credentials go ONLY in SecureStore/Keychain. Never MMKV, AsyncStorage, Zustand or a log. Assert with a test.
 - Refresh must be single-flight on the client — concurrent 401s must not each trigger a rotation.
+- Secure token storage MUST integrate with device-native biometrics (Face ID / Touch ID) to maintain identity across sessions securely.
 
 ### Rate limiting
 - Auth endpoints limited separately and tighter (RATE_LIMIT_AUTH_PER_MINUTE=10).

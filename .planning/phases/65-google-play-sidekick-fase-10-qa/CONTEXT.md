@@ -1,18 +1,11 @@
-
 # Fase 10 — QA
 
-**Objetivo:** Atestar todas as integrações num nível que garanta que Sidekick e o Game Loop nunca se rompem sob condições extremas.
+**Objetivo:** Construir testes end-to-end de lifecycle, Sidekick, achievements, economia e contas.
 
-Criar testes:
-* unitários;
-* integração;
-* Android;
-* lifecycle;
-* offline;
-* sincronização;
-* Sidekick;
-* conta;
-* achievements;
-* Game Stats;
-* rewards.
-    
+## 1. Matriz de Dispositivos e Testes Sidekick
+Testar Sidekick fechado/aberto, background, screen recording, etc. Testar na matriz de aparelhos baixa/média/alta performance e offline.
+
+## 2. Testes Específicos
+- **Autenticação:** Instalação limpa, troca de conta, offline, recuperação de contas.
+- **Achievements:** Unlock offline, resync, duplicados (não devem desbloquear duas vezes).
+- **Recompensas:** Exactly-once semantics, timeouts, re-tries, server errors.
