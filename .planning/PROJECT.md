@@ -45,6 +45,7 @@ this is not.
 - [ ] **REQ-12** — Full observability: structured logs, metrics, tracing, economy/combat telemetry
 - [ ] **REQ-14** — Back office with audited game-master tooling and moderation
 - [ ] **REQ-15** — Multi-world sharding so population can scale horizontally
+- [ ] **REQ-16** — Public institutional presence in Laravel with localized, accessible, SEO-ready pages and a protected support channel
 
 ### Out of Scope
 
@@ -58,7 +59,7 @@ this is not.
   invalidate the sharding model before it has proven itself
 - **Player-authored content** — no map editors or custom scenarios; the moderation and
   anti-cheat surface is already large enough
-- **Web/desktop clients** — mobile-first, and mobile-only, through launch
+- **Web/desktop game clients** — mobile-first, and mobile-only, through launch. A public institutional site is allowed as a Laravel server-rendered surface; it is not a game client.
 - **PvP real-time co-op battles** — battles resolve server-side; live tactical control by
   two humans simultaneously is explicitly deferred past Phase 54
 
@@ -117,10 +118,13 @@ that assumption rather than patched for it later.
 | 2026-08-24 | Balance data in versioned JSON, imported to DB | Reviewable in PRs, hot-swappable, replay-safe | ADR-013, ADR-015 |
 | 2026-08-24 | Hand-authored OpenAPI, generated TS types | One contract both sides verify against | ADR-017 |
 | 2026-08-24 | GSD research disabled in config | Phases ship with CONTEXT + canonical refs; research would re-derive settled decisions | — |
+| 2026-08-27 | Public institutional site is a Laravel surface, not a web game client | The project needs discoverability, legal pages and player support without duplicating the mobile game client or weakening the modular monolith boundary | ADR-018 |
 
 ## Current Understanding
 
-Phases 00, 01, and 02 are done and committed. The next executable phase is Phase 03.
+Phases 00, 01, and 02 are done and committed. Phase 02.1 is now the next executable
+phase for the public institutional surface; Phase 03 remains the next gameplay API
+phase after it.
 
 Phase 02 (2026-08-26) implemented the design system and mobile shell, validating REQ-08 (touch targets, tokens, premium UI) and REQ-13 (localization pt-BR, en, es). The mobile app now contains core components (built strictly with `@shopify/restyle`), an Expo Router tab shell, light/dark mode support, and an automated touch-target testing suite.
 
@@ -140,4 +144,4 @@ pre-written CONTEXT.md locking its implementation decisions. Executing agents ar
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded
 as an ADR or a DECISIONS entry — it is not silently designed around.
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27

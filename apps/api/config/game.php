@@ -32,6 +32,7 @@ return [
     'name' => env('GAME_NAME', 'Project Dominion'),
     'code' => env('GAME_CODE', 'dominion'),
     'support_email' => env('GAME_SUPPORT_EMAIL', 'support@example.test'),
+    'support_rate_limit_per_minute' => (int) env('SUPPORT_RATE_LIMIT_PER_MINUTE', 5),
 
     /*
     |--------------------------------------------------------------------------
@@ -104,6 +105,29 @@ return [
         'max_march_units' => 500_000,
         'max_chat_message_length' => 500,
         'world_viewport_max_tiles' => 4_096,
+        'world_view_radius' => 8,
+    ],
+
+    'world' => [
+        'default_code' => env('GAME_DEFAULT_WORLD', 'aurora'),
+        'capacity' => (int) env('GAME_WORLD_CAPACITY', 1000),
+        'generation_seed' => env('GAME_WORLD_GENERATION_SEED', 'aurora-v1'),
+    ],
+
+    'player' => [
+        'name_min_length' => (int) env('PLAYER_NAME_MIN_LENGTH', 3),
+        'name_max_length' => (int) env('PLAYER_NAME_MAX_LENGTH', 24),
+        'denied_names' => array_values(array_filter(array_map(
+            static fn (string $name): string => mb_strtolower(trim($name)),
+            explode(',', (string) env('PLAYER_DENIED_NAMES', 'admin,administrator,moderator,system')),
+        ))),
+    ],
+
+    'auth' => [
+        'access_token_ttl_minutes' => (int) env('AUTH_ACCESS_TOKEN_TTL_MINUTES', 60),
+        'refresh_token_ttl_days' => (int) env('AUTH_REFRESH_TOKEN_TTL_DAYS', 30),
+        'max_device_sessions' => (int) env('AUTH_MAX_DEVICE_SESSIONS', 5),
+        'rate_limit_per_minute' => (int) env('RATE_LIMIT_AUTH_PER_MINUTE', 10),
     ],
 
     /*

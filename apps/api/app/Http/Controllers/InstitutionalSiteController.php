@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
 final class InstitutionalSiteController extends Controller
@@ -65,12 +66,20 @@ final class InstitutionalSiteController extends Controller
     {
         $locales = ['pt-BR', 'en', 'es'];
         $alternateUrls = [];
+        $template = match ($view) {
+            'home' => 'institutional.home',
+            'features' => 'institutional.features',
+            'support' => 'institutional.support',
+            'privacy' => 'institutional.privacy',
+            'terms' => 'institutional.terms',
+            default => throw new InvalidArgumentException('Unknown institutional page.'),
+        };
 
         foreach ($locales as $locale) {
             $alternateUrls[$locale] = $this->publicUrl($routeName, $locale);
         }
 
-        return view("institutional.{$view}", [
+        return view($template, [
             'locale' => app()->getLocale(),
             'canonicalUrl' => $this->publicUrl($routeName, app()->getLocale()),
             'alternateUrls' => $alternateUrls,
@@ -80,7 +89,8 @@ final class InstitutionalSiteController extends Controller
 
     private function publicUrl(string $routeName, string $locale): string
     {
-        $path = parse_url(route($routeName, ['locale' => $locale]), PHP_URL_PATH) ?: '/';
+        $parsedPath = parse_url(route($routeName, ['locale' => $locale]), PHP_URL_PATH);
+        $path = is_string($parsedPath) ? $parsedPath : '/';
         $path = $path === '/' ? '' : $path;
 
         return rtrim((string) config('app.url'), '/').$path.'?locale='.rawurlencode($locale);

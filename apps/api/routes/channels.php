@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Game\Identity\Domain\Account;
 use Game\Player\Infrastructure\Player;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +40,13 @@ Broadcast::channel('player.{playerId}', static function (Account $account, strin
 });
 
 Broadcast::channel('city.{cityId}', static function (Account $account, string $cityId): bool {
-    // Phase 07: the viewer must own the city, or be reinforcing it.
-    return false;
+    return DB::table('cities')
+        ->join('players', 'players.id', '=', 'cities.player_id')
+        ->where('cities.id', $cityId)
+        ->where('players.account_id', $account->getKey())
+        ->whereColumn('cities.world_id', 'players.world_id')
+        ->whereNotNull('cities.world_id')
+        ->exists();
 });
 
 Broadcast::channel('alliance.{allianceId}', static function (Account $account, string $allianceId): bool {

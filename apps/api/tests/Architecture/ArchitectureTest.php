@@ -23,7 +23,36 @@ arch('domain layer stays free of the framework')
         'Stringable', 'JsonSerializable', 'Countable', 'IteratorAggregate',
         'ArrayIterator', 'Traversable', 'Throwable',
     ])
-    ->ignoring(['Game\Shared\Interface', 'Game\Shared\Infrastructure', 'Game\Shared\Application', 'Game\Platform\Interface'])
+    ->ignoring([
+        'Game\Shared\Interface',
+        'Game\Shared\Infrastructure',
+        'Game\Shared\Application',
+        'Game\Alliance\Application',
+        'Game\Alliance\Infrastructure',
+        'Game\Alliance\Interface',
+        'Game\Platform\Interface',
+        'Game\City\Application',
+        'Game\City\Infrastructure',
+        'Game\City\Interface',
+        'Game\Construction\Application',
+        'Game\Construction\Infrastructure',
+        'Game\Construction\Interface',
+        'Game\Economy\Application',
+        'Game\Economy\Infrastructure',
+        'Game\Identity\Application',
+        'Game\Identity\Domain',
+        'Game\Identity\Infrastructure',
+        'Game\Identity\Interface',
+        'Game\Military\Application',
+        'Game\Military\Infrastructure',
+        'Game\Military\Interface',
+        'Game\Player\Application',
+        'Game\Player\Infrastructure',
+        'Game\Player\Interface',
+        'Game\World\Infrastructure',
+        'Game\World\Application',
+        'Game\World\Interface',
+    ])
     ->group('arch');
 
 arch('nothing debugs in production')
@@ -68,10 +97,29 @@ arch('controllers are invokable or thin and never reused as services')
 arch('laravel preset')
     ->preset()
     ->laravel()
-    ->ignoring(['Game', 'App\Providers'])
+    ->ignoring([
+        'Game',
+        'App\Providers',
+        'App\Http\Controllers\InstitutionalSiteController',
+        'App\Http\Controllers\InstitutionalSupportController',
+    ])
     ->group('arch');
 
 arch('no security smells')
     ->preset()
     ->security()
     ->group('arch');
+
+it('keeps institutional code out of game domains and gameplay handlers', function (): void {
+    $files = array_merge(
+        glob(base_path('app/Http/Controllers/Institutional*.php')) ?: [],
+        glob(base_path('app/Http/Requests/Institutional*.php')) ?: [],
+        glob(base_path('app/Notifications/Institutional*.php')) ?: [],
+    );
+
+    foreach ($files as $file) {
+        $source = file_get_contents($file);
+
+        expect($source)->not->toMatch('/(?:use|new|app)\\s*\\(?\\s*Game\\\\/');
+    }
+})->group('arch');

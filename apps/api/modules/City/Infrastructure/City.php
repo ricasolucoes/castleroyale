@@ -9,12 +9,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property string $id
  * @property string $world_id
  * @property string $player_id
  * @property string $name_key
  * @property int $x
  * @property int $y
+ * @property int $food
+ * @property int $wood
+ * @property int $stone
+ * @property int $iron
+ * @property int $gold
+ * @property int $food_capacity
+ * @property int $wood_capacity
+ * @property int $stone_capacity
+ * @property int $iron_capacity
+ * @property int $gold_capacity
  * @property Carbon|null $last_accrued_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 final class City extends Model
 {

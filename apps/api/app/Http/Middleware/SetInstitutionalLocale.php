@@ -14,7 +14,7 @@ final class SetInstitutionalLocale
      * Keep the locale request-scoped so a long-lived worker cannot leak one
      * visitor's language into the next request.
      *
-     * @param  Closure(Request): Response  $next
+     * @param Closure(Request): Response $next
      */
     public function handle(Request $request, Closure $next): Response
     {

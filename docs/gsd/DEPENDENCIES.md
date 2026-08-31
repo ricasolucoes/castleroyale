@@ -15,6 +15,7 @@ graph TD
         P00["00 Repository Bootstrap"]
         P01["01 Engineering Foundation"]
         P02["02 Design System and Mobile Shell"]
+        P021["02.1 Institutional Site and Public Backend Surface"]
     end
     subgraph PlayablePrototype["Playable Prototype"]
         P03["03 Identity and Authentication"]
@@ -91,6 +92,8 @@ graph TD
 
     P00 --> P01
     P00 --> P02
+    P01 --> P021
+    P02 --> P021
     P01 --> P03
     P03 --> P04
     P01 --> P05

@@ -17,6 +17,18 @@ export type ResourceType = components['schemas']['ResourceType'];
 export type ContentVersions = components['schemas']['ContentVersions'];
 export type Pagination = components['schemas']['Pagination'];
 export type Ulid = components['schemas']['Ulid'];
+export type AuthTokens = components['schemas']['AuthTokens'];
+export type CityData = components['schemas']['CityData'];
+export type GameBootstrap = components['schemas']['GameBootstrap'];
+export type GameBootstrapRequest = components['schemas']['GameBootstrapRequest'];
+export type WorldList = components['schemas']['WorldList'];
+export type WorldOption = components['schemas']['WorldOption'];
+export type Construction = components['schemas']['Construction'];
+export type WorldData = components['schemas']['WorldData'];
+export type WorldViewport = components['schemas']['WorldViewport'];
+export type WorldTile = components['schemas']['WorldTile'];
+export type MilitaryData = components['schemas']['MilitaryData'];
+export type AllianceData = components['schemas']['AllianceData'];
 
 /** The success envelope. Every endpoint returns this or an {@link ErrorResponse}. */
 export type ApiSuccess<TData, TMeta = Record<string, unknown>> = {

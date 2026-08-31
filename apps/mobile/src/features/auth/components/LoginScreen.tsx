@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { ActivityIndicator, StyleSheet, TextInput, View } from 'react-native';
-import type { AuthTokens, GameBootstrap } from '@dominion/contracts';
+import { ActivityIndicator, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import type { AuthTokens, WorldList } from '@dominion/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { clearTokens, saveTokens } from '@/features/auth/SecureStorage';
@@ -41,8 +41,8 @@ export function LoginScreen() {
 
   async function finishLogin(tokens: AuthTokens) {
     await saveTokens(tokens.access_token, tokens.refresh_token);
-    await apiRequest<GameBootstrap>('/game/bootstrap', { method: 'POST' }, { authenticated: true });
-    router.replace('/(tabs)/city');
+    const worlds = await apiRequest<WorldList>('/game/worlds', {}, { authenticated: true });
+    router.replace(worlds.worlds.some((world) => world.has_player) ? '/(tabs)/city' : '/onboarding');
   }
 
   async function playAsGuest() {
@@ -78,7 +78,10 @@ export function LoginScreen() {
   }
 
   return (
-    <View style={[styles.screen, { backgroundColor: theme.color.bg.base }]}>
+    <KeyboardAvoidingView 
+      style={[styles.screen, { backgroundColor: theme.color.bg.base }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <Card style={styles.card}>
         <Text variant="display">{t('auth.title')}</Text>
         <Text color={theme.color.text.secondary}>{t('auth.subtitle')}</Text>
@@ -129,6 +132,6 @@ export function LoginScreen() {
         />
         {isPending && <ActivityIndicator color={theme.color.accent.bronze} />}
       </Card>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -212,7 +212,7 @@ final class GameDataCatalog
     }
 
     /**
-     * @return list<array{code: string, level: int}>
+     * @return list<array{slot: string, code: string, level: int}>
      */
     public function starterBuildings(): array
     {
@@ -226,7 +226,11 @@ final class GameDataCatalog
                 continue;
             }
 
-            $result[] = ['code' => (string) $row['code'], 'level' => (int) $row['level']];
+            $result[] = [
+                'slot' => (string) ($row['slot'] ?? $row['code']),
+                'code' => (string) $row['code'],
+                'level' => (int) $row['level'],
+            ];
         }
 
         return $result;

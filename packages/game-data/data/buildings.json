@@ -1,0 +1,159 @@
+[
+  {
+    "code": "palace",
+    "name_key": "buildings.palace",
+    "category": "core",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": []
+      },
+      {
+        "level": 2,
+        "cost": { "food": 200, "wood": 250, "stone": 180 },
+        "build_time_seconds": 30,
+        "requirements": [],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 500, "wood": 650, "stone": 500, "iron": 100 },
+        "build_time_seconds": 60,
+        "requirements": [],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "farm",
+    "name_key": "buildings.farm",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 2,
+        "cost": { "wood": 120, "stone": 60 },
+        "build_time_seconds": 20,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 300, "stone": 180 },
+        "build_time_seconds": 45,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "add", "value": 1 }]
+      }
+    ]
+  },
+  {
+    "code": "lumber_mill",
+    "name_key": "buildings.lumber_mill",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": [{ "target": "production.wood", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 80, "stone": 100 },
+        "build_time_seconds": 20,
+        "requirements": [],
+        "effects": [{ "target": "production.wood", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 200, "stone": 260 },
+        "build_time_seconds": 45,
+        "requirements": [],
+        "effects": [{ "target": "production.wood", "operation": "add", "value": 1 }]
+      }
+    ]
+  },
+  {
+    "code": "quarry",
+    "name_key": "buildings.quarry",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": [{ "target": "production.stone", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 100, "wood": 100 },
+        "build_time_seconds": 20,
+        "requirements": [],
+        "effects": [{ "target": "production.stone", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 250, "wood": 240 },
+        "build_time_seconds": 45,
+        "requirements": [],
+        "effects": [{ "target": "production.stone", "operation": "add", "value": 1 }]
+      }
+    ]
+  },
+  {
+    "code": "warehouse",
+    "name_key": "buildings.warehouse",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": []
+      },
+      {
+        "level": 2,
+        "cost": { "wood": 180, "stone": 160 },
+        "build_time_seconds": 25,
+        "requirements": [],
+        "effects": [
+          { "target": "storage.food", "operation": "add", "value": 500 },
+          { "target": "storage.wood", "operation": "add", "value": 500 },
+          { "target": "storage.stone", "operation": "add", "value": 500 },
+          { "target": "storage.iron", "operation": "add", "value": 500 },
+          { "target": "storage.gold", "operation": "add", "value": 250 }
+        ]
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 420, "stone": 400, "iron": 80 },
+        "build_time_seconds": 50,
+        "requirements": [],
+        "effects": [
+          { "target": "storage.food", "operation": "add", "value": 500 },
+          { "target": "storage.wood", "operation": "add", "value": 500 },
+          { "target": "storage.stone", "operation": "add", "value": 500 },
+          { "target": "storage.iron", "operation": "add", "value": 500 },
+          { "target": "storage.gold", "operation": "add", "value": 250 }
+        ]
+      }
+    ]
+  }
+]

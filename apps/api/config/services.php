@@ -30,6 +30,22 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_ids' => array_values(array_filter([
+            env('GOOGLE_SIGN_IN_CLIENT_ID_ANDROID'),
+            env('GOOGLE_SIGN_IN_CLIENT_ID_IOS'),
+            env('GOOGLE_SIGN_IN_CLIENT_ID_WEB'),
+        ])),
+        'issuers' => ['https://accounts.google.com', 'accounts.google.com'],
+        'jwks_url' => 'https://www.googleapis.com/oauth2/v3/certs',
+    ],
+
+    'apple' => [
+        'client_ids' => array_values(array_filter([env('APPLE_SIGN_IN_CLIENT_ID')])),
+        'issuers' => ['https://appleid.apple.com'],
+        'jwks_url' => 'https://appleid.apple.com/auth/keys',
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

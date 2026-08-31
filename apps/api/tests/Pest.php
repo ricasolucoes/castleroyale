@@ -7,6 +7,8 @@ use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Domain\Time\Clock;
 use Game\Shared\Domain\Time\FrozenClock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 /*
@@ -81,9 +83,16 @@ function freezeClock(string $iso8601 = '2026-01-01T00:00:00+00:00'): FrozenClock
     $clock = FrozenClock::at($iso8601);
 
     app()->instance(Clock::class, $clock);
+    Carbon::setTestNow($clock->now());
+    Date::setTestNow($clock->now());
 
     return $clock;
 }
+
+afterEach(function (): void {
+    Carbon::setTestNow();
+    Date::setTestNow();
+});
 
 /**
  * Authenticate as a back-office account.

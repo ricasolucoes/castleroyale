@@ -20,7 +20,7 @@ suite — use `make test-postgres` or the CI run.
 
 | ID | Debt | Impact | Target phase |
 |----|------|--------|--------------|
-| DEBT-001 | Broadcast channel callbacks in `routes/channels.php` all return `false` | No realtime authorisation yet; channels are unusable, which is the safe default | Each channel's owning phase (04, 07, 17, 22) |
+| DEBT-001 | Broadcast channel callbacks for city, alliance, battle and region still return `false`; player channel is implemented in Phase 04 | Unimplemented channels remain unusable, which is the safe default | Each channel's owning phase (07, 17, 22, 05) |
 | DEBT-002 | `config/` and `tests/` excluded from PHPStan | Stock Laravel config and Pest's fluent API are not statically modelable; first-party code is fully covered | 37 |
 | DEBT-003 | `App\Models\User` is a placeholder with no device sessions, guest support or social identity | Only supports back-office login | 03 |
 | DEBT-004 | No OpenAPI spec written yet; `packages/contracts` is scaffolded but empty | Contract tests cannot run | 03 (first real endpoints) |

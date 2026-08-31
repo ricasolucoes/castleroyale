@@ -230,6 +230,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/game/city/{cityId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read a city owned by the authenticated player */
+        get: operations["gameCityById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/game/world": {
         parameters: {
             query?: never;
@@ -372,6 +389,7 @@ export interface components {
             capacity: components["schemas"]["ResourceBundle"];
         };
         CityBuilding: {
+            slot: string;
             code: string;
             name_key: string;
             category: string;
@@ -1078,6 +1096,40 @@ export interface operations {
                     "application/json": {
                         data: components["schemas"]["CityData"];
                     };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    gameCityById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cityId: components["schemas"]["Ulid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current city state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CityData"];
+                    };
+                };
+            };
+            /** @description The city is not owned by this player */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             401: components["responses"]["Unauthorized"];

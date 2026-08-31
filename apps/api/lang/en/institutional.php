@@ -53,6 +53,11 @@ return [
         'failure' => 'We could not send this right now. Try again or use the alternate contact below.',
         'alternate' => 'Alternate contact', 'alternate_body' => 'If the form is unavailable, write directly to:',
         'required' => 'Required',
+        'validation' => ['unexpected' => 'Unexpected fields were submitted.'],
+        'mail' => [
+            'intro' => 'New message received from the support form.',
+            'name' => 'Name', 'email' => 'Email', 'subject' => 'Subject', 'message' => 'Message',
+        ],
     ],
     'privacy' => [
         'eyebrow' => 'Legal information', 'title' => 'Privacy policy', 'updated' => 'Last updated',

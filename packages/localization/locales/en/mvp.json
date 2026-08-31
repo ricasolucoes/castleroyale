@@ -67,7 +67,16 @@
     "coordinates": "Coordinates {x}, {y}",
     "map_hint": "Tap a marker to inspect the settlement.",
     "no_cities": "No settlement was found in this window.",
-    "refresh": "Refresh map"
+    "refresh": "Refresh map",
+    "map_accessibility": "Interactive world map",
+    "reset_to_city": "Return to city",
+    "selected_tile": "Selected tile",
+    "no_tiles": "No map data is available here.",
+    "tile_loading": "Loading tile details...",
+    "tile_stale": "Showing cached details while reconnecting.",
+    "tile_error": "Tile details could not be loaded.",
+    "terrain": "Terrain: {terrain}",
+    "region": "Region {region}"
   },
   "profile": {
     "title": "Profile",

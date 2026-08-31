@@ -13,7 +13,8 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "mobile": "npm run start --workspace=@dominion/mobile",
+    "mobile": "npm run start --workspace=@dominion/mobile --",
+    "mobile:dev-client": "npm run start:dev-client --workspace=@dominion/mobile --",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
@@ -23,7 +24,8 @@
     "build": "npm run build --workspaces --if-present",
     "contracts:generate": "npm run generate --workspace=@dominion/contracts",
     "contracts:check": "npm run check --workspace=@dominion/contracts",
-    "gamedata:validate": "npm run validate --workspace=@dominion/game-data"
+    "gamedata:validate": "npm run validate --workspace=@dominion/game-data",
+    "tokens:generate": "npm run generate --workspace=@dominion/tooling"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -36,7 +38,6 @@
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "prettier": "^3.4.2",
-    "react-test-renderer": "^19.2.8",
     "typescript": "~6.0.3"
   },
   "prettier": {

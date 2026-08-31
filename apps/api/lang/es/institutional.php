@@ -53,6 +53,11 @@ return [
         'failure' => 'No pudimos enviarlo ahora. Inténtalo de nuevo o usa el contacto alternativo.',
         'alternate' => 'Contacto alternativo', 'alternate_body' => 'Si el formulario no está disponible, escribe directamente a:',
         'required' => 'Obligatorio',
+        'validation' => ['unexpected' => 'Se enviaron campos no permitidos.'],
+        'mail' => [
+            'intro' => 'Nuevo mensaje recibido del formulario de soporte.',
+            'name' => 'Nombre', 'email' => 'Correo electrónico', 'subject' => 'Asunto', 'message' => 'Mensaje',
+        ],
     ],
     'privacy' => [
         'eyebrow' => 'Información legal', 'title' => 'Política de privacidad', 'updated' => 'Última actualización',

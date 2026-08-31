@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { Button } from '@/shared/components/Button';
@@ -55,7 +55,10 @@ export function GuestUpgradeScreen() {
   }
 
   return (
-    <View style={[styles.screen, { backgroundColor: theme.color.bg.base }]}>
+    <KeyboardAvoidingView 
+      style={[styles.screen, { backgroundColor: theme.color.bg.base }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <Card style={styles.card}>
         <Text variant="title">{t('auth.upgrade_title')}</Text>
         <Text color={theme.color.text.secondary}>{t('auth.upgrade_copy')}</Text>
@@ -87,6 +90,6 @@ export function GuestUpgradeScreen() {
           disabled={isPending || email.length === 0 || password.length < 8}
         />
       </Card>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

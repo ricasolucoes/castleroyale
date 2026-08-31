@@ -10,7 +10,15 @@
         <p class="site-lead">{{ __('institutional.support.intro') }}</p>
     </section>
     <section class="site-section site-container site-support-grid" aria-label="{{ __('institutional.support.title') }}">
-        <form class="site-form site-card" method="post" action="{{ route('site.support') }}">
+        @error('form')
+            <p class="site-status site-status-error" role="alert">{{ $message }}</p>
+        @enderror
+        @if (session('support_status'))
+            <p class="site-status site-status-{{ session('support_status') === 'success' ? 'success' : 'error' }}" role="status" aria-live="polite">
+                {{ __(session('support_status') === 'success' ? 'institutional.support.success' : 'institutional.support.failure') }}
+            </p>
+        @endif
+        <form class="site-form site-card" method="post" action="{{ route('site.support.submit', ['locale' => $locale]) }}">
             @csrf
             <input type="hidden" name="locale" value="{{ $locale }}">
             <div class="site-field">

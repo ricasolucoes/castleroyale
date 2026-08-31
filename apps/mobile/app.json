@@ -7,17 +7,9 @@
     "icon": "./assets/icon.png",
     "scheme": "dominion",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
     "backgroundColor": "#0E1116",
     "primaryColor": "#B4762E",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0E1116"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "test.example.dominion",
@@ -65,6 +57,9 @@
         "port": 8081,
         "scheme": "http",
         "key": "local-reverb-key"
+      },
+      "router": {
+        "root": "app"
       }
     }
   }

@@ -15,8 +15,10 @@ return new class extends Migration
             GameTable::entity($table);
             GameTable::worldScoped($table);
             $table->foreignUlid('city_id')->constrained('cities')->cascadeOnDelete();
+            $table->string('slot', 64);
             $table->string('building_code');
             $table->unsignedInteger('level')->default(1);
+            $table->unique(['world_id', 'city_id', 'slot']);
             $table->unique(['world_id', 'city_id', 'building_code']);
             $table->foreign('world_id')->references('id')->on('worlds')->cascadeOnDelete();
         });

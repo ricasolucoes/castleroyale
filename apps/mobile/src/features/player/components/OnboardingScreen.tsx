@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
 import type { GameBootstrap, WorldList, WorldOption } from '@dominion/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
@@ -79,51 +79,56 @@ export function OnboardingScreen() {
   }
 
   return (
-    <ScrollView style={[styles.screen, { backgroundColor: theme.color.bg.base }]} contentContainerStyle={styles.content}>
-      <Text variant="display">{t('auth.onboarding_title')}</Text>
-      <Text color={theme.color.text.secondary}>{t('auth.onboarding_subtitle')}</Text>
-      {errorKey && <Text color={theme.color.danger}>{t(errorKey)}</Text>}
-      <TextInput
-        accessibilityLabel={t('auth.player_name')}
-        autoCapitalize="words"
-        onChangeText={setName}
-        placeholder={t('auth.player_name_placeholder')}
-        placeholderTextColor={theme.color.text.secondary}
-        style={styles.input}
-        value={name}
-      />
-      <View style={styles.worlds}>
-        {worldsQuery.data.worlds.map((world) => {
-          const unavailable = world.status !== 'open';
-          return (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ disabled: unavailable, selected: selectedWorld?.id === world.id }}
-              disabled={unavailable}
-              key={world.id}
-              onPress={() => setSelectedWorld(world)}
-            >
-              <Card
-                style={{
-                  ...styles.worldCard,
-                  ...(selectedWorld?.id === world.id ? styles.selected : {}),
-                  ...(unavailable ? { opacity: 0.55 } : {}),
-                }}
+    <KeyboardAvoidingView 
+      style={{ flex: 1, backgroundColor: theme.color.bg.base }} 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+        <Text variant="display">{t('auth.onboarding_title')}</Text>
+        <Text color={theme.color.text.secondary}>{t('auth.onboarding_subtitle')}</Text>
+        {errorKey && <Text color={theme.color.danger}>{t(errorKey)}</Text>}
+        <TextInput
+          accessibilityLabel={t('auth.player_name')}
+          autoCapitalize="words"
+          onChangeText={setName}
+          placeholder={t('auth.player_name_placeholder')}
+          placeholderTextColor={theme.color.text.secondary}
+          style={styles.input}
+          value={name}
+        />
+        <View style={styles.worlds}>
+          {worldsQuery.data.worlds.map((world) => {
+            const unavailable = world.status !== 'open';
+            return (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: unavailable, selected: selectedWorld?.id === world.id }}
+                disabled={unavailable}
+                key={world.id}
+                onPress={() => setSelectedWorld(world)}
               >
-                <Text variant="heading">{world.name}</Text>
-                <Text color={theme.color.text.secondary}>{world.code}</Text>
-                <Text>{t('auth.world_population', { population: world.population, capacity: world.capacity })}</Text>
-                <Text color={unavailable ? theme.color.danger : theme.color.success}>{statusLabel(world)}</Text>
-              </Card>
-            </Pressable>
-          );
-        })}
-      </View>
-      <Button
-        title={isEntering ? t('auth.entering_world') : t('auth.enter_world')}
-        disabled={isEntering || selectedWorld === null || name.trim().length === 0}
-        onPress={() => void enterWorld()}
-      />
-    </ScrollView>
+                <Card
+                  style={{
+                    ...styles.worldCard,
+                    ...(selectedWorld?.id === world.id ? styles.selected : {}),
+                    ...(unavailable ? { opacity: 0.55 } : {}),
+                  }}
+                >
+                  <Text variant="heading">{world.name}</Text>
+                  <Text color={theme.color.text.secondary}>{world.code}</Text>
+                  <Text>{t('auth.world_population', { population: world.population, capacity: world.capacity })}</Text>
+                  <Text color={unavailable ? theme.color.danger : theme.color.success}>{statusLabel(world)}</Text>
+                </Card>
+              </Pressable>
+            );
+          })}
+        </View>
+        <Button
+          title={isEntering ? t('auth.entering_world') : t('auth.enter_world')}
+          disabled={isEntering || selectedWorld === null || name.trim().length === 0}
+          onPress={() => void enterWorld()}
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

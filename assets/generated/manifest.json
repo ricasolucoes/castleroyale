@@ -1,0 +1,21 @@
+{
+  "name": "project-dominion-visual-kit",
+  "generatedAt": "2026-08-28",
+  "source": "integrated-image-generator-fallback",
+  "flowProject": "Project Dominion — MVP Visual Kit",
+  "buildings": [
+    { "id": "palace", "levels": [1, 2, 3], "files": ["buildings/palace-level-1.png", "buildings/palace-level-2.png", "buildings/palace-level-3.png"] },
+    { "id": "farm", "levels": [1, 2, 3], "files": ["buildings/farm-level-1.png", "buildings/farm-level-2.png", "buildings/farm-level-3.png"] },
+    { "id": "lumber_mill", "levels": [1, 2, 3], "files": ["buildings/lumber-mill-level-1.png", "buildings/lumber-mill-level-2.png", "buildings/lumber-mill-level-3.png"] },
+    { "id": "quarry", "levels": [1, 2, 3], "files": ["buildings/quarry-level-1.png", "buildings/quarry-level-2.png", "buildings/quarry-level-3.png"] },
+    { "id": "warehouse", "levels": [1, 2, 3], "files": ["buildings/warehouse-level-1.png", "buildings/warehouse-level-2.png", "buildings/warehouse-level-3.png"] }
+  ],
+  "map": {
+    "worldOverview": "map/world-overview.png",
+    "regionDetail": "map/region-detail.png",
+    "markerAtlas": "map/marker-atlas.png",
+    "terrainAtlas": "map/terrain-atlas.png"
+  },
+  "runtimeReady": false,
+  "runtimePreparation": ["remove or preserve studio backgrounds by target", "crop and normalize scale", "compress", "pack runtime atlases"]
+}

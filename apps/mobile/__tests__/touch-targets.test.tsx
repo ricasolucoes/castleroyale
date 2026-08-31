@@ -6,8 +6,11 @@ import { Text } from 'react-native';
 import React from 'react';
 
 jest.mock('@gorhom/bottom-sheet', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const ReactMock = require('react');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const ReactNativeMock = require('react-native');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const BottomSheetMock = ReactMock.forwardRef((props: any, _ref: any) => <ReactNativeMock.View testID="gorhom-bottom-sheet" {...props} />);
   return {
     __esModule: true,

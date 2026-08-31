@@ -57,6 +57,7 @@ final readonly class GameBootstrapService
                     $world = World::create([
                         'code' => $worldCode,
                         'name' => (string) ($worldConfig['name'] ?? $worldCode),
+                        'seed' => (string) ($worldConfig['seed'] ?? config('game.world.generation_seed', $worldCode)),
                         'population' => 0,
                         'capacity' => max(1, (int) config('game.world.capacity')),
                         'spawn_index' => 0,
@@ -118,14 +119,23 @@ final readonly class GameBootstrapService
                     $origin = is_array($cityConfig['origin'] ?? null) ? $cityConfig['origin'] : [];
                     $spawnStep = (int) ($worldConfig['spawn_step'] ?? 1);
                     $spawnIndex = (int) $world->spawn_index;
+                    $cityX = (int) ($origin['x'] ?? 0) + ($spawnIndex * $spawnStep);
+                    $cityY = (int) ($origin['y'] ?? 0);
+                    $occupiedQuery = City::query()
+                        ->where('world_id', $world->getKey())
+                        ->where('x', $cityX)
+                        ->where('y', $cityY);
+                    if ($occupiedQuery->getQuery()->exists()) {
+                        throw GameException::of(ErrorCode::TileOccupied, 'The city tile is already occupied.');
+                    }
                     $resources = $this->catalog->starterValues('resources');
                     $capacity = $this->catalog->starterValues('capacity');
                     $city = City::create([
                         'world_id' => $world->getKey(),
                         'player_id' => $player->getKey(),
                         'name_key' => (string) ($cityConfig['name_key'] ?? 'city.starter_name'),
-                        'x' => (int) ($origin['x'] ?? 0) + ($spawnIndex * $spawnStep),
-                        'y' => (int) ($origin['y'] ?? 0),
+                        'x' => $cityX,
+                        'y' => $cityY,
                         'last_accrued_at' => $this->clock->now(),
                         ...$resources,
                         'food_capacity' => $capacity['food'],
@@ -139,6 +149,7 @@ final readonly class GameBootstrapService
                         CityBuilding::create([
                             'world_id' => $world->getKey(),
                             'city_id' => $city->getKey(),
+                            'slot' => $building['slot'],
                             'building_code' => $building['code'],
                             'level' => $building['level'],
                         ]);

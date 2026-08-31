@@ -1,0 +1,41 @@
+{
+  "world": {
+    "code": "aurora",
+    "name": "Aurora",
+    "spawn_step": 2
+  },
+  "player": {
+    "default_name": "Governor"
+  },
+  "city": {
+    "name_key": "city.starter_name",
+    "origin": {
+      "x": 0,
+      "y": 0
+    },
+    "resources": {
+      "food": 500,
+      "wood": 500,
+      "stone": 500,
+      "iron": 250,
+      "gold": 100
+    },
+    "capacity": {
+      "food": 1000,
+      "wood": 1000,
+      "stone": 1000,
+      "iron": 1000,
+      "gold": 500
+    },
+    "buildings": [
+      { "code": "palace", "level": 1 },
+      { "code": "farm", "level": 1 },
+      { "code": "lumber_mill", "level": 1 },
+      { "code": "quarry", "level": 1 },
+      { "code": "warehouse", "level": 1 }
+    ],
+    "units": [
+      { "code": "militia", "quantity": 20 }
+    ]
+  }
+}

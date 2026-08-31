@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\InstitutionalSiteController;
+use App\Http\Controllers\InstitutionalSupportController;
 use App\Http\Middleware\SetInstitutionalLocale;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +15,7 @@ Route::middleware(SetInstitutionalLocale::class)->group(function (): void {
     Route::get('/terms', [InstitutionalSiteController::class, 'terms'])->name('site.terms');
     Route::get('/sitemap.xml', [InstitutionalSiteController::class, 'sitemap'])->name('site.sitemap');
     Route::get('/robots.txt', [InstitutionalSiteController::class, 'robots'])->name('site.robots');
+    Route::post('/support', [InstitutionalSupportController::class, 'store'])
+        ->middleware('throttle:institutional-support')
+        ->name('site.support.submit');
 });

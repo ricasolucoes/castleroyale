@@ -6,9 +6,13 @@ export function useTranslation() {
   const languageTag = locales && locales.length > 0 ? locales[0].languageTag : undefined;
   const locale = resolveLocale(languageTag);
 
-  const t = (key: string) => {
+  const t = (key: string, values: Record<string, string | number> = {}) => {
     const value = key.split('.').reduce((o: unknown, i: string) => (o as Record<string, unknown>)?.[i], CATALOGUES[locale]);
-    return typeof value === 'string' ? value : key;
+    if (typeof value !== 'string') return key;
+
+    return value.replace(/\{(\w+)\}/g, (match, name: string) => (
+      name in values ? String(values[name]) : match
+    ));
   };
 
   return { t, locale };

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Game\Identity\Domain\SocialIdentityVerifier;
+use Game\Identity\Infrastructure\OidcIdentityVerifier;
 use Game\Shared\Domain\Time\Clock;
 use Game\Shared\Infrastructure\Time\SystemClock;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +18,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         // Game rules resolve time through the Clock contract, never `now()`.
         $this->app->singleton(Clock::class, SystemClock::class);
+        $this->app->singleton(SocialIdentityVerifier::class, OidcIdentityVerifier::class);
     }
 
     public function boot(): void

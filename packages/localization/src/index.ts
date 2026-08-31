@@ -20,8 +20,11 @@ export function isSupportedLocale(value: string): value is Locale {
 }
 
 import enNavigation from '../locales/en/navigation.json' with { type: 'json' };
+import enMvp from '../locales/en/mvp.json' with { type: 'json' };
 import esNavigation from '../locales/es/navigation.json' with { type: 'json' };
+import esMvp from '../locales/es/mvp.json' with { type: 'json' };
 import ptBRNavigation from '../locales/pt-BR/navigation.json' with { type: 'json' };
+import ptBRMvp from '../locales/pt-BR/mvp.json' with { type: 'json' };
 
 /**
  * Resolve a requested locale to one we actually ship, falling back to the
@@ -39,7 +42,7 @@ export function resolveLocale(requested: string | undefined): Locale {
 }
 
 export const CATALOGUES = {
-  en: { navigation: enNavigation },
-  es: { navigation: esNavigation },
-  'pt-BR': { navigation: ptBRNavigation },
+  en: { navigation: enNavigation, ...enMvp },
+  es: { navigation: esNavigation, ...esMvp },
+  'pt-BR': { navigation: ptBRNavigation, ...ptBRMvp },
 };

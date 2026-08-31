@@ -71,3 +71,22 @@ An admin action without a stated reason is **refused** (Phase 34).
   battle seeds. Gated by `viewHorizon`; staff only outside local.
 - **Filament** (`/admin`) requires `is_staff`.
 - Neither is ever public.
+
+## Institutional public surface
+
+The public health check is GET /up; the institutional routes are read-only and
+must remain available for site.home, site.features, site.support, site.privacy,
+site.terms, site.sitemap and site.robots.
+
+Support submissions emit structured events with locale, outcome and a correlation
+identifier:
+
+| Signal | Meaning | Operator response |
+|--------|---------|-------------------|
+| institutional_support_submission_succeeded | Valid mail accepted by the configured transport | Confirm normal delivery if a user reports a delay |
+| validation failure | Input rejected before mail delivery | Review abuse patterns; do not inspect or log secrets |
+| rate limit (429) | Email/IP pair exceeded 5 requests per minute | Check for abuse and leave the limiter in place unless the threshold is intentionally changed |
+| institutional_support_submission_failed | Mail transport failed | Check mail credentials, transport health and queue/SMTP logs; the form shows a safe retry message |
+
+These events intentionally exclude passwords, tokens, account/world identifiers,
+raw headers and full message content.

@@ -24,6 +24,3 @@ parameters:
 
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: true
-
-    ignoreErrors:
-        - identifier: trait.unused

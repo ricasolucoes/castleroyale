@@ -310,6 +310,21 @@
     color: var(--token-danger);
 }
 
+.site-status {
+    grid-column: 1 / -1;
+    padding: var(--token-space-md);
+    border: thin solid var(--token-border-strong);
+    border-radius: var(--token-radius-sm);
+}
+
+.site-status-success {
+    color: var(--token-success);
+}
+
+.site-status-error {
+    color: var(--token-danger);
+}
+
 .site-footer {
     border-block-start: thin solid var(--token-border-subtle);
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Game\Construction\Application\ConstructionReconciler;
 use Illuminate\Support\Facades\Schedule;
 
 /*
@@ -35,3 +36,8 @@ Schedule::command('queue:prune-failed --hours=168')
 
 Schedule::command('sanctum:prune-expired --hours=24')
     ->daily();
+
+Schedule::call(static fn (): int => app(ConstructionReconciler::class)->run())
+    ->everyMinute()
+    ->name('construction-reconcile')
+    ->withoutOverlapping();

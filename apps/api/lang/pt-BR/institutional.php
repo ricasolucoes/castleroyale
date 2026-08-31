@@ -67,6 +67,11 @@ return [
         'alternate' => 'Contato alternativo',
         'alternate_body' => 'Se o formulário estiver indisponível, escreva diretamente para:',
         'required' => 'Obrigatório',
+        'validation' => ['unexpected' => 'Foram enviados campos não permitidos.'],
+        'mail' => [
+            'intro' => 'Nova mensagem recebida pelo formulário de suporte.',
+            'name' => 'Nome', 'email' => 'E-mail', 'subject' => 'Assunto', 'message' => 'Mensagem',
+        ],
     ],
     'privacy' => [
         'eyebrow' => 'Informação legal',

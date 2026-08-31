@@ -7,9 +7,9 @@
 `Project Dominion` is a working title. The name lives in `config('game.name')` and
 appears in no namespace or class — changing it is a one-line edit.
 
-[![Phase](https://img.shields.io/badge/GSD%20Phase-00%20complete-3F7A4F)]()
-[![Version](https://img.shields.io/badge/version-v0.1.0-B4762E)]()
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%208%20strict-2B4B7A)]()
+[![Phase](https://img.shields.io/badge/GSD%20Phase-00%20complete-3F7A4F)](<>)
+[![Version](https://img.shields.io/badge/version-v0.1.0-B4762E)](<>)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%208%20strict-2B4B7A)](<>)
 
 ---
 
@@ -40,8 +40,8 @@ with three hours.
 ### The principle everything else follows from
 
 **The server owns the truth.** A player's empire is exactly what the server says it
-is — always, even when the client is hostile. The client sends *intent*; the server
-computes *outcome*. Assume the app is decompiled, its traffic rewritten, its clock
+is — always, even when the client is hostile. The client sends _intent_; the server
+computes _outcome_. Assume the app is decompiled, its traffic rewritten, its clock
 forged, and its requests replayed, because eventually it will be.
 
 Consequences, all deliberate: integer-only economy with an append-only ledger,
@@ -50,19 +50,19 @@ and no gameplay action that can be confirmed offline.
 
 ### Principal systems
 
-| System | What it does | Phase |
-|--------|--------------|-------|
-| World | Sharded, persistent, PostGIS-indexed map | 05–06 |
-| City | Buildings, production, construction queues | 07–09 |
-| Economy | Integer resources, ledger, concurrency-safe spending | 08 |
-| Technology | Acyclic research tree with data-driven effects | 10 |
-| Units & Heroes | Roster, counters, commanders | 11–14 |
-| Marches | Server-timed movement with reliable arrival | 15 |
-| Combat | Deterministic, seeded, replayable simulation | 17–18 |
-| Conquest | PvP, siege, city capture, territory | 19–21 |
-| Alliances | Permissions, rallies, diplomacy | 22–26 |
-| Market | Trade with conservation guarantees | 27 |
-| LiveOps | Events, seasons, feature flags — no deploy | 31–32 |
+| System         | What it does                                         | Phase |
+| -------------- | ---------------------------------------------------- | ----- |
+| World          | Sharded, persistent, PostGIS-indexed map             | 05–06 |
+| City           | Buildings, production, construction queues           | 07–09 |
+| Economy        | Integer resources, ledger, concurrency-safe spending | 08    |
+| Technology     | Acyclic research tree with data-driven effects       | 10    |
+| Units & Heroes | Roster, counters, commanders                         | 11–14 |
+| Marches        | Server-timed movement with reliable arrival          | 15    |
+| Combat         | Deterministic, seeded, replayable simulation         | 17–18 |
+| Conquest       | PvP, siege, city capture, territory                  | 19–21 |
+| Alliances      | Permissions, rallies, diplomacy                      | 22–26 |
+| Market         | Trade with conservation guarantees                   | 27    |
+| LiveOps        | Events, seasons, feature flags — no deploy           | 31–32 |
 
 ---
 
@@ -162,22 +162,30 @@ make dev       # start the stack
 make smoke     # prove it: every service healthy, health endpoint ok
 ```
 
-| Service | URL |
-|---------|-----|
-| API | http://localhost:8080 |
-| Health | http://localhost:8080/api/v1/health |
-| Back office | http://localhost:8080/admin |
-| Horizon | http://localhost:8080/horizon |
-| Reverb | ws://localhost:8081 |
-| Mailpit | http://localhost:8025 |
-| MinIO | http://localhost:9000 |
+| Service     | URL                                 |
+| ----------- | ----------------------------------- |
+| API         | http://localhost:8080               |
+| Health      | http://localhost:8080/api/v1/health |
+| Back office | http://localhost:8080/admin         |
+| Horizon     | http://localhost:8080/horizon       |
+| Reverb      | ws://localhost:8081                 |
+| Mailpit     | http://localhost:8025               |
+| MinIO       | http://localhost:9000               |
 
 Local back-office credentials come from `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD`.
 Outside local the seeder refuses to invent a password.
 
 ```bash
-cd apps/mobile && npm run start     # Expo dev server
+make dev                              # API, database and realtime services
+npm run mobile                        # Expo Go over the local network
+# or, when a custom native development build is installed:
+npm run mobile:dev-client
 ```
+
+When using a physical phone, keep it on the same Wi-Fi as the computer. The
+mobile client automatically replaces the development `localhost` API address
+with the computer address advertised by Expo. For a different API host, set
+`EXPO_PUBLIC_API_URL` before starting Metro.
 
 Environment variables are documented inline in `apps/api/.env.example`.
 
@@ -216,18 +224,18 @@ missing anywhere under `Game\`.
 
 ## Documentation
 
-| Area | Start here |
-|------|-----------|
-| Decisions | [`docs/adr/README.md`](docs/adr/README.md) |
-| Backend | [`docs/backend/architecture.md`](docs/backend/architecture.md) |
-| Database | [`docs/database/conventions.md`](docs/database/conventions.md) |
-| API | [`docs/api/api-guidelines.md`](docs/api/api-guidelines.md) |
-| Mobile | [`docs/mobile/architecture.md`](docs/mobile/architecture.md) |
-| Realtime | [`docs/realtime/architecture.md`](docs/realtime/architecture.md) |
-| Security | [`docs/security/threat-model.md`](docs/security/threat-model.md) |
-| Game design | [`docs/game-design/`](docs/game-design/) |
-| Design system | [`docs/design-system/tokens.md`](docs/design-system/tokens.md) |
-| **AI agents** | [`AGENTS.md`](AGENTS.md) |
+| Area          | Start here                                                       |
+| ------------- | ---------------------------------------------------------------- |
+| Decisions     | [`docs/adr/README.md`](docs/adr/README.md)                       |
+| Backend       | [`docs/backend/architecture.md`](docs/backend/architecture.md)   |
+| Database      | [`docs/database/conventions.md`](docs/database/conventions.md)   |
+| API           | [`docs/api/api-guidelines.md`](docs/api/api-guidelines.md)       |
+| Mobile        | [`docs/mobile/architecture.md`](docs/mobile/architecture.md)     |
+| Realtime      | [`docs/realtime/architecture.md`](docs/realtime/architecture.md) |
+| Security      | [`docs/security/threat-model.md`](docs/security/threat-model.md) |
+| Game design   | [`docs/game-design/`](docs/game-design/)                         |
+| Design system | [`docs/design-system/tokens.md`](docs/design-system/tokens.md)   |
+| **AI agents** | [`AGENTS.md`](AGENTS.md)                                         |
 
 ---
 
@@ -237,16 +245,16 @@ missing anywhere under `Game\`.
 carries a goal, dependencies, observable success criteria and pre-locked
 implementation decisions.
 
-| Milestone | Phases | Delivers |
-|-----------|--------|----------|
-| Foundation | 00–02 | A repository that builds, tests and documents itself |
-| Playable Prototype | 03–12 | One player grows a city in a real world |
-| Internal Alpha | 13–18 | Heroes, armies, movement, deterministic combat |
-| Multiplayer Alpha | 19–27 | Conquest, alliances, diplomacy, trade |
-| Closed Alpha | 28–35 | Retention systems and operator tooling |
-| Beta | 36–47 | Hardened, measured, balanced, accessible |
-| Release | 48–53 | Alpha, beta, production infrastructure, launch |
-| LiveOps | 54 | Running as a live service |
+| Milestone          | Phases | Delivers                                             |
+| ------------------ | ------ | ---------------------------------------------------- |
+| Foundation         | 00–02  | A repository that builds, tests and documents itself |
+| Playable Prototype | 03–12  | One player grows a city in a real world              |
+| Internal Alpha     | 13–18  | Heroes, armies, movement, deterministic combat       |
+| Multiplayer Alpha  | 19–27  | Conquest, alliances, diplomacy, trade                |
+| Closed Alpha       | 28–35  | Retention systems and operator tooling               |
+| Beta               | 36–47  | Hardened, measured, balanced, accessible             |
+| Release            | 48–53  | Alpha, beta, production infrastructure, launch       |
+| LiveOps            | 54     | Running as a live service                            |
 
 Current state: **Phase 00 complete, Phase 01 ready.**
 Full plan: [`.planning/ROADMAP.md`](.planning/ROADMAP.md).
@@ -268,8 +276,9 @@ Fixed in Phase 01: `setup` now runs `docker compose up -d --wait` before any
 `exec`-based target. If you see this on an old checkout, run `make dev` first.
 
 **Metro cannot resolve a workspace package / duplicate React errors**
-`metro.config.js` must keep `watchFolders`, `nodeModulesPaths` and
-`disableHierarchicalLookup`. Removing the last one resolves a second React copy.
+Expo SDK 57 owns the monorepo Metro defaults. Keep `metro.config.js` based on
+`getDefaultConfig(__dirname)` so nested Expo dependencies and workspace packages
+resolve together.
 
 **Reanimated worklet errors**
 `react-native-worklets/plugin` must be the **last** entry in `babel.config.js`.

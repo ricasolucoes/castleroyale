@@ -1,0 +1,18 @@
+[
+  {
+    "code": "militia",
+    "name_key": "units.militia",
+    "class": "infantry",
+    "attack": 10,
+    "defence": 10,
+    "health": 20,
+    "speed": 5,
+    "range": 1,
+    "capacity": 1,
+    "power": 20,
+    "training_cost": { "food": 20, "wood": 5 },
+    "training_time_seconds": 10,
+    "upkeep": { "food": 1 },
+    "siege_damage": 0
+  }
+]
