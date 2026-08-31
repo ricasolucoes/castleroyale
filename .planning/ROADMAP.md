@@ -238,7 +238,7 @@ Plans:
 
 Plans:
 - [ ] 06-01: Skia map canvas with pan, zoom and gesture handling
-- [ ] 06-02: Viewport culling, level of detail and sprite batching
+- [x] 06-02: Viewport culling, level of detail and sprite batching
 - [ ] 06-03: Tile fetching, client cache and delta application
 - [ ] 06-04: Map markers, selection and the target detail sheet
 

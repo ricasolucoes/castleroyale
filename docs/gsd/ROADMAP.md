@@ -1,17 +1,14 @@
 # Roadmap: Project Dominion
 
-> **Mirror.** The authoritative roadmap is `.planning/ROADMAP.md`, which the GSD
-> tooling parses. This copy exists for reading outside the tooling. If the two
-> disagree, `.planning/` wins.
-
 ## Overview
 
-Fifty-five phases carry Project Dominion from an empty repository to a live-service
+Fifty-five numbered phases plus decimal insertions carry Project Dominion from an empty repository to a live-service
 mobile MMO. The spine is deliberate: prove the server can be trusted before anything
 multiplayer is built, prove the economy cannot be duplicated before players can trade,
 and prove combat is deterministic before players can lose anything to it.
 
-Phases 00-02 build the machine that builds the game. Phases 03-12 produce a single
+Phases 00-02 build the machine that builds the game, and Phase 02.1 adds the public
+institutional surface. Phases 03-12 produce a single
 player who can grow a city — the playable prototype. Phases 13-18 add heroes, armies,
 movement and deterministic combat. Phases 19-27 turn it into a multiplayer world with
 conquest, alliances and trade. Phases 28-35 add the retention and operations layer.
@@ -22,7 +19,7 @@ see the dependency graph in `docs/gsd/DEPENDENCIES.md`.
 
 ## Milestone v0.1: Foundation to Launch
 
-All 55 phases belong to this milestone. Project Dominion starts at v0.1.0; v1.0.0 is
+All numbered and inserted phases belong to this milestone. Project Dominion starts at v0.1.0; v1.0.0 is
 reserved for a mature product in production, not the first release.
 
 ## Phases
@@ -34,11 +31,11 @@ reserved for a mature product in production, not the first release.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 00: Repository Bootstrap** - Monorepo, Laravel API, Expo app, quality gates, full GSD plan
-- [ ] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile
-- [ ] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
-- [ ] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in
-- [ ] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel
-- [ ] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries
+- [x] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile (completed 2026-08-25)
+- [x] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
+- [x] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in (backend complete; mobile auth shell remains) (completed 2026-08-28)
+- [x] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel (completed 2026-08-28)
+- [x] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries (completed 2026-08-28)
 - [ ] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers
 - [ ] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel
 - [ ] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency
@@ -124,10 +121,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: Docker development stack and Makefile targets
-- [ ] 01-02: PostgreSQL + PostGIS connection, migration baseline and ULID conventions
-- [ ] 01-03: Development seeders and reusable test fixtures
-- [ ] 01-04: GitHub Actions CI for backend, mobile and infrastructure
+- [x] 01-01: Docker development stack and Makefile targets
+- [x] 01-02: PostgreSQL + PostGIS connection, migration baseline and ULID conventions
+- [x] 01-03: Development seeders and reusable test fixtures
+- [x] 01-04: GitHub Actions CI for backend, mobile and infrastructure
 
 ### Phase 02: Design System & Mobile Shell
 **Goal**: A navigable, themed app shell with a documented component library the rest of the client is built from.
@@ -143,15 +140,35 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: Design tokens and theme provider
-- [ ] 02-02: Core primitive components and the gallery screen
-- [ ] 02-03: Expo Router navigation shell with the five primary tabs
-- [ ] 02-04: Typography, iconography and haptic feedback primitives
+- [x] 02-01: Design tokens and theme provider
+- [x] 02-02: Core primitive components and the gallery screen
+- [x] 02-03: Expo Router navigation shell with the five primary tabs
+- [x] 02-04: Typography, iconography and haptic feedback primitives
+
+### Phase 02.1: Institutional Site and Public Backend Surface (INSERTED)
+
+**Goal**: The Laravel backend serves a production-ready institutional site that explains the game, supports players and publishes legal information without becoming a web game client.
+**Depends on**: Phase 01, Phase 02
+**Requirements**: REQ-16
+**Milestone**: Foundation
+**Success Criteria** (what must be TRUE):
+  1. The root route and the documented public routes render branded Laravel views, no longer the stock Laravel welcome page, and use `config('game.name')` for the product name.
+  2. Public pages exist in pt-BR, en and es for home, game/features, support, privacy and terms, with locale selection that never changes API or game-world state.
+  3. The public layout uses the shared semantic design-token names through generated CSS variables; no institutional view contains a literal colour, spacing, radius or font-size value.
+  4. Every public page has a unique title, description, canonical URL, language alternate links, accessible landmarks, keyboard-visible focus and a valid generated sitemap and robots response.
+  5. The support form validates and rate-limits submissions, never exposes credentials or player-owned state, and records an observable success/failure outcome when mail is configured.
+  6. Feature tests cover public route status/locales, legal-page availability, support validation/rate limiting, SEO metadata and the absence of the stock welcome view.
+**Plans**: 3 plans
+
+Plans:
+- [x] 02.1-01: Laravel public site shell and localized page routes
+- [x] 02.1-02: Token-backed visual system, SEO and legal content
+- [x] 02.1-03: Support submission, observability and public-surface verification
 
 ### Phase 03: Identity & Authentication
-**Goal**: A player can create an account, sign in on a device, stay signed in securely, and revoke other sessions.
+**Goal**: Authenticated players can maintain identity across sessions using device-native biometrics and secure token storage.
 **Depends on**: Phase 01
-**Requirements**: REQ-01, REQ-14
+**Requirements**: REQ-01, REQ-10, REQ-14
 **Milestone**: Playable Prototype
 **Success Criteria** (what must be TRUE):
   1. A guest account is created without any user input and can later be upgraded to email/password without losing progress.
@@ -159,13 +176,14 @@ Plans:
   3. Credentials are stored only in SecureStore/Keychain on the device, never in MMKV or AsyncStorage, verified by a test.
   4. A player can list their device sessions and revoke one remotely; the revoked device receives DEVICE_SESSION_REVOKED on its next request.
   5. Ten failed sign-in attempts from one IP within a minute return RATE_LIMITED rather than INVALID_CREDENTIALS.
-**Plans**: 4 plans
+**Plans**: 5 plans
 
 Plans:
-- [ ] 03-01: Accounts, credentials and the token model with rotation
-- [ ] 03-02: Device sessions, revocation and rate limiting
-- [ ] 03-03: Apple and Google sign-in plus guest upgrade
-- [ ] 03-04: Mobile auth flow, secure storage and session restoration
+- [x] 03-01: Accounts, credentials and the token model with rotation
+- [x] 03-02: Device sessions, revocation and rate limiting
+- [x] 03-03: Apple and Google sign-in plus guest upgrade
+- [x] 03-04: Mobile auth flow, secure storage and session restoration
+- [x] 03-05: Back office with audited game-master tooling and moderation
 
 ### Phase 04: Player Profile & Onboarding
 **Goal**: An authenticated account becomes a named player inside a chosen world, with a private realtime channel.
@@ -181,10 +199,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 04-01: Player entity, world membership and name validation
-- [ ] 04-02: World selection and capacity rules
-- [ ] 04-03: Private player channel authorisation and the client bootstrap document
-- [ ] 04-04: Mobile onboarding and first-run flow
+- [x] 04-01: Player entity, world membership and name validation
+- [x] 04-02: World selection and capacity rules
+- [x] 04-03: Private player channel authorisation and the client bootstrap document
+- [x] 04-04: Mobile onboarding and first-run flow
 
 ### Phase 05: World Architecture
 **Goal**: A persistent, queryable world of regions and tiles that the client can read a viewport of without ever loading the whole map.
@@ -200,10 +218,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 05-01: World, region and tile schema with PostGIS geometry
-- [ ] 05-02: Deterministic world generation from a seed
-- [ ] 05-03: Viewport and chunk query API with bounds validation
-- [ ] 05-04: Spatial indexing and query performance benchmarks
+- [x] 05-01: World, region and tile schema with PostGIS geometry
+- [x] 05-02: Deterministic world generation from a seed
+- [x] 05-03: Viewport and chunk query API with bounds validation
+- [x] 05-04: Spatial indexing and query performance benchmarks
 
 ### Phase 06: World Map Rendering
 **Goal**: A fluid, gesture-driven world map that stays at 60 FPS with thousands of entities on screen.
@@ -220,7 +238,7 @@ Plans:
 
 Plans:
 - [ ] 06-01: Skia map canvas with pan, zoom and gesture handling
-- [ ] 06-02: Viewport culling, level of detail and sprite batching
+- [x] 06-02: Viewport culling, level of detail and sprite batching
 - [ ] 06-03: Tile fetching, client cache and delta application
 - [ ] 06-04: Map markers, selection and the target detail sheet
 
@@ -1162,12 +1180,12 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 00. Repository Bootstrap | 4/4 | Complete | 2026-08-24 |
-| 01. Engineering Foundation | 0/4 | Not started | - |
-| 02. Design System & Mobile Shell | 0/4 | Not started | - |
-| 03. Identity & Authentication | 0/4 | Not started | - |
-| 04. Player Profile & Onboarding | 0/4 | Not started | - |
-| 05. World Architecture | 0/4 | Not started | - |
-| 06. World Map Rendering | 0/4 | Not started | - |
+| 01. Engineering Foundation | 4/4 | Complete    | 2026-08-25 |
+| 02. Design System & Mobile Shell | 1/4 | Complete    | 2026-08-26 |
+| 03. Identity & Authentication | 3/4 | Complete    | 2026-08-28 |
+| 04. Player Profile & Onboarding | 0/4 | Complete    | 2026-08-28 |
+| 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
+| 06. World Map Rendering | 1/4 | In Progress|  |
 | 07. City Foundation | 0/4 | Not started | - |
 | 08. Resources & Economy | 0/5 | Not started | - |
 | 09. Buildings & Construction | 0/5 | Not started | - |
@@ -1232,3 +1250,173 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | Release Candidate | 50-52 | Reproducible production and a tested recovery path |
 | Launch | 53 | Publicly available |
 | LiveOps | 54 | Running as a live service |
+| Google Play Games & Gamification | 55-67 | Gamification engine and Google Play Games Sidekick integrated |
+
+### Phase 55: Google Play Sidekick: Fase 0 — Discovery
+
+**Goal:** Mapear o projeto inteiro (arquitetura, gameplay, backend, Android) e gerar a auditoria de compatibilidade inicial e riscos para o Google Play Games Sidekick.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 54
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 1/4 plans executed
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 55 to break down)
+
+### Phase 56: Google Play Sidekick: Fase 1 — Fundação
+
+**Goal:** Estabelecer a infraestrutura básica (Domain Events, Gamification Service) e Feature Flags sem espalhar dependências do Google Play pelo código.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 55
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 56 to break down)
+
+### Phase 57: Google Play Sidekick: Fase 2 — Play Games Services
+
+**Goal:** Implementar robustamente o PGS v2 com fallback, tratamento de lifecycle, autenticação e Recall API.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 56
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 57 to break down)
+
+### Phase 58: Google Play Sidekick: Fase 3 — Achievements
+
+**Goal:** Criar uma Achievement Engine conectada ao Google Play com pelo menos 40 conquistas, incluindo 4 alcançáveis na primeira hora.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 57
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 58 to break down)
+
+### Phase 59: Google Play Sidekick: Fase 4 — Game Stats
+
+**Goal:** Instrumentar Game Stats avançados (Progress e Repetitive) gerando Schemas e CSVs compatíveis com Play Console.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 58
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 59 to break down)
+
+### Phase 60: Google Play Sidekick: Fase 5 — Gamificação avançada
+
+**Goal:** Criar XP centralizado, Levels, Quests, Streaks (loops diários e semanais), Collections e Rewards seguros.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 59
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 60 to break down)
+
+### Phase 61: Google Play Sidekick: Fase 6 — Social
+
+**Goal:** Integrar Leaderboards, Social Challenges e Progressão competitiva caso aplicável ao jogo.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 60
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 61 to break down)
+
+### Phase 62: Google Play Sidekick: Fase 7 — LiveOps
+
+**Goal:** Permitir configuração Server-Driven (Seasons, Daily/Weekly Quests) para operar o jogo sem depender de atualizações de app.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 61
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 62 to break down)
+
+### Phase 63: Google Play Sidekick: Fase 8 — Sidekick
+
+**Goal:** Validar UI, ciclo de vida e overlay do Play Games Sidekick em todos os fluxos e imersões sem quebrar UX/controles.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 62
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 63 to break down)
+
+### Phase 64: Google Play Sidekick: Fase 9 — Segurança
+
+**Goal:** Auditar e fechar vulnerabilidades de economy (reward abuse, replay, spoofing, cheating).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 63
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 64 to break down)
+
+### Phase 65: Google Play Sidekick: Fase 10 — QA
+
+**Goal:** Construir testes end-to-end de lifecycle (offline, sync, reconexão, reinstalação, dupla autenticação).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 64
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 65 to break down)
+
+### Phase 66: Google Play Sidekick: Fase 11 — Performance
+
+**Goal:** Monitorar e documentar métricas de Google Play Games Level Up (FPS, ANR, Battery, Memória).
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 65
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 66 to break down)
+
+### Phase 67: Google Play Sidekick: Fase 12 — Release
+
+**Goal:** Orquestrar lançamento e rollout no Play Console (Internal -> Closed -> Production) e checklist de Rollback.
+**Requirements**: Play Games Sidekick, Gamification Engine
+**Depends on:** Phase 66
+**Milestone**: Google Play Games & Gamification
+**Success Criteria**:
+  1. (Ver objetivos definidos em CONTEXT.md)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 67 to break down)
