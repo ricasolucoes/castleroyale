@@ -1,4 +1,4 @@
-import type { WorldTile } from '@dominion/contracts';
+import type { WorldTile } from '@castleroyale/contracts';
 
 export function applyTileDelta(current: readonly WorldTile[], delta: readonly WorldTile[]): WorldTile[] {
   const byCoordinate = new Map(current.map((tile) => [`${tile.x}:${tile.y}`, tile]));

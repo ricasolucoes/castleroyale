@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { router, Slot } from 'expo-router';
-import type { AuthTokens } from '@dominion/contracts';
+import type { AuthTokens } from '@castleroyale/contracts';
 
 import { apiRequest } from '@/api/client';
 import { clearTokens, getTokens, saveTokens } from '@/features/auth/SecureStorage';

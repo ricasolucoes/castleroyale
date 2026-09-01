@@ -54,7 +54,7 @@ route. Logic does not live in `app/`.
 
 ## Deep links
 
-Scheme `dominion://`. Push notifications deep-link to the surface that matters: an
+Scheme `castleroyale://`. Push notifications deep-link to the surface that matters: an
 attack warning opens the threatened city, not the home screen.
 
 ## Back behaviour

@@ -32,7 +32,7 @@ must_haves:
       contains: "22.6"
     - path: "CONTRIBUTING.md"
       provides: "The repository URL, the single required check name, and why branch protection is not switched on yet"
-      contains: "ricasolucoes/project-dominion"
+      contains: "ricasolucoes/castleroyale"
   key_links:
     - from: ".github/workflows/ci.yml:backend"
       to: "apps/api/phpunit.postgres.xml"
@@ -47,9 +47,9 @@ must_haves:
       via: "compose validation with no apps/api/.env present"
       pattern: "docker compose config"
     - from: "local working tree"
-      to: "github.com/ricasolucoes/project-dominion"
+      to: "github.com/ricasolucoes/castleroyale"
       via: "gitleaks gate, then `gh repo create --public --source=. --push`"
-      pattern: "ricasolucoes/project-dominion"
+      pattern: "ricasolucoes/castleroyale"
 ---
 
 <objective>
@@ -71,7 +71,7 @@ against the repository as it actually is turns up four breakages:
 5. Nothing has ever run it: `git remote -v` is empty, so criterion 4 — *"GitHub
    Actions runs … on push, and fails the build when any gate fails"* — has never
    been observed. The user has resolved this: **create
-   `ricasolucoes/project-dominion` as a public repository, push, and watch the run.**
+   `ricasolucoes/castleroyale` as a public repository, push, and watch the run.**
    Task 3 does exactly that, behind a blocking secret scan.
 
 Purpose: satisfies ROADMAP Phase 01 success criterion 4 and puts REQ-06 (game data
@@ -105,8 +105,8 @@ Root `package.json` scripts the mobile job can call:
 typecheck          npm run typecheck --workspaces --if-present
 lint               npm run lint --workspaces --if-present
 test               npm run test --workspaces --if-present
-contracts:check    npm run check --workspace=@dominion/contracts
-gamedata:validate  npm run validate --workspace=@dominion/game-data
+contracts:check    npm run check --workspace=@castleroyale/contracts
+gamedata:validate  npm run validate --workspace=@castleroyale/game-data
 ```
 `gamedata:validate` runs `node --experimental-strip-types src/validate.ts`. That flag
 requires **Node ≥ 22.6**; the workflow currently pins Node 20. The script exits 0 with
@@ -124,10 +124,10 @@ php artisan migrate --force / migrate:rollback --force / db:seed --force
 ```
 
 `apps/api/phpunit.postgres.xml` (plan 01-02) forces `DB_CONNECTION=pgsql` and
-`DB_DATABASE=dominion_test` with `force="true"`. The workflow therefore only needs to
+`DB_DATABASE=castleroyale_test` with `force="true"`. The workflow therefore only needs to
 supply `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`. The existing postgres
-service container already uses `POSTGRES_DB: dominion_test`, user/password
-`dominion`/`dominion` — those match.
+service container already uses `POSTGRES_DB: castleroyale_test`, user/password
+`castleroyale`/`castleroyale` — those match.
 
 `apps/api/phpunit.xml` sets `DB_CONNECTION=sqlite` **without** `force`, and PHPUnit
 does not overwrite an environment variable that is already set. That is why the plain
@@ -151,9 +151,9 @@ gh auth status   -> logged in to github.com as `ricardosierra`
                     git protocol: ssh
 gh api user/orgs -> `ricasolucoes` present and accessible
 git remote -v    -> empty
-package.json     -> "name": "project-dominion"
+package.json     -> "name": "castleroyale"
 ```
-The repository slug for Task 3 is therefore **`ricasolucoes/project-dominion`**, and
+The repository slug for Task 3 is therefore **`ricasolucoes/castleroyale`**, and
 the user has chosen **public** visibility. Do not prompt for any of this and do not
 re-run `gh auth status` to "confirm" — spend the calls on the run instead.
 </interfaces>
@@ -203,9 +203,9 @@ keeping the same `env:` block and adding to it:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
-          DB_DATABASE: dominion_test
-          DB_USERNAME: dominion
-          DB_PASSWORD: dominion
+          DB_DATABASE: castleroyale_test
+          DB_USERNAME: castleroyale
+          DB_PASSWORD: castleroyale
           CACHE_STORE: redis
           REDIS_HOST: 127.0.0.1
           QUEUE_CONNECTION: redis
@@ -218,15 +218,15 @@ keeping the same `env:` block and adding to it:
 
       - name: PostGIS extension is really enabled
         run: |
-          PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select postgis_version();" | tee /tmp/postgis.txt
           test -s /tmp/postgis.txt
 
       - name: Seeds are idempotent
         run: |
-          COUNT=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          COUNT=$(PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select count(*) from users;")
-          STAFF=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          STAFF=$(PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select count(*) from users where is_staff;")
           echo "users=$COUNT staff=$STAFF"
           test "$COUNT" -eq 5
@@ -236,8 +236,8 @@ keeping the same `env:` block and adding to it:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
-          DB_USERNAME: dominion
-          DB_PASSWORD: dominion
+          DB_USERNAME: castleroyale
+          DB_PASSWORD: castleroyale
         run: ./vendor/bin/pest --configuration=phpunit.postgres.xml
 ```
 
@@ -253,7 +253,7 @@ Note that the `psql` steps run in `apps/api` — that is harmless, `psql` needs 
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))" && grep -q workflow_dispatch .github/workflows/ci.yml && grep -q 'phpunit.postgres.xml' .github/workflows/ci.yml && grep -q 'Seeds are idempotent' .github/workflows/ci.yml && docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))" && grep -q workflow_dispatch .github/workflows/ci.yml && grep -q 'phpunit.postgres.xml' .github/workflows/ci.yml && grep -q 'Seeds are idempotent' .github/workflows/ci.yml && docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color</automated>
   </verify>
 
   <acceptance_criteria>
@@ -423,7 +423,7 @@ Then run `actionlint` and `make ci` locally.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color && grep -q "node-version: '22'" .github/workflows/ci.yml && grep -q 'gamedata:validate' .github/workflows/ci.yml && grep -q 'ghcr.io/gitleaks/gitleaks' .github/workflows/ci.yml && grep -q 'ci-status:' .github/workflows/ci.yml && grep -q '>=22.6.0' package.json && make ci</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color && grep -q "node-version: '22'" .github/workflows/ci.yml && grep -q 'gamedata:validate' .github/workflows/ci.yml && grep -q 'ghcr.io/gitleaks/gitleaks' .github/workflows/ci.yml && grep -q 'ci-status:' .github/workflows/ci.yml && grep -q '>=22.6.0' package.json && make ci</automated>
   </verify>
 
   <acceptance_criteria>
@@ -460,7 +460,7 @@ Then run `actionlint` and `make ci` locally.
 
   <action>
 **Target (recorded by the orchestrator, not by this file):** create
-**`ricasolucoes/project-dominion`** as a **public** repository in the `ricasolucoes`
+**`ricasolucoes/castleroyale`** as a **public** repository in the `ricasolucoes`
 organisation, push, and observe the run. Everything needed is already authenticated
 (see `<interfaces>`).
 
@@ -545,8 +545,8 @@ credential is a STOP: rotating it and rewriting history is the user's call, not 
 Once control has been handed back with an explicit go-ahead, the publish is:
 
 ```bash
-gh repo create ricasolucoes/project-dominion --public --source=. --remote=origin --push
-git remote -v      # must now show ricasolucoes/project-dominion
+gh repo create ricasolucoes/castleroyale --public --source=. --remote=origin --push
+git remote -v      # must now show ricasolucoes/castleroyale
 ```
 
 This pushes the current branch (`master`), which the workflow's
@@ -646,7 +646,7 @@ git branch -D ci-negative-check
 git fetch origin --prune
 git status --porcelain               # must be empty
 git log origin/master --oneline -1   # must NOT be the "deliberately break lint" commit
-gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check   # must 404
+gh api repos/ricasolucoes/castleroyale/branches/ci-negative-check   # must 404
 ```
 
 The PR is **closed, never merged**, so `master` never carried the broken commit.
@@ -657,7 +657,7 @@ The PR is **closed, never merged**, so `master` never carried the broken commit.
 Task 2 added:
 
 ```
-The repository is <https://github.com/ricasolucoes/project-dominion>. CI runs on every
+The repository is <https://github.com/ricasolucoes/castleroyale>. CI runs on every
 push to `master` and `develop` and on every pull request.
 
 Branch protection is **not** enabled yet, deliberately: GSD phases commit directly to
@@ -665,7 +665,7 @@ Branch protection is **not** enabled yet, deliberately: GSD phases commit direct
 on, the single required status check is **`CI`** (the `ci-status` aggregate) — not the
 three individual jobs:
 
-    gh api -X PUT repos/ricasolucoes/project-dominion/branches/master/protection \
+    gh api -X PUT repos/ricasolucoes/castleroyale/branches/master/protection \
       -F required_status_checks[strict]=true \
       -F 'required_status_checks[contexts][]=CI' \
       -F enforce_admins=false -F required_pull_request_reviews= -F restrictions=
@@ -682,29 +682,29 @@ evidence. Do not add a DEBT row — there is no longer any debt here to record.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && ! git ls-files --error-unmatch apps/api/.env 2>/dev/null && docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1 && git remote -v | grep -q 'ricasolucoes/project-dominion' && RUN_ID=$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId') && [ -z "$(gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name')" ] && grep -q 'ricasolucoes/project-dominion' CONTRIBUTING.md && echo CI_OBSERVED_GREEN</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && ! git ls-files --error-unmatch apps/api/.env 2>/dev/null && docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1 && git remote -v | grep -q 'ricasolucoes/castleroyale' && RUN_ID=$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId') && [ -z "$(gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name')" ] && grep -q 'ricasolucoes/castleroyale' CONTRIBUTING.md && echo CI_OBSERVED_GREEN</automated>
   </verify>
 
   <acceptance_criteria>
     - **Gate ran first and passed:** `docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1` exits 0, and so does the `--no-git` variant. The SUMMARY records both exit codes.
     - `git ls-files --error-unmatch apps/api/.env` exits **non-zero** (the file is untracked)
     - `git ls-files | grep -E '(^|/)\.env' | grep -vE '\.env\.example$'` prints nothing
-    - `git remote -v | grep -c 'ricasolucoes/project-dominion'` returns 2 (fetch + push)
-    - `gh repo view ricasolucoes/project-dominion --json visibility --jq '.visibility'` prints `PUBLIC`
+    - `git remote -v | grep -c 'ricasolucoes/castleroyale'` returns 2 (fetch + push)
+    - `gh repo view ricasolucoes/castleroyale --json visibility --jq '.visibility'` prints `PUBLIC`
     - `gh run list --branch master --limit 1 --json status --jq '.[0].status'` prints `completed`
     - `gh run view "$RUN_ID" --json conclusion --jq '.conclusion'` prints `success` for the master run
     - `gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name'` prints **nothing**
     - `gh run view "$RUN_ID" --json jobs --jq '.jobs | length'` returns 4, and the names include `CI`
     - **Negative proof:** `gh run view "$BAD_ID" --json conclusion --jq '.conclusion'` printed `failure`, and the SUMMARY names which job and which step failed
-    - **Cleanup complete:** `git branch --list ci-negative-check` prints nothing, `gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check` returns 404, and `git status --porcelain` is empty
-    - `grep -q 'ricasolucoes/project-dominion' CONTRIBUTING.md` succeeds
+    - **Cleanup complete:** `git branch --list ci-negative-check` prints nothing, `gh api repos/ricasolucoes/castleroyale/branches/ci-negative-check` returns 404, and `git status --porcelain` is empty
+    - `grep -q 'ricasolucoes/castleroyale' CONTRIBUTING.md` succeeds
     - `grep -q 'Branch protection is' CONTRIBUTING.md` and `grep -q 'ci-status' CONTRIBUTING.md` both succeed
     - `grep -q 'never been executed on this machine' .planning/codebase/CONCERNS.md` returns **nothing** (the stale claim is gone)
     - `grep -q 'pdo_pgsql' .planning/codebase/CONCERNS.md` still succeeds (the host limitation is still recorded)
     - No `DEBT-008` row was added
   </acceptance_criteria>
 
-  <done>`ricasolucoes/project-dominion` exists and is public, its first CI run is green across backend, mobile, infrastructure and the `CI` aggregate, a deliberately broken commit on a now-deleted throwaway branch produced a red run, and no secret was published because the gitleaks gate ran and passed before the repository existed.</done>
+  <done>`ricasolucoes/castleroyale` exists and is public, its first CI run is green across backend, mobile, infrastructure and the `CI` aggregate, a deliberately broken commit on a now-deleted throwaway branch produced a red run, and no secret was published because the gitleaks gate ran and passed before the repository existed.</done>
 </task>
 
 </tasks>
@@ -738,15 +738,15 @@ docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.18.4 \
   detect --source=/repo --no-git --redact --exit-code 1
 
 # The run actually happened and was green
-git remote -v | grep ricasolucoes/project-dominion
-gh repo view ricasolucoes/project-dominion --json visibility --jq '.visibility'   # PUBLIC
+git remote -v | grep ricasolucoes/castleroyale
+gh repo view ricasolucoes/castleroyale --json visibility --jq '.visibility'   # PUBLIC
 RUN_ID="$(gh run list --branch master --limit 1 --json databaseId --jq '.[0].databaseId')"
 gh run view "$RUN_ID"
 gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion != "success") | .name'   # empty
 
 # The throwaway negative-check branch is gone
 git branch --list ci-negative-check                                    # empty
-gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check  # 404
+gh api repos/ricasolucoes/castleroyale/branches/ci-negative-check  # 404
 ```
 </verification>
 
@@ -758,7 +758,7 @@ gh api repos/ricasolucoes/project-dominion/branches/ci-negative-check  # 404
 - `ci-status` fails unless all three jobs report `success`
 - `make ci` exits 0, and `make lint` exits non-zero on a deliberately broken file
 - The gitleaks gate ran **before** publication and exited 0 in both history and working-tree modes; `apps/api/.env` is untracked
-- `ricasolucoes/project-dominion` exists, is public, and `git remote -v` points at it
+- `ricasolucoes/castleroyale` exists, is public, and `git remote -v` points at it
 - A completed run on `master` concludes `success` for backend, mobile, infrastructure and the `CI` aggregate — pasted into the SUMMARY, not summarised
 - A deliberately broken commit on the `ci-negative-check` branch produced a `failure` run through a pull request, and that branch no longer exists locally or remotely
 - ROADMAP Phase 01 success criterion 4 is **met**, both clauses, with a run URL as evidence

@@ -2,7 +2,7 @@
 
 ## What this is
 
-Project Dominion is planned end to end **before** execution begins. All 55
+Castle Royale is planned end to end **before** execution begins. All 55
 phases carry a goal, dependencies, observable success criteria and pre-locked
 implementation decisions.
 

@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "dominion/api",
+    "name": "castleroyale/api",
     "type": "project",
-    "description": "Project Dominion \u2014 server-authoritative game API (modular monolith).",
+    "description": "Castle Royale \u2014 server-authoritative game API (modular monolith).",
     "keywords": [
         "game",
         "mmo",

@@ -56,7 +56,7 @@ make test    # run the suite
 | Service | Healthcheck |
 |---------|-------------|
 | api | `curl -fsS http://localhost:8000/api/v1/health` |
-| postgres | `pg_isready -U dominion -d dominion` |
+| postgres | `pg_isready -U castleroyale -d castleroyale` |
 | redis | `redis-cli ping` |
 | reverb | PHP `fsockopen` on 8081 |
 | horizon | `php artisan horizon:status` |

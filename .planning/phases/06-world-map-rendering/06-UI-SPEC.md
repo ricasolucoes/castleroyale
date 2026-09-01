@@ -54,7 +54,7 @@ created: 2026-08-28
 
 ## Spacing Scale
 
-Use only `@dominion/tooling/design-tokens` values:
+Use only `@castleroyale/tooling/design-tokens` values:
 
 | Token | Value | Usage |
 |-------|-------|-------|

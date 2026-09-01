@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Dominion Base",
+  "display": "Castle Royale Base",
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext"],

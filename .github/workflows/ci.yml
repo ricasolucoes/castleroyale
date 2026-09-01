@@ -25,12 +25,12 @@ jobs:
         # in-memory and therefore cannot cover spatial work.
         image: postgis/postgis:16-3.4
         env:
-          POSTGRES_DB: dominion_test
-          POSTGRES_USER: dominion
-          POSTGRES_PASSWORD: dominion
+          POSTGRES_DB: castleroyale_test
+          POSTGRES_USER: castleroyale
+          POSTGRES_PASSWORD: castleroyale
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U dominion -d dominion_test"
+          --health-cmd "pg_isready -U castleroyale -d castleroyale_test"
           --health-interval 5s --health-timeout 5s --health-retries 20
 
       redis:
@@ -90,9 +90,9 @@ jobs:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
-          DB_DATABASE: dominion_test
-          DB_USERNAME: dominion
-          DB_PASSWORD: dominion
+          DB_DATABASE: castleroyale_test
+          DB_USERNAME: castleroyale
+          DB_PASSWORD: castleroyale
           CACHE_STORE: redis
           REDIS_HOST: 127.0.0.1
           QUEUE_CONNECTION: redis
@@ -105,15 +105,15 @@ jobs:
 
       - name: PostGIS extension is really enabled
         run: |
-          PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select postgis_version();" | tee /tmp/postgis.txt
           test -s /tmp/postgis.txt
 
       - name: Seeds are idempotent
         run: |
-          COUNT=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          COUNT=$(PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select count(*) from users;")
-          STAFF=$(PGPASSWORD=dominion psql -h 127.0.0.1 -U dominion -d dominion_test \
+          STAFF=$(PGPASSWORD=castleroyale psql -h 127.0.0.1 -U castleroyale -d castleroyale_test \
             -tAc "select count(*) from users where is_staff;")
           echo "users=$COUNT staff=$STAFF"
           test "$COUNT" -eq 5
@@ -123,8 +123,8 @@ jobs:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
-          DB_USERNAME: dominion
-          DB_PASSWORD: dominion
+          DB_USERNAME: castleroyale
+          DB_PASSWORD: castleroyale
         run: ./vendor/bin/pest --configuration=phpunit.postgres.xml
 
   mobile:

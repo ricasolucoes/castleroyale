@@ -1,4 +1,4 @@
-import { MIN_TOUCH_TARGET, palette, spacing } from '@dominion/tooling/design-tokens';
+import { MIN_TOUCH_TARGET, palette, spacing } from '@castleroyale/tooling/design-tokens';
 
 /**
  * Guards on the design system that are cheap to assert and expensive to

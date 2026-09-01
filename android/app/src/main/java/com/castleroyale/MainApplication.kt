@@ -1,4 +1,4 @@
-package com.projectdominion
+package com.castleroyale
 
 import android.app.Application
 import android.content.res.Configuration

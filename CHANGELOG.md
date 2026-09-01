@@ -2,7 +2,7 @@
 
 ---
 
-## [Unreleased](https://github.com/example/project-dominion/compare/v0.1.0...develop)
+## [Unreleased](https://github.com/example/castleroyale/compare/v0.1.0...develop)
 
 ### ✨ Novidades
 
@@ -11,7 +11,7 @@
 
 ---
 
-## [v0.1.0 (2026-08-24)](https://github.com/example/project-dominion/releases/tag/v0.1.0)
+## [v0.1.0 (2026-08-24)](https://github.com/example/castleroyale/releases/tag/v0.1.0)
 
 ### ✨ Novidades
 

@@ -11,7 +11,7 @@ O sistema de gamificação da Banlek em homologação baseia-se num motor de mis
 - "Feche vendas no mes"
 - "Suba fotos no mes"
 
-Para aplicar o **mesmo nível de alto engajamento** dessas ações no nosso jogo `MmoMobile` (MMO de construção de impérios e guerra estratégica), nós as traduzimos para o core loop do jogo.
+Para aplicar o **mesmo nível de alto engajamento** dessas ações no nosso jogo `Castle Royale` (MMO de construção de impérios e guerra estratégica), nós as traduzimos para o core loop do jogo.
 
 ## Ações Diárias (Daily Quests)
 - **Expanda seu Império (Inspirado em "Crie um album novo"):** Construa ou aprimore um edifício.

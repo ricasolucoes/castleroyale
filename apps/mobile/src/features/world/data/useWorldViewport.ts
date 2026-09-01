@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { WorldViewport } from '@dominion/contracts';
+import type { WorldViewport } from '@castleroyale/contracts';
 
 import { apiRequest } from '@/api/client';
 import { readWorldRegion, writeWorldRegion } from '@/features/world/data/WorldRegionCache';

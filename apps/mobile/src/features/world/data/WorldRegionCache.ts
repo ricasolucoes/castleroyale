@@ -1,5 +1,5 @@
 import { createMMKV } from 'react-native-mmkv';
-import type { WorldViewport } from '@dominion/contracts';
+import type { WorldViewport } from '@castleroyale/contracts';
 
 const storage = createMMKV({ id: 'world-regions' });
 

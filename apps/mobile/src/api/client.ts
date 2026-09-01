@@ -8,7 +8,7 @@
  */
 
 import Constants from 'expo-constants';
-import { isApiError, type AuthTokens, type ErrorCode, type ErrorResponse } from '@dominion/contracts';
+import { isApiError, type AuthTokens, type ErrorCode, type ErrorResponse } from '@castleroyale/contracts';
 import { clearTokens, getTokens, saveTokens } from '@/features/auth/SecureStorage';
 
 const extra = (Constants.expoConfig?.extra ?? {}) as { apiUrl?: string };

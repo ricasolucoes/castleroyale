@@ -74,9 +74,9 @@ check in the phase verification file.
 
 ## Verification
 
-- `npm test --workspace=@dominion/mobile -- --runInBand world-map`
-- `npm run typecheck --workspace=@dominion/mobile`
-- `npm run lint --workspace=@dominion/mobile`
+- `npm test --workspace=@castleroyale/mobile -- --runInBand world-map`
+- `npm run typecheck --workspace=@castleroyale/mobile`
+- `npm run lint --workspace=@castleroyale/mobile`
 
 ## Must-haves
 

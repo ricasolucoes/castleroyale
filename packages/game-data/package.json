@@ -1,5 +1,5 @@
 {
-  "name": "@dominion/game-data",
+  "name": "@castleroyale/game-data",
   "version": "0.1.0",
   "private": true,
   "description": "Versioned, data-driven game balance. JSON is authored here, validated in CI, and imported into the database by the API.",

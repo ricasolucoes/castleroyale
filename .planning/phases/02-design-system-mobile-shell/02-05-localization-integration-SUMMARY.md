@@ -14,7 +14,7 @@ provides:
 affects: [mobile-shell, localization]
 
 tech-stack:
-  added: [expo-localization, @dominion/localization]
+  added: [expo-localization, @castleroyale/localization]
   patterns: [Static translation catalogs, dot-notation translation keys]
 
 key-files:

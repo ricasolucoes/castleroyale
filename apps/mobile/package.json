@@ -1,10 +1,10 @@
 {
-  "name": "@dominion/mobile",
+  "name": "@castleroyale/mobile",
   "version": "0.1.0",
   "main": "expo-router/entry",
   "dependencies": {
     "@babel/runtime": "^7.29.7",
-    "@dominion/localization": "*",
+    "@castleroyale/localization": "*",
     "@expo/vector-icons": "^15.0.2",
     "@gorhom/bottom-sheet": "^5.2.14",
     "@react-native/assets-registry": "^0.86.3",

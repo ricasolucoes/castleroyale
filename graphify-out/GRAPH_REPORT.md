@@ -520,7 +520,7 @@ Nodes (10): AppServiceProvider, now(), FrozenClock, self, SystemClock, actingAsS
 
 ### Community 75 - "Community 75"
 Cohesion: 0.09
-Nodes (23): dependencies, @dominion/localization, expo, expo-application, expo-dev-client, expo-font, expo-haptics, expo-secure-store (+15 more)
+Nodes (23): dependencies, @castleroyale/localization, expo, expo-application, expo-dev-client, expo-font, expo-haptics, expo-secure-store (+15 more)
 
 ### Community 76 - "Community 76"
 Cohesion: 0.16
@@ -528,7 +528,7 @@ Nodes (18): formatResourceAmount(), ResourceCounter(), ResourceCounterProps, App
 
 ### Community 77 - "Community 77"
 Cohesion: 0.09
-Nodes (21): compilerOptions, allowImportingTsExtensions, paths, exclude, extends, include, @dominion/contracts, @dominion/tooling/design-tokens (+13 more)
+Nodes (21): compilerOptions, allowImportingTsExtensions, paths, exclude, extends, include, @castleroyale/contracts, @castleroyale/tooling/design-tokens (+13 more)
 
 ### Community 78 - "Community 78"
 Cohesion: 0.17
@@ -744,7 +744,7 @@ Nodes (8): prettier, arrowParens, endOfLine, printWidth, semi, singleQuote, tabW
 
 ### Community 132 - "Community 132"
 Cohesion: 0.25
-Nodes (7): compilerOptions, allowImportingTsExtensions, noEmit, extends, include, src/**/*.ts, @dominion/tooling/tsconfig
+Nodes (7): compilerOptions, allowImportingTsExtensions, noEmit, extends, include, src/**/*.ts, @castleroyale/tooling/tsconfig
 
 ### Community 133 - "Community 133"
 Cohesion: 0.29
@@ -804,11 +804,11 @@ Nodes (4): config, { getDefaultConfig }, path, workspaceRoot
 
 ### Community 150 - "Community 150"
 Cohesion: 0.40
-Nodes (4): extends, include, @dominion/tooling/tsconfig-node, src/**/*.ts
+Nodes (4): extends, include, @castleroyale/tooling/tsconfig-node, src/**/*.ts
 
 ### Community 151 - "Community 151"
 Cohesion: 0.40
-Nodes (4): extends, include, @dominion/tooling/tsconfig-node, src/**/*.ts
+Nodes (4): extends, include, @castleroyale/tooling/tsconfig-node, src/**/*.ts
 
 ### Community 152 - "Community 152"
 Cohesion: 0.50

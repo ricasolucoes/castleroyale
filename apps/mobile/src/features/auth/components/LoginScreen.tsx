@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ActivityIndicator, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import type { AuthTokens, WorldList } from '@dominion/contracts';
+import type { AuthTokens, WorldList } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { clearTokens, saveTokens } from '@/features/auth/SecureStorage';

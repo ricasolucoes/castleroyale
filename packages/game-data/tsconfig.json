@@ -1,4 +1,4 @@
 {
-  "extends": "@dominion/tooling/tsconfig-node",
+  "extends": "@castleroyale/tooling/tsconfig-node",
   "include": ["src/**/*.ts"]
 }

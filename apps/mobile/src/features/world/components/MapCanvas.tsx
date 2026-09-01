@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import type { WorldTile } from '@dominion/contracts';
+import type { WorldTile } from '@castleroyale/contracts';
 
 import { cullTiles, type TileBounds } from '@/features/world/rendering/cull';
 import { groupTileBatches } from '@/features/world/rendering/batches';

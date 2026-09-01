@@ -1,5 +1,5 @@
 import { getLocales } from 'expo-localization';
-import { CATALOGUES, resolveLocale } from '@dominion/localization';
+import { CATALOGUES, resolveLocale } from '@castleroyale/localization';
 
 export function useTranslation() {
   const locales = getLocales();

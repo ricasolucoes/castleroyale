@@ -4,7 +4,7 @@
 
 The single active milestone. All 55 phases (00–54) belong to it.
 
-Project Dominion starts at v0.1.0 and evolves through v0.MINOR.PATCH. v1.0.0 is
+Castle Royale starts at v0.1.0 and evolves through v0.MINOR.PATCH. v1.0.0 is
 reserved for a mature product in production with a real player base — it is not
 the first release.
 

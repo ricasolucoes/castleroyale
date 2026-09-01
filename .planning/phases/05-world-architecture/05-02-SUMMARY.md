@@ -16,5 +16,5 @@ generation keys for replay and auditability.
 ## Validation
 
 - WorldTerrainGenerator unit tests passed.
-- `npm run validate --workspace=@dominion/game-data` passed, 4 datasets.
+- `npm run validate --workspace=@castleroyale/game-data` passed, 4 datasets.
 - The full backend suite passed after generation was integrated.

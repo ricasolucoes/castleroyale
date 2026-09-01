@@ -1,5 +1,5 @@
 {
-  "name": "@dominion/contracts",
+  "name": "@castleroyale/contracts",
   "version": "0.1.0",
   "private": true,
   "description": "The API contract shared by the backend and the mobile client. OpenAPI is the source of truth; TypeScript types are generated from it.",

@@ -20,7 +20,7 @@
 
 ### Outputs
 ```text
-docker compose exec -T postgres psql -U dominion -d dominion -c "select id, email, is_staff from users order by id;"
+docker compose exec -T postgres psql -U castleroyale -d castleroyale -c "select id, email, is_staff from users order by id;"
                   id                  |          email           | is_staff 
 --------------------------------------+--------------------------+----------
  01j62ys5zztf22z4p07wshw4k0           | admin@example.test       | t
@@ -30,7 +30,7 @@ docker compose exec -T postgres psql -U dominion -d dominion -c "select id, emai
  01j62ys6fgmghxsmpsk2q410z7           | dev-charlie@example.test | f
 (5 rows)
 
-docker compose exec -T postgres psql -U dominion -d dominion -c "select count(*) as users, count(*) filter (where is_staff) as staff from users;"
+docker compose exec -T postgres psql -U castleroyale -d castleroyale -c "select count(*) as users, count(*) filter (where is_staff) as staff from users;"
  users | staff 
 -------+-------
      5 |     2

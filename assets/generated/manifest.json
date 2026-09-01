@@ -1,8 +1,8 @@
 {
-  "name": "project-dominion-visual-kit",
+  "name": "castleroyale-visual-kit",
   "generatedAt": "2026-08-28",
   "source": "integrated-image-generator-fallback",
-  "flowProject": "Project Dominion — MVP Visual Kit",
+  "flowProject": "Castle Royale — MVP Visual Kit",
   "buildings": [
     { "id": "palace", "levels": [1, 2, 3], "files": ["buildings/palace-level-1.png", "buildings/palace-level-2.png", "buildings/palace-level-3.png"] },
     { "id": "farm", "levels": [1, 2, 3], "files": ["buildings/farm-level-1.png", "buildings/farm-level-2.png", "buildings/farm-level-3.png"] },

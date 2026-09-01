@@ -1,4 +1,4 @@
-# Project Dominion
+# Castle Royale
 #
 # Docker is the canonical development environment — the host may lack
 # pdo_pgsql, so anything database-shaped runs inside a container.
@@ -79,9 +79,9 @@ test-arch: ## Architecture rules only
 	$(API) ./vendor/bin/pest --group=arch
 
 test-postgres: ## PostGIS-only tests against real PostgreSQL (phpunit.postgres.xml)
-	@$(COMPOSE) exec -T postgres psql -U dominion -d dominion -tc \
-		"SELECT 1 FROM pg_database WHERE datname='dominion_test'" | grep -q 1 \
-		|| $(COMPOSE) exec -T postgres createdb -U dominion dominion_test
+	@$(COMPOSE) exec -T postgres psql -U castleroyale -d castleroyale -tc \
+		"SELECT 1 FROM pg_database WHERE datname='castleroyale_test'" | grep -q 1 \
+		|| $(COMPOSE) exec -T postgres createdb -U castleroyale castleroyale_test
 	$(API) ./vendor/bin/pest --configuration=phpunit.postgres.xml
 
 lint: ## Check formatting

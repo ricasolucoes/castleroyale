@@ -1,7 +1,7 @@
 import { fetchWorldViewport, viewportQueryKey } from '../src/features/world/data/useWorldViewport';
 import { readWorldRegion, writeWorldRegion, worldRegionCacheKey } from '../src/features/world/data/WorldRegionCache';
 import { apiRequest } from '../src/api/client';
-import type { WorldViewport, WorldTile } from '@dominion/contracts';
+import type { WorldViewport, WorldTile } from '@castleroyale/contracts';
 
 jest.mock('../src/api/client', () => ({
   apiRequest: jest.fn(),

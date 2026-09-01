@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Dominion Node",
+  "display": "Castle Royale Node",
   "extends": "./base.json",
   "compilerOptions": {
     "types": ["node"],

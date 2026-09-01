@@ -42649,16 +42649,16 @@
       "_origin": "ast"
     },
     {
-      "id": "apps_mobile_package_dependencies_dominion_localization",
-      "label": "@dominion/localization",
+      "id": "apps_mobile_package_dependencies_castleroyale_localization",
+      "label": "@castleroyale/localization",
       "file_type": "code",
       "source_file": "apps/mobile/package.json",
       "source_location": "L6",
       "_origin": "ast"
     },
     {
-      "id": "dominion_localization",
-      "label": "@dominion/localization",
+      "id": "castleroyale_localization",
+      "label": "@castleroyale/localization",
       "file_type": "concept",
       "source_file": "apps/mobile/package.json",
       "source_location": "L6",
@@ -43889,8 +43889,8 @@
       "_origin": "ast"
     },
     {
-      "id": "ref_dominion_tooling_tsconfig_react_native",
-      "label": "@dominion/tooling/tsconfig-react-native",
+      "id": "ref_castleroyale_tooling_tsconfig_react_native",
+      "label": "@castleroyale/tooling/tsconfig-react-native",
       "file_type": "concept",
       "source_file": "apps/mobile/tsconfig.json",
       "source_location": "L2",
@@ -43913,8 +43913,8 @@
       "_origin": "ast"
     },
     {
-      "id": "apps_mobile_tsconfig_paths_dominion_contracts",
-      "label": "@dominion/contracts",
+      "id": "apps_mobile_tsconfig_paths_castleroyale_contracts",
+      "label": "@castleroyale/contracts",
       "file_type": "code",
       "source_file": "apps/mobile/tsconfig.json",
       "source_location": "L8",
@@ -43929,8 +43929,8 @@
       "_origin": "ast"
     },
     {
-      "id": "apps_mobile_tsconfig_paths_dominion_tooling_design_tokens",
-      "label": "@dominion/tooling/design-tokens",
+      "id": "apps_mobile_tsconfig_paths_castleroyale_tooling_design_tokens",
+      "label": "@castleroyale/tooling/design-tokens",
       "file_type": "code",
       "source_file": "apps/mobile/tsconfig.json",
       "source_location": "L9",
@@ -44857,8 +44857,8 @@
       "_origin": "ast"
     },
     {
-      "id": "ref_dominion_tooling_tsconfig",
-      "label": "@dominion/tooling/tsconfig",
+      "id": "ref_castleroyale_tooling_tsconfig",
+      "label": "@castleroyale/tooling/tsconfig",
       "file_type": "concept",
       "source_file": "packages/contracts/tsconfig.json",
       "source_location": "L2",
@@ -45233,8 +45233,8 @@
       "_origin": "ast"
     },
     {
-      "id": "packages_game_data_tsconfig_json_ref_dominion_tooling_tsconfig_node",
-      "label": "@dominion/tooling/tsconfig-node",
+      "id": "packages_game_data_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
+      "label": "@castleroyale/tooling/tsconfig-node",
       "file_type": "concept",
       "source_file": "packages/game-data/tsconfig.json",
       "source_location": "L2",
@@ -45473,8 +45473,8 @@
       "_origin": "ast"
     },
     {
-      "id": "packages_localization_tsconfig_json_ref_dominion_tooling_tsconfig_node",
-      "label": "@dominion/tooling/tsconfig-node",
+      "id": "packages_localization_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
+      "label": "@castleroyale/tooling/tsconfig-node",
       "file_type": "concept",
       "source_file": "packages/localization/tsconfig.json",
       "source_location": "L2",
@@ -254299,7 +254299,7 @@
     },
     {
       "source": "apps_mobile_package_dependencies",
-      "target": "apps_mobile_package_dependencies_dominion_localization",
+      "target": "apps_mobile_package_dependencies_castleroyale_localization",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "apps/mobile/package.json",
@@ -254308,8 +254308,8 @@
       "_origin": "ast"
     },
     {
-      "source": "apps_mobile_package_dependencies_dominion_localization",
-      "target": "dominion_localization",
+      "source": "apps_mobile_package_dependencies_castleroyale_localization",
+      "target": "castleroyale_localization",
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "apps/mobile/package.json",
@@ -256796,7 +256796,7 @@
     },
     {
       "source": "apps_mobile_tsconfig_extends",
-      "target": "ref_dominion_tooling_tsconfig_react_native",
+      "target": "ref_castleroyale_tooling_tsconfig_react_native",
       "relation": "extends",
       "confidence": "EXTRACTED",
       "source_file": "apps/mobile/tsconfig.json",
@@ -256827,7 +256827,7 @@
     },
     {
       "source": "apps_mobile_tsconfig_compileroptions_paths",
-      "target": "apps_mobile_tsconfig_paths_dominion_contracts",
+      "target": "apps_mobile_tsconfig_paths_castleroyale_contracts",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "apps/mobile/tsconfig.json",
@@ -256836,7 +256836,7 @@
       "_origin": "ast"
     },
     {
-      "source": "apps_mobile_tsconfig_paths_dominion_contracts",
+      "source": "apps_mobile_tsconfig_paths_castleroyale_contracts",
       "target": "ref_packages_contracts_src_index_ts",
       "relation": "extends",
       "confidence": "EXTRACTED",
@@ -256848,7 +256848,7 @@
     },
     {
       "source": "apps_mobile_tsconfig_compileroptions_paths",
-      "target": "apps_mobile_tsconfig_paths_dominion_tooling_design_tokens",
+      "target": "apps_mobile_tsconfig_paths_castleroyale_tooling_design_tokens",
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "apps/mobile/tsconfig.json",
@@ -256857,7 +256857,7 @@
       "_origin": "ast"
     },
     {
-      "source": "apps_mobile_tsconfig_paths_dominion_tooling_design_tokens",
+      "source": "apps_mobile_tsconfig_paths_castleroyale_tooling_design_tokens",
       "target": "ref_packages_tooling_design_tokens_index_ts",
       "relation": "extends",
       "confidence": "EXTRACTED",
@@ -258051,7 +258051,7 @@
     },
     {
       "source": "packages_contracts_tsconfig",
-      "target": "ref_dominion_tooling_tsconfig",
+      "target": "ref_castleroyale_tooling_tsconfig",
       "relation": "extends",
       "confidence": "EXTRACTED",
       "source_file": "packages/contracts/tsconfig.json",
@@ -258539,7 +258539,7 @@
     },
     {
       "source": "packages_game_data_tsconfig",
-      "target": "packages_game_data_tsconfig_json_ref_dominion_tooling_tsconfig_node",
+      "target": "packages_game_data_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
       "relation": "extends",
       "confidence": "EXTRACTED",
       "source_file": "packages/game-data/tsconfig.json",
@@ -258923,7 +258923,7 @@
     },
     {
       "source": "packages_localization_tsconfig",
-      "target": "packages_localization_tsconfig_json_ref_dominion_tooling_tsconfig_node",
+      "target": "packages_localization_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
       "relation": "extends",
       "confidence": "EXTRACTED",
       "source_file": "packages/localization/tsconfig.json",

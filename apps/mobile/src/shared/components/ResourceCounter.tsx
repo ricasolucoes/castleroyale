@@ -2,7 +2,7 @@ import React from 'react';
 import { View, type ViewProps } from 'react-native';
 import { Text } from './Text';
 import { useTheme } from '@/theme';
-import type { ResourceKey } from '@dominion/tooling/design-tokens';
+import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
 export interface ResourceCounterProps extends ViewProps {
   resource: ResourceKey;

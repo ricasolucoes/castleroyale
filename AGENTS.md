@@ -4,7 +4,7 @@ Read this before touching anything.
 
 ## What this repository is
 
-**Project Dominion** — a mobile MMO of empire building, territorial conquest and
+**Castle Royale** — a mobile MMO of empire building, territorial conquest and
 real-time strategic warfare. A Laravel API is the authority, a React Native app is
 the client, and a Filament panel is the back office.
 

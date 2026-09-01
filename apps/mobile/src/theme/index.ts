@@ -18,7 +18,7 @@ import {
   MIN_TOUCH_TARGET,
   type ThemeName,
   type ThemeColors,
-} from '@dominion/tooling/design-tokens';
+} from '@castleroyale/tooling/design-tokens';
 
 export type AppTheme = {
   name: ThemeName;

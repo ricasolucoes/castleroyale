@@ -34,9 +34,9 @@ back to the API client's refresh-token rotation before returning to login.
 
 ## Validation
 
-- 'npm run typecheck --workspace @dominion/mobile' → passed.
-- 'npm run lint --workspace @dominion/mobile' → passed with '--max-warnings=0'.
-- 'npm test --workspace @dominion/mobile -- --runInBand' → 4 suites, 12 tests passed.
+- 'npm run typecheck --workspace @castleroyale/mobile' → passed.
+- 'npm run lint --workspace @castleroyale/mobile' → passed with '--max-warnings=0'.
+- 'npm test --workspace @castleroyale/mobile -- --runInBand' → 4 suites, 12 tests passed.
 - 'php vendor/pestphp/pest/bin/pest --configuration=phpunit.xml' → 92 tests, 813 assertions passed.
 - './vendor/bin/phpstan analyse --memory-limit=1G' → passed, 0 errors.
 - './vendor/bin/pint --test' → passed.

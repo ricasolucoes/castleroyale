@@ -25,7 +25,7 @@ key-files:
     - apps/mobile/package.json
 
 key-decisions:
-  - "Decided against @shopify/restyle to rely directly on custom @dominion/tooling/design-tokens to minimize runtime overhead."
+  - "Decided against @shopify/restyle to rely directly on custom @castleroyale/tooling/design-tokens to minimize runtime overhead."
   - "Box component updated to map p, pt, m, mx etc. to SpacingToken strings for full token safety."
 
 patterns-established:
@@ -39,7 +39,7 @@ completed: 2026-08-25T14:58:00Z
 
 # Phase 02 Plan 01: Connect Design Tokens Summary
 
-**Foundational type-safe layout and typography primitives built directly on Dominion design tokens without Restyle.**
+**Foundational type-safe layout and typography primitives built directly on Castle Royale design tokens without Restyle.**
 
 ## Performance
 
@@ -67,7 +67,7 @@ Each task was committed atomically:
 - `apps/mobile/src/shared/components/Text.tsx` - Token-mapped typography Text wrapper.
 
 ## Decisions Made
-- Removed @shopify/restyle to adhere strictly to local `@dominion/tooling/design-tokens` with minimal runtime overhead.
+- Removed @shopify/restyle to adhere strictly to local `@castleroyale/tooling/design-tokens` with minimal runtime overhead.
 - Used a flat mapping for `Box` (e.g. `p`, `px`, `m`, `mx`) typing them natively against `useTheme` spacing properties.
 
 ## Deviations from Plan

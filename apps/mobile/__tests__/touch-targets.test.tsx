@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react-native';
 import { Button } from '../src/shared/components/Button';
 import { BottomSheet } from '../src/shared/components/BottomSheet';
-import { MIN_TOUCH_TARGET } from '@dominion/tooling/design-tokens';
+import { MIN_TOUCH_TARGET } from '@castleroyale/tooling/design-tokens';
 import { Text } from 'react-native';
 import React from 'react';
 

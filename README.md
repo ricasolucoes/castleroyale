@@ -1,10 +1,10 @@
-# Project Dominion
+# Castle Royale
 
 > A mobile MMO of empire building, territorial conquest and real-time strategic
 > warfare. One small city, a shared persistent world, and a few thousand
 > neighbours who also want it.
 
-`Project Dominion` is a working title. The name lives in `config('game.name')` and
+`Castle Royale` is a working title. The name lives in `config('game.name')` and
 appears in no namespace or class — changing it is a one-line edit.
 
 [![Phase](https://img.shields.io/badge/GSD%20Phase-00%20complete-3F7A4F)](<>)
@@ -156,7 +156,7 @@ docs/             ADRs, architecture, game design, security, operations
 needed for running backend tooling directly on the host.
 
 ```bash
-git clone <repo> && cd MmoMobile
+git clone <repo> && cd CastleRoyale
 make setup     # build images, install deps, migrate, seed
 make dev       # start the stack
 make smoke     # prove it: every service healthy, health endpoint ok

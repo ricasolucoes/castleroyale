@@ -12,7 +12,7 @@ provides:
   - "CI workflow that runs migrations forward/back/forward, double seed, postgis_version() and the PostGIS-only suite against postgis/postgis:16-3.4"
   - "Mobile job on Node 22 with contracts:check and gamedata:validate gates; infrastructure job with actionlint, compose validation, healthcheck count, image build and pinned gitleaks image"
   - "Single aggregate status check `CI` (ci-status) that fails when any job is not success"
-  - "Public repository ricasolucoes/project-dominion with a green master run and two recorded red runs"
+  - "Public repository ricasolucoes/castleroyale with a green master run and two recorded red runs"
 affects: [02-design-system-mobile-shell, 50-production-infrastructure, 51-store-release-pipeline]
 
 # Tech tracking
@@ -41,7 +41,7 @@ completed: 2026-08-25
 
 # Phase 01 Plan 04: GitHub Actions CI Summary
 
-**The CI workflow now proves PostGIS, seeds and every quality gate on a real runner — one green run on `master`, two recorded red runs, and the public repository live at `ricasolucoes/project-dominion`.**
+**The CI workflow now proves PostGIS, seeds and every quality gate on a real runner — one green run on `master`, two recorded red runs, and the public repository live at `ricasolucoes/castleroyale`.**
 
 ## Performance
 
@@ -81,13 +81,13 @@ completed: 2026-08-25
 - `gitleaks:v8.18.4 detect --source=/repo --redact --exit-code 1` → exit **0** (29 commits scanned, no leaks)
 - `gitleaks:v8.18.4 detect --source=/repo --no-git --redact --exit-code 1` → exit **0** (no leaks)
 
-**Repository:** `git remote -v` shows `ricasolucoes/project-dominion` (fetch + push); `gh repo view --json visibility` → `PUBLIC`; `master` == `origin/master`.
+**Repository:** `git remote -v` shows `ricasolucoes/castleroyale` (fetch + push); `gh repo view --json visibility` → `PUBLIC`; `master` == `origin/master`.
 
-**Green run (Task 3 step 3):** https://github.com/ricasolucoes/project-dominion/actions/runs/32802315288 — sha `29db6d8`, conclusion `success`, 4 jobs: `Backend` ✓, `Mobile & packages` ✓, `Infrastructure` ✓, `CI` ✓.
+**Green run (Task 3 step 3):** https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 — sha `29db6d8`, conclusion `success`, 4 jobs: `Backend` ✓, `Mobile & packages` ✓, `Infrastructure` ✓, `CI` ✓.
 
 **Negative proof — the build fails when a gate fails (Task 3 step 4), on the real runner:**
-- https://github.com/ricasolucoes/project-dominion/actions/runs/32801829549 — sha `bbb546b`, conclusion `failure`; job `Backend` failed at step **Formatting (Pint)**; job `CI` failed at **Fail if any gate failed**.
-- https://github.com/ricasolucoes/project-dominion/actions/runs/32802038572 — sha `c116c67`, conclusion `failure`; job `Backend` failed at step **Architecture rules**; job `CI` failed at **Fail if any gate failed**.
+- https://github.com/ricasolucoes/castleroyale/actions/runs/32801829549 — sha `bbb546b`, conclusion `failure`; job `Backend` failed at step **Formatting (Pint)**; job `CI` failed at **Fail if any gate failed**.
+- https://github.com/ricasolucoes/castleroyale/actions/runs/32802038572 — sha `c116c67`, conclusion `failure`; job `Backend` failed at step **Architecture rules**; job `CI` failed at **Fail if any gate failed**.
 
 **Static checks (this session):** `actionlint` exit 0; ci.yml is valid YAML; every Task 1/2 acceptance grep passes (`workflow_dispatch`, `permissions`/`contents: read`, `migrate:rollback --force`, `db:seed --force` ×2, `select postgis_version`, `test "$COUNT" -eq 5`, `phpunit.postgres.xml`, `node-version: '22'`, `gamedata:validate`, `ghcr.io/gitleaks/gitleaks:v8`, `rhysd/actionlint`, `grep -c 'healthcheck:'`, `ci-status:`, `if: always()`, no `continue-on-error`, no `gitleaks-action`, `">=22.6.0"`).
 

@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import type { WorldTile } from '@dominion/contracts';
+import type { WorldTile } from '@castleroyale/contracts';
 
 import { Badge } from '@/shared/components/Badge';
 import { BottomSheet } from '@/shared/components/BottomSheet';

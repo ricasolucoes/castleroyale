@@ -91,9 +91,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.projectdominion"
+    namespace "com.castleroyale"
     defaultConfig {
-        applicationId "test.example.dominion"
+        applicationId "test.example.castleroyale"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

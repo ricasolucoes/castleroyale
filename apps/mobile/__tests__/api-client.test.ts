@@ -1,4 +1,4 @@
-import { isApiError, isRetryable } from '@dominion/contracts';
+import { isApiError, isRetryable } from '@castleroyale/contracts';
 import { resolveApiUrl } from '../src/api/client';
 
 describe('API error contract', () => {

@@ -37,7 +37,7 @@ whose reason for existing is non-obvious.
 - Strict, with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`.
 - `type` over `interface` unless declaration merging is needed.
 - No `any`. `unknown` plus narrowing.
-- API types come from `@dominion/contracts` — never hand-written.
+- API types come from `@castleroyale/contracts` — never hand-written.
 - **Server state is TanStack Query. Client state is Zustand.** Never mix. If the
   server owns it, it does not go in a Zustand store.
 - No hardcoded colour, spacing or font size — design tokens only.

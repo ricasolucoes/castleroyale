@@ -1,25 +1,25 @@
 {
   "expo": {
-    "name": "Project Dominion",
-    "slug": "project-dominion",
+    "name": "Castle Royale",
+    "slug": "castleroyale",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "dominion",
+    "scheme": "castleroyale",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0E1116",
     "primaryColor": "#B4762E",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "test.example.dominion",
+      "bundleIdentifier": "test.example.castleroyale",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "UIViewControllerBasedStatusBarAppearance": true
       }
     },
     "android": {
-      "package": "test.example.dominion",
+      "package": "test.example.castleroyale",
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",

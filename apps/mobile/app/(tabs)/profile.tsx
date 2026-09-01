@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { GameBootstrap } from '@dominion/contracts';
+import type { GameBootstrap } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { clearTokens } from '@/features/auth/SecureStorage';

@@ -1,5 +1,5 @@
 {
-  "extends": "@dominion/tooling/tsconfig",
+  "extends": "@castleroyale/tooling/tsconfig",
   "compilerOptions": {
     "noEmit": true,
     "allowImportingTsExtensions": true

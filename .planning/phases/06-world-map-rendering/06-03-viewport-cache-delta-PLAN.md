@@ -71,15 +71,15 @@ remain. Mock MMKV at the adapter boundary and use contract-generated types.
 - Tests assert the URL contains `min_x`, `max_x`, `min_y` and `max_y` with integer values.
 - Cache tests assert world/region namespacing prevents cross-world reads.
 - Delta tests assert replacement by coordinate and preservation of untouched tiles.
-- `npm test --workspace=@dominion/mobile -- --runInBand` passes.
+- `npm test --workspace=@castleroyale/mobile -- --runInBand` passes.
 </acceptance_criteria>
 </task>
 
 ## Verification
 
-- `npm run typecheck --workspace=@dominion/mobile`
-- `npm run lint --workspace=@dominion/mobile`
-- `npm test --workspace=@dominion/mobile -- --runInBand`
+- `npm run typecheck --workspace=@castleroyale/mobile`
+- `npm run lint --workspace=@castleroyale/mobile`
+- `npm test --workspace=@castleroyale/mobile -- --runInBand`
 
 ## Must-haves
 

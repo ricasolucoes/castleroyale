@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
-import type { WorldData } from '@dominion/contracts';
+import type { WorldData } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { MapCanvas } from '@/features/world/components/MapCanvas';

@@ -49,7 +49,7 @@ The server owns the truth (ADR-006). The app renders what the server says.
 ## API client
 
 - One client with interceptors for auth, correlation id and error normalisation.
-- Types come from `@dominion/contracts`, generated from the OpenAPI spec. **Never
+- Types come from `@castleroyale/contracts`, generated from the OpenAPI spec. **Never
   hand-write an API type.**
 - Errors branch on `error.code`, never on `error.message`.
 - `ErrorCode.retryable` drives the retry policy.

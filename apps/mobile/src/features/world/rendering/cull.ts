@@ -1,4 +1,4 @@
-import type { WorldTile } from '@dominion/contracts';
+import type { WorldTile } from '@castleroyale/contracts';
 
 export type TileBounds = { minX: number; maxX: number; minY: number; maxY: number };
 

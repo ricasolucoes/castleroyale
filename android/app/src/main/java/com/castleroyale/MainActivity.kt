@@ -1,4 +1,4 @@
-package com.projectdominion
+package com.castleroyale
 
 import android.os.Build
 import android.os.Bundle

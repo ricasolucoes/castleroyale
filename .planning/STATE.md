@@ -76,7 +76,7 @@ Recent decisions affecting current work:
 - [Phase 00]: Server-authoritative time via a `Clock` contract; game rules never call `now()` (ADR-006)
 - [Phase 00]: PHPStan analyses first-party code only — Laravel's stock config and Pest's fluent API are excluded (DEBT-002)
 - [Phase 00]: GSD `research` disabled — every phase ships with CONTEXT.md and canonical references
-- [Phase 01]: Repository will be published as **public** at `ricasolucoes/project-dominion`
+- [Phase 01]: Repository will be published as **public** at `ricasolucoes/castleroyale`
   (user decision, 2026-08-24). The publish is gated: gitleaks scan runs autonomously,
   then the executor STOPS and hands back for a live human go-ahead before
   `gh repo create`. Plan files are explicitly not authorization for this.
@@ -85,7 +85,7 @@ Recent decisions affecting current work:
   `firstOrNew` + `forceFill` — `preventSilentlyDiscardingAttributes()` throws on the
   non-fillable `is_staff`. To be recorded in `docs/gsd/DECISIONS.md` during execution.
 
-- [Phase 02]: Removed @shopify/restyle to adhere strictly to local @dominion/tooling/design-tokens with minimal runtime overhead
+- [Phase 02]: Removed @shopify/restyle to adhere strictly to local @castleroyale/tooling/design-tokens with minimal runtime overhead
 - [Phase 02]: Mocked `@gorhom/bottom-sheet` instead of `react-native-reanimated` because the failure originates deep in the reanimated/worklets setup, and for the purpose of the touch target test, we only need to verify that our wrapper correctly passes props down and mounts.
 - [Phase 02.1]: Use query-string locale selection with an allow-list and restore the previous application locale after every request.
 - [Phase 02.1]: Keep institutional copy in versioned Laravel locale catalogues and render every page through one shared Blade layout.
@@ -107,12 +107,12 @@ None yet.
   environment and CI runs migrations/seeds/PostGIS suite against `postgis/postgis:16-3.4`
   (evidence in `.planning/codebase/CONCERNS.md` § Environment). Never trust a host-only green suite.
 
-- [Phase 01 → done] `ricasolucoes/project-dominion` is PUBLIC with `origin` configured; the publish
+- [Phase 01 → done] `ricasolucoes/castleroyale` is PUBLIC with `origin` configured; the publish
   gate is closed. Auto-mode denies pushing new branches / opening PRs — plan negative CI checks as
   human checkpoints, not autonomous steps.
 
 - [Housekeeping] Untracked `roadmap.json` (stray `roadmap analyze` dump) and the tracked SQLite file
-  `apps/api/dominion` (modified by runs) sit in the working tree; both should probably be removed /
+  `apps/api/castleroyale` (modified by runs) sit in the working tree; both should probably be removed /
   gitignored — left untouched pending the user's call.
 
 - [Roadmap] Phases 55–67 (Google Play Sidekick, 13 phases) were appended to ROADMAP.md outside the
@@ -127,4 +127,4 @@ Resume with: `/gsd:autonomous --from 4`
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
-https://github.com/ricasolucoes/project-dominion/actions/runs/32802315288 (green, 4 jobs).
+https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 (green, 4 jobs).

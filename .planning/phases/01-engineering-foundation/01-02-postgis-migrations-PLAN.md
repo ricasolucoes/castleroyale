@@ -161,13 +161,13 @@ The `phpunit.postgres.xml` created here uses `force="true"` so it wins unconditi
 Makefile target created by plan 01-01 (already on disk when this plan runs):
 ```make
 test-postgres:
-	@$(COMPOSE) exec -T postgres psql -U dominion -d dominion -tc \
-		"SELECT 1 FROM pg_database WHERE datname='dominion_test'" | grep -q 1 \
-		|| $(COMPOSE) exec -T postgres createdb -U dominion dominion_test
+	@$(COMPOSE) exec -T postgres psql -U castleroyale -d castleroyale -tc \
+		"SELECT 1 FROM pg_database WHERE datname='castleroyale_test'" | grep -q 1 \
+		|| $(COMPOSE) exec -T postgres createdb -U castleroyale castleroyale_test
 	$(API) ./vendor/bin/pest --configuration=phpunit.postgres.xml
 ```
 So the config file MUST be named exactly `apps/api/phpunit.postgres.xml` and the
-database it targets MUST be `dominion_test`.
+database it targets MUST be `castleroyale_test`.
 </interfaces>
 </context>
 
@@ -270,7 +270,7 @@ both must be clean before you consider this task done.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile/apps/api && ./vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress && ./vendor/bin/pest --filter=Health</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale/apps/api && ./vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress && ./vendor/bin/pest --filter=Health</automated>
   </verify>
 
   <acceptance_criteria>
@@ -483,7 +483,7 @@ Run `./vendor/bin/pint`, `./vendor/bin/phpstan analyse --memory-limit=1G` and
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile/apps/api && ./vendor/bin/pest --filter=MigrationConventions && ./vendor/bin/pest --group=arch && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress && ./vendor/bin/pint --test</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale/apps/api && ./vendor/bin/pest --filter=MigrationConventions && ./vendor/bin/pest --group=arch && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress && ./vendor/bin/pint --test</automated>
   </verify>
 
   <acceptance_criteria>
@@ -557,7 +557,7 @@ Do **not** modify `phpunit.xml`.
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="pgsql" force="true"/>
-        <env name="DB_DATABASE" value="dominion_test" force="true"/>
+        <env name="DB_DATABASE" value="castleroyale_test" force="true"/>
         <env name="DB_URL" value="" force="true"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
@@ -570,7 +570,7 @@ Do **not** modify `phpunit.xml`.
 ```
 
 `DB_HOST`, `DB_USERNAME` and `DB_PASSWORD` are intentionally not forced: inside Docker
-they come from `apps/api/.env` (`postgres` / `dominion` / `dominion`), and in CI the
+they come from `apps/api/.env` (`postgres` / `castleroyale` / `castleroyale`), and in CI the
 workflow exports `DB_HOST=127.0.0.1` with the same credentials.
 
 **2. Add the Pest binding in `apps/api/tests/Pest.php`.** After the existing
@@ -651,7 +651,7 @@ PostGIS."* with:
 ```
 Those tests live in `tests/Postgres/` and are loaded **only** by
 `apps/api/phpunit.postgres.xml`, which forces `DB_CONNECTION=pgsql` and
-`DB_DATABASE=dominion_test`. `phpunit.xml` does not declare that directory as a
+`DB_DATABASE=castleroyale_test`. `phpunit.xml` does not declare that directory as a
 testsuite, so `./vendor/bin/pest` can never run them by accident.
 
     make test-postgres    # local, through Docker
@@ -747,14 +747,14 @@ Then run `./vendor/bin/pint --test` and `make test-postgres`.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && ! grep -q "foreignUlid('world_id')" docs/database/conventions.md && grep -q 'GameTable::worldScoped' docs/database/conventions.md && grep -A6 '^## Mandatory columns' docs/database/conventions.md | grep -q 'GameTable::entity' && make test-postgres</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && ! grep -q "foreignUlid('world_id')" docs/database/conventions.md && grep -q 'GameTable::worldScoped' docs/database/conventions.md && grep -A6 '^## Mandatory columns' docs/database/conventions.md | grep -q 'GameTable::entity' && make test-postgres</automated>
   </verify>
 
   <acceptance_criteria>
     - `ls apps/api/phpunit.postgres.xml` succeeds
     - `grep -q 'tests/Postgres' apps/api/phpunit.postgres.xml` succeeds
     - `grep -q 'value="pgsql" force="true"' apps/api/phpunit.postgres.xml` succeeds
-    - `grep -q 'value="dominion_test" force="true"' apps/api/phpunit.postgres.xml` succeeds
+    - `grep -q 'value="castleroyale_test" force="true"' apps/api/phpunit.postgres.xml` succeeds
     - `grep -q "in('Postgres')" apps/api/tests/Pest.php` succeeds
     - `grep -c "group('postgres')" apps/api/tests/Postgres/PostgisExtensionTest.php` returns 5
     - `apps/api/phpunit.xml` is byte-identical to its state before this task (`git diff --exit-code apps/api/phpunit.xml` succeeds)
@@ -787,7 +787,7 @@ cd ../..
 # Success criterion 2 — migrations against real PostgreSQL + PostGIS
 make migrate
 make migrate-fresh && make migrate      # forward, back, forward
-docker compose exec -T postgres psql -U dominion -d dominion -c "select postgis_version();"
+docker compose exec -T postgres psql -U castleroyale -d castleroyale -c "select postgis_version();"
 
 # The PostGIS-only suite
 make test-postgres

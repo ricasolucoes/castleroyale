@@ -1,5 +1,5 @@
 /**
- * Project Dominion — design tokens.
+ * Castle Royale — design tokens.
  *
  * The single source of visual truth. No screen, component or style may hardcode
  * a colour, spacing, radius, font size or duration.

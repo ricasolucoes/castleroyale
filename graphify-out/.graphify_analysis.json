@@ -4852,7 +4852,7 @@
     ],
     "75": [
       "apps_mobile_package_dependencies",
-      "apps_mobile_package_dependencies_dominion_localization",
+      "apps_mobile_package_dependencies_castleroyale_localization",
       "apps_mobile_package_dependencies_expo",
       "apps_mobile_package_dependencies_expo_application",
       "apps_mobile_package_dependencies_expo_dev_client",
@@ -4863,7 +4863,7 @@
       "apps_mobile_package_dependencies_react_native_gesture_handler",
       "apps_mobile_package_dependencies_react_native_mmkv",
       "apps_mobile_package_dependencies_react_native_screens",
-      "dominion_localization",
+      "castleroyale_localization",
       "expo",
       "expo_application",
       "expo_dev_client",
@@ -4907,11 +4907,11 @@
       "apps_mobile_tsconfig_exclude",
       "apps_mobile_tsconfig_extends",
       "apps_mobile_tsconfig_include",
-      "apps_mobile_tsconfig_paths_dominion_contracts",
-      "apps_mobile_tsconfig_paths_dominion_tooling_design_tokens",
+      "apps_mobile_tsconfig_paths_castleroyale_contracts",
+      "apps_mobile_tsconfig_paths_castleroyale_tooling_design_tokens",
       "ref_android",
       "ref_dist",
-      "ref_dominion_tooling_tsconfig_react_native",
+      "ref_castleroyale_tooling_tsconfig_react_native",
       "ref_expo",
       "ref_expo_env_d_ts",
       "ref_expo_tsconfig_base",
@@ -5830,7 +5830,7 @@
       "packages_contracts_tsconfig_extends",
       "packages_contracts_tsconfig_include",
       "packages_contracts_tsconfig_json_ref_src_ts",
-      "ref_dominion_tooling_tsconfig"
+      "ref_castleroyale_tooling_tsconfig"
     ],
     "133": [
       "apps_api_composer_allow_plugins_pestphp_pest_plugin",
@@ -5973,14 +5973,14 @@
       "packages_game_data_tsconfig",
       "packages_game_data_tsconfig_extends",
       "packages_game_data_tsconfig_include",
-      "packages_game_data_tsconfig_json_ref_dominion_tooling_tsconfig_node",
+      "packages_game_data_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
       "packages_game_data_tsconfig_json_ref_src_ts"
     ],
     "151": [
       "packages_localization_tsconfig",
       "packages_localization_tsconfig_extends",
       "packages_localization_tsconfig_include",
-      "packages_localization_tsconfig_json_ref_dominion_tooling_tsconfig_node",
+      "packages_localization_tsconfig_json_ref_castleroyale_tooling_tsconfig_node",
       "packages_localization_tsconfig_json_ref_src_ts"
     ],
     "152": [

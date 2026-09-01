@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { MapCanvas } from '../src/features/world/components/MapCanvas';
-import { MIN_TOUCH_TARGET } from '@dominion/tooling/design-tokens';
+import { MIN_TOUCH_TARGET } from '@castleroyale/tooling/design-tokens';
 
 jest.mock('@shopify/react-native-skia', () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports

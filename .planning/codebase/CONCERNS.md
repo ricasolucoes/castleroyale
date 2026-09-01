@@ -9,7 +9,7 @@ On every push the Backend job runs migrations forward, back and forward again,
 seeds twice, asserts `postgis_version()` and runs the PostGIS-only suite
 (`phpunit.postgres.xml`) against `postgis/postgis:16-3.4`. Evidence — all four
 jobs green, including the `CI` aggregate:
-<https://github.com/ricasolucoes/project-dominion/actions/runs/32802315288>.
+<https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288>.
 Locally the same suite runs inside the stack with `make test-postgres`.
 
 The **local host** still has no `pdo_pgsql`, so a green `./vendor/bin/pest` on the

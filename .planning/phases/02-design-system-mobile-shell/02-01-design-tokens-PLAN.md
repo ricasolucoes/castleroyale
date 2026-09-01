@@ -6,7 +6,7 @@ requirements_addressed: [REQ-08, REQ-13]
 # Plan 02-01: Connect Design Tokens
 
 <objective>
-Adopt the existing design tokens from `@dominion/tooling/design-tokens` and create the foundational layout primitives (`Box` and `Text`) using `@shopify/restyle`, enforcing strict type-safe design tokens and implementing light/dark mode support.
+Adopt the existing design tokens from `@castleroyale/tooling/design-tokens` and create the foundational layout primitives (`Box` and `Text`) using `@shopify/restyle`, enforcing strict type-safe design tokens and implementing light/dark mode support.
 </objective>
 
 <context>

@@ -29,8 +29,8 @@ return [
     |
     */
 
-    'name' => env('GAME_NAME', 'Project Dominion'),
-    'code' => env('GAME_CODE', 'dominion'),
+    'name' => env('GAME_NAME', 'Castle Royale'),
+    'code' => env('GAME_CODE', 'castleroyale'),
     'support_email' => env('GAME_SUPPORT_EMAIL', 'support@example.test'),
     'support_rate_limit_per_minute' => (int) env('SUPPORT_RATE_LIMIT_PER_MINUTE', 5),
 

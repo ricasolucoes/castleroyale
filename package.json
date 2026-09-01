@@ -1,8 +1,8 @@
 {
-  "name": "project-dominion",
+  "name": "castleroyale",
   "version": "0.1.0",
   "private": true,
-  "description": "Project Dominion — mobile strategy MMO. Monorepo root.",
+  "description": "Castle Royale — mobile strategy MMO. Monorepo root.",
   "license": "UNLICENSED",
   "workspaces": [
     "apps/mobile",
@@ -13,8 +13,8 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "mobile": "npm run start --workspace=@dominion/mobile --",
-    "mobile:dev-client": "npm run start:dev-client --workspace=@dominion/mobile --",
+    "mobile": "npm run start --workspace=@castleroyale/mobile --",
+    "mobile:dev-client": "npm run start:dev-client --workspace=@castleroyale/mobile --",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
@@ -22,10 +22,10 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
-    "contracts:generate": "npm run generate --workspace=@dominion/contracts",
-    "contracts:check": "npm run check --workspace=@dominion/contracts",
-    "gamedata:validate": "npm run validate --workspace=@dominion/game-data",
-    "tokens:generate": "npm run generate --workspace=@dominion/tooling"
+    "contracts:generate": "npm run generate --workspace=@castleroyale/contracts",
+    "contracts:check": "npm run check --workspace=@castleroyale/contracts",
+    "gamedata:validate": "npm run validate --workspace=@castleroyale/game-data",
+    "tokens:generate": "npm run generate --workspace=@castleroyale/tooling"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

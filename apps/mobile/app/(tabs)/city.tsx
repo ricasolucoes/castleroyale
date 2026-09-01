@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { CityData, Construction } from '@dominion/contracts';
-import type { ResourceKey } from '@dominion/tooling/design-tokens';
+import type { CityData, Construction } from '@castleroyale/contracts';
+import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { Button } from '@/shared/components/Button';

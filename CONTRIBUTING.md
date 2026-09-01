@@ -49,7 +49,7 @@ Make that single check the required one in branch protection.
 `make ci` runs the same commands locally, including the PostgreSQL-only suite that
 the SQLite host suite cannot cover.
 
-The repository is <https://github.com/ricasolucoes/project-dominion>. CI runs on every
+The repository is <https://github.com/ricasolucoes/castleroyale>. CI runs on every
 push to `master` and `develop` and on every pull request.
 
 Branch protection is **not** enabled yet, deliberately: GSD phases commit directly to
@@ -57,7 +57,7 @@ Branch protection is **not** enabled yet, deliberately: GSD phases commit direct
 on, the single required status check is **`CI`** (the `ci-status` aggregate) — not the
 three individual jobs:
 
-    gh api -X PUT repos/ricasolucoes/project-dominion/branches/master/protection \
+    gh api -X PUT repos/ricasolucoes/castleroyale/branches/master/protection \
       -F required_status_checks[strict]=true \
       -F 'required_status_checks[contexts][]=CI' \
       -F enforce_admins=false -F required_pull_request_reviews= -F restrictions=

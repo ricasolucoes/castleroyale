@@ -37,7 +37,7 @@ fixes PHP, and shared types would tempt us to trust client-shaped data.
 determinism and concurrency, and rejected only for now: a second language doubles
 the operational surface before there is a measured need. ADR-001 keeps the door open.
 
-**Namespacing modules under the product name (`Dominion\`).** Rejected: the game
+**Namespacing modules under the product name (`CastleRoyale\`).** Rejected: the game
 has a working title. Baking it into thousands of namespace declarations makes the
 eventual rename a mechanical risk for zero benefit.
 

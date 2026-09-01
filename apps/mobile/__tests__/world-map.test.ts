@@ -1,4 +1,4 @@
-import type { WorldTile } from '@dominion/contracts';
+import type { WorldTile } from '@castleroyale/contracts';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -22,7 +22,7 @@ import {
   writeWorldRegion,
 } from '../src/features/world/data/WorldRegionCache';
 import { viewportQueryKey } from '../src/features/world/data/useWorldViewport';
-import type { WorldViewport } from '@dominion/contracts';
+import type { WorldViewport } from '@castleroyale/contracts';
 import {
   clampZoom,
   MAX_MAP_ZOOM,

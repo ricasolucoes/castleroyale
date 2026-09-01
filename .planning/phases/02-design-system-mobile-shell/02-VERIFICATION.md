@@ -32,7 +32,7 @@ timestamp: 2026-08-26T00:31:00Z
 | `apps/mobile/src/shared/components/*` | ✓ | ✓ | ✓ | ✓ VERIFIED |
 | `apps/mobile/app/(tabs)/_layout.tsx` | ✓ | ✓ | ✓ | ✓ VERIFIED |
 | `apps/mobile/app/gallery.tsx` | ✓ | ✓ | ✓ | ✓ VERIFIED |
-| `@dominion/localization` hook | ✓ | ✓ | ✓ | ✓ VERIFIED |
+| `@castleroyale/localization` hook | ✓ | ✓ | ✓ | ✓ VERIFIED |
 
 ## Requirements Coverage (Cross-referenced against PROJECT.md)
 

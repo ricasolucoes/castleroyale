@@ -342,7 +342,7 @@ inside Docker.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && make migrate-fresh && make seed && make seed && STAFF=$(docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]') && TOTAL=$(docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users" | tr -d '[:space:]') && echo "staff=$STAFF total=$TOTAL" && [ "$STAFF" = "2" ] && [ "$TOTAL" = "5" ] && grep -q 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md && echo SEED_IDEMPOTENT_AND_STAFF_OK</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && make migrate-fresh && make seed && make seed && STAFF=$(docker compose exec -T postgres psql -U castleroyale -d castleroyale -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]') && TOTAL=$(docker compose exec -T postgres psql -U castleroyale -d castleroyale -tAc "select count(*) from users" | tr -d '[:space:]') && echo "staff=$STAFF total=$TOTAL" && [ "$STAFF" = "2" ] && [ "$TOTAL" = "5" ] && grep -q 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md && echo SEED_IDEMPOTENT_AND_STAFF_OK</automated>
   </verify>
 
   <acceptance_criteria>
@@ -355,7 +355,7 @@ inside Docker.
     - `is_staff` is still absent from `User::$fillable` in `apps/api/app/Models/User.php` (`git diff --exit-code apps/api/app/Models/User.php` succeeds — this task must not touch the model)
     - `make seed` exits 0 twice in a row with no `MassAssignmentException`
     - `select count(*) from users` returns 5 after one seed and still 5 after a second seed
-    - `docker compose exec -T postgres psql -U dominion -d dominion -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]'` equals exactly `2` (admin + support). Use `-tAc` (unaligned): with psql's default aligned output the value is padded and a whitespace-anchored grep gives a false failure.
+    - `docker compose exec -T postgres psql -U castleroyale -d castleroyale -tAc "select count(*) from users where is_staff = true" | tr -d '[:space:]'` equals exactly `2` (admin + support). Use `-tAc` (unaligned): with psql's default aligned output the value is padded and a whitespace-anchored grep gives a false failure.
     - **The locked decision is recorded, not worked around:** `grep -q 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md` succeeds
     - `grep -q 'updateOrCreate' docs/gsd/DECISIONS.md` succeeds (the entry names the mechanism it replaced)
     - `grep -A12 'Phase 01 — Seeder idempotency' docs/gsd/DECISIONS.md | grep -q 'preventSilentlyDiscardingAttributes'` succeeds (the entry gives the real reason, not "it didn't work")
@@ -501,7 +501,7 @@ Then run `./vendor/bin/pest --filter=Seeder` and `./vendor/bin/pint`.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile/apps/api && ./vendor/bin/pest --filter=Seeder && ./vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale/apps/api && ./vendor/bin/pest --filter=Seeder && ./vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress</automated>
   </verify>
 
   <acceptance_criteria>
@@ -663,7 +663,7 @@ Then run `./vendor/bin/pest`, `./vendor/bin/pint --test` and
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile/apps/api && ./vendor/bin/pest --filter=TestFixtures && ./vendor/bin/pest && ./vendor/bin/pint --test</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale/apps/api && ./vendor/bin/pest --filter=TestFixtures && ./vendor/bin/pest && ./vendor/bin/pint --test</automated>
   </verify>
 
   <acceptance_criteria>
@@ -692,10 +692,10 @@ Docker must be running. Run from the repository root:
 # Success criterion 3 — a browsable dataset, safe to run twice
 make migrate-fresh
 make seed
-docker compose exec -T postgres psql -U dominion -d dominion \
+docker compose exec -T postgres psql -U castleroyale -d castleroyale \
   -c "select id, email, is_staff from users order by id;"
 make seed
-docker compose exec -T postgres psql -U dominion -d dominion \
+docker compose exec -T postgres psql -U castleroyale -d castleroyale \
   -c "select count(*) as users, count(*) filter (where is_staff) as staff from users;"
 # -> users = 5, staff = 2, both times
 

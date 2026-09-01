@@ -34,4 +34,4 @@ Implemented the world map viewport cache and delta merging mechanism.
 ## Verification
 
 - Typecheck and ESLint passed cleanly.
-- `npm test --workspace=@dominion/mobile` passed with 100% success on the updated tests.
+- `npm test --workspace=@castleroyale/mobile` passed with 100% success on the updated tests.

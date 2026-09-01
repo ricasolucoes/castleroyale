@@ -1,8 +1,8 @@
-# Roadmap: Project Dominion
+# Roadmap: Castle Royale
 
 ## Overview
 
-Fifty-five numbered phases plus decimal insertions carry Project Dominion from an empty repository to a live-service
+Fifty-five numbered phases plus decimal insertions carry Castle Royale from an empty repository to a live-service
 mobile MMO. The spine is deliberate: prove the server can be trusted before anything
 multiplayer is built, prove the economy cannot be duplicated before players can trade,
 and prove combat is deterministic before players can lose anything to it.
@@ -19,7 +19,7 @@ see the dependency graph in `docs/gsd/DEPENDENCIES.md`.
 
 ## Milestone v0.1: Foundation to Launch
 
-All numbered and inserted phases belong to this milestone. Project Dominion starts at v0.1.0; v1.0.0 is
+All numbered and inserted phases belong to this milestone. Castle Royale starts at v0.1.0; v1.0.0 is
 reserved for a mature product in production, not the first release.
 
 ## Phases

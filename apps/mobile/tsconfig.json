@@ -1,12 +1,12 @@
 {
-  "extends": ["expo/tsconfig.base", "@dominion/tooling/tsconfig-react-native"],
+  "extends": ["expo/tsconfig.base", "@castleroyale/tooling/tsconfig-react-native"],
   "compilerOptions": {
     // No `baseUrl` — deprecated in TypeScript 6. Path mappings resolve
     // relative to this file.
     "paths": {
       "@/*": ["./src/*"],
-      "@dominion/contracts": ["../../packages/contracts/src/index.ts"],
-      "@dominion/tooling/design-tokens": ["../../packages/tooling/design-tokens/index.ts"]
+      "@castleroyale/contracts": ["../../packages/contracts/src/index.ts"],
+      "@castleroyale/tooling/design-tokens": ["../../packages/tooling/design-tokens/index.ts"]
     },
     "types": ["node", "jest"],
     "allowImportingTsExtensions": true

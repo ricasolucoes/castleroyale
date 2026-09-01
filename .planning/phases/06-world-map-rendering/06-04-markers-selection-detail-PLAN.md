@@ -84,10 +84,10 @@ the architecture test to reject direct tile API fetching from the component.
 
 ## Verification
 
-- `npm run typecheck --workspace=@dominion/mobile`
-- `npm run lint --workspace=@dominion/mobile`
-- `npm test --workspace=@dominion/mobile -- --runInBand`
-- `npm run validate --workspace=@dominion/localization`
+- `npm run typecheck --workspace=@castleroyale/mobile`
+- `npm run lint --workspace=@castleroyale/mobile`
+- `npm test --workspace=@castleroyale/mobile -- --runInBand`
+- `npm run validate --workspace=@castleroyale/localization`
 
 ## Must-haves
 

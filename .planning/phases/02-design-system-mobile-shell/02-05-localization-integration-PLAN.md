@@ -22,7 +22,7 @@ autonomous: true
 <must_haves>
   - The mobile shell is fully localized in pt-BR, en, and es.
   - No tab titles or screen headings in the navigation shell are hardcoded.
-  - The `@dominion/localization` package is properly integrated into `apps/mobile`.
+  - The `@castleroyale/localization` package is properly integrated into `apps/mobile`.
 </must_haves>
 
 <task>
@@ -80,11 +80,11 @@ autonomous: true
   <action>
     Update `packages/localization/src/index.ts` to export a new `const CATALOGUES` which statically imports the loaded catalogue objects for 'en', 'es', and 'pt-BR' by importing the `navigation.json` files.
     Example: `import enNavigation from '../locales/en/navigation.json'; export const CATALOGUES = { en: { navigation: enNavigation }, es: { navigation: esNavigation }, 'pt-BR': { navigation: ptBRNavigation } };`
-    Update `apps/mobile/package.json` to include `"@dominion/localization": "*"` in dependencies.
+    Update `apps/mobile/package.json` to include `"@castleroyale/localization": "*"` in dependencies.
   </action>
   <acceptance_criteria>
     - `grep "CATALOGUES" packages/localization/src/index.ts` returns a match.
-    - `grep "@dominion/localization" apps/mobile/package.json` returns a match.
+    - `grep "@castleroyale/localization" apps/mobile/package.json` returns a match.
   </acceptance_criteria>
 </task>
 
@@ -96,7 +96,7 @@ autonomous: true
   </read_first>
   <action>
     Create `apps/mobile/src/i18n/useTranslation.ts`.
-    It must export a `useTranslation` hook that uses `expo-localization` (`getLocales()[0].languageTag`) and `resolveLocale` from `@dominion/localization` to determine the current locale.
+    It must export a `useTranslation` hook that uses `expo-localization` (`getLocales()[0].languageTag`) and `resolveLocale` from `@castleroyale/localization` to determine the current locale.
     It must return a `t(key: string)` function that resolves keys like `navigation.tabs.city` from `CATALOGUES`.
     Include a simple dot-notation resolver: `key.split('.').reduce((o: any, i: string) => o?.[i], CATALOGUES[locale]) ?? key`.
   </action>

@@ -51,7 +51,7 @@ component without a React child for each tile or marker.
 - `MapCanvas.tsx` imports `Canvas` from `@shopify/react-native-skia` and renders one canvas.
 - Pan and pinch handlers use Reanimated worklets/shared values and contain no React state setter in a per-frame callback.
 - The world screen no longer renders `world.cities.map`, grid-line loops, or one React `Pressable` per map entity.
-- `npm run typecheck --workspace=@dominion/mobile` and the focused map component tests exit 0.
+- `npm run typecheck --workspace=@castleroyale/mobile` and the focused map component tests exit 0.
 </acceptance_criteria>
 </task>
 
@@ -74,15 +74,15 @@ fallback rendering that violates the single-canvas architecture.
 - A test fails if the map component exposes more than one Skia Canvas.
 - A test asserts reset accessibility metadata and `minHeight`/`minWidth` resolve to `MIN_TOUCH_TARGET`.
 - Camera reducer/store tests cover clamp at both zoom limits and reset to the player coordinate.
-- `npm test --workspace=@dominion/mobile -- --runInBand` passes.
+- `npm test --workspace=@castleroyale/mobile -- --runInBand` passes.
 </acceptance_criteria>
 </task>
 
 ## Verification
 
-- `npm run typecheck --workspace=@dominion/mobile`
-- `npm run lint --workspace=@dominion/mobile`
-- `npm test --workspace=@dominion/mobile -- --runInBand`
+- `npm run typecheck --workspace=@castleroyale/mobile`
+- `npm run lint --workspace=@castleroyale/mobile`
+- `npm test --workspace=@castleroyale/mobile -- --runInBand`
 
 ## Must-haves
 

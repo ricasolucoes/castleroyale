@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
-import type { MilitaryData } from '@dominion/contracts';
+import type { MilitaryData } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { Badge } from '@/shared/components/Badge';

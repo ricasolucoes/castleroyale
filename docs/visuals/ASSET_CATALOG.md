@@ -1,4 +1,4 @@
-# Project Dominion — catálogo visual para Google AI Studio / Flow
+# Castle Royale — catálogo visual para Google AI Studio / Flow
 
 Este catálogo organiza a direção artística do MVP e das 68 fases do roadmap.
 Os prompts são deliberadamente livres de texto legível, marcas e logotipos para
@@ -68,7 +68,7 @@ comunicar estado.
 
 ## Estado de geração
 
-O projeto `Project Dominion — MVP Visual Kit` foi criado no Google Flow e o
+O projeto `Castle Royale — MVP Visual Kit` foi criado no Google Flow e o
 prompt do painel triplo foi preparado. Nesta sessão, o editor do Flow retornou
 erro interno do Slate ao submeter o campo de prompt; nenhum arquivo gerado foi
 copiado para o repositório. O Google AI Studio também apresentou o modelo de

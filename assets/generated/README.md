@@ -1,8 +1,8 @@
-# Project Dominion — visual asset kit
+# Castle Royale — visual asset kit
 
 Pacote visual inicial gerado em 2026-08-28 para validar a direção artística do
 cliente mobile. A tentativa de criação direta no Google Flow foi preservada no
-projeto `Project Dominion — MVP Visual Kit`; nesta sessão o botão de geração não
+projeto `Castle Royale — MVP Visual Kit`; nesta sessão o botão de geração não
 disparou um job. Os PNGs abaixo foram gerados pelo gerador integrado como
 fallback e já estão dentro do workspace.
 

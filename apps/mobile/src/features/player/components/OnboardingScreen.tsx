@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
-import type { GameBootstrap, WorldList, WorldOption } from '@dominion/contracts';
+import type { GameBootstrap, WorldList, WorldOption } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
 import { Button } from '@/shared/components/Button';

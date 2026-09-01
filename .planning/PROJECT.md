@@ -1,4 +1,4 @@
-# Project Dominion
+# Castle Royale
 
 ## What This Is
 
@@ -132,7 +132,7 @@ Phase 01 (2026-08-25) made Docker the canonical environment — seven healthy se
 migrations and a double seed proven against real PostGIS, `/api/v1/health` reporting every
 dependency, and GitHub Actions gating lint, static analysis, backend tests and mobile
 typecheck behind one `CI` check (green run + two recorded red runs). The repository is
-public at `ricasolucoes/project-dominion`. REQ-06 and REQ-12 are advanced (CI validates
+public at `ricasolucoes/castleroyale`. REQ-06 and REQ-12 are advanced (CI validates
 `packages/game-data`; health checks exist) but not yet validated — both span many phases.
 
 On 2026-08-25, 13 phases (55–67, "Google Play Sidekick") were appended to ROADMAP.md

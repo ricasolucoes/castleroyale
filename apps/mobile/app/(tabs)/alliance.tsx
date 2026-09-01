@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { AllianceData } from '@dominion/contracts';
+import type { AllianceData } from '@castleroyale/contracts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ApiError, apiRequest } from '@/api/client';

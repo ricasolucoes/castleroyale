@@ -70,5 +70,5 @@ it('keeps institutional views free of literal visual tokens', function (): void 
     expect($contents)->not->toMatch('/#[0-9A-Fa-f]{3,8}/');
     expect($contents)->not->toContain('font-size:');
     expect($contents)->not->toMatch('/\b\d+px\b/');
-    expect($contents)->not->toContain('Project Dominion');
+    expect($contents)->not->toContain('Castle Royale');
 });

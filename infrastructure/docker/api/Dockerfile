@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Project Dominion API.
+# Castle Royale API.
 #
 # `development` mounts the source and runs the built-in server.
 # `production` bakes the source and runs Octane on FrankenPHP.
@@ -31,9 +31,9 @@ FROM base AS development
 # Xdebug is intentionally not installed: it costs roughly half the request
 # throughput and is rarely what a developer actually needs here. Add it in a
 # local override when stepping through something.
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/dominion.ini
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/castleroyale.ini
 
 EXPOSE 8000
 
@@ -50,11 +50,11 @@ RUN composer install \
 # ---------------------------------------------------------------------------
 FROM base AS production
 
-RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "opcache.jit_buffer_size=64M" >> /usr/local/etc/php/conf.d/dominion.ini \
-    && echo "expose_php=0" >> /usr/local/etc/php/conf.d/dominion.ini
+RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "opcache.jit_buffer_size=64M" >> /usr/local/etc/php/conf.d/castleroyale.ini \
+    && echo "expose_php=0" >> /usr/local/etc/php/conf.d/castleroyale.ini
 
 COPY --from=vendor /app/vendor ./vendor
 COPY apps/api ./
@@ -65,9 +65,9 @@ RUN composer dump-autoload --optimize --classmap-authoritative \
     && php artisan event:cache
 
 # Never run as root in production.
-RUN addgroup -g 1000 dominion && adduser -D -u 1000 -G dominion dominion \
-    && chown -R dominion:dominion /app/storage /app/bootstrap/cache
-USER dominion
+RUN addgroup -g 1000 castleroyale && adduser -D -u 1000 -G castleroyale castleroyale \
+    && chown -R castleroyale:castleroyale /app/storage /app/bootstrap/cache
+USER castleroyale
 
 EXPOSE 8000
 

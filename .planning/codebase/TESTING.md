@@ -36,7 +36,7 @@ suite runs on a host without `pdo_pgsql`.
 `ILIKE`, JSONB operators, `EXPLAIN` assertions) **cannot be covered by the default
 suite.** Those tests live in `tests/Postgres/` and are loaded **only** by
 `apps/api/phpunit.postgres.xml`, which forces `DB_CONNECTION=pgsql` and
-`DB_DATABASE=dominion_test`. `phpunit.xml` does not declare that directory as a
+`DB_DATABASE=castleroyale_test`. `phpunit.xml` does not declare that directory as a
 testsuite, so `./vendor/bin/pest` can never run them by accident.
 
     make test-postgres    # local, through Docker

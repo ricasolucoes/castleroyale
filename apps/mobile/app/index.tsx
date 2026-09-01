@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
-import type { WorldList } from '@dominion/contracts';
+import type { WorldList } from '@castleroyale/contracts';
 
 import { ApiError, authenticatedRequest } from '@/api/client';
 import { getTokens } from '@/features/auth/SecureStorage';

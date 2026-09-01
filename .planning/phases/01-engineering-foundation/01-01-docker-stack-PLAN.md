@@ -193,7 +193,7 @@ readiness subcommand:
       start_period: 10s
 ```
 
-Do **not** change: image tags, published ports, volume names, the `name: dominion`
+Do **not** change: image tags, published ports, volume names, the `name: castleroyale`
 project name, or the existing api/postgres/redis/minio healthchecks. Do not add new
 services (a MinIO bucket bootstrap is out of scope for this phase).
 
@@ -203,7 +203,7 @@ succeed **with `apps/api/.env` absent** — temporarily rename it to prove this:
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && mv apps/api/.env apps/api/.env.bak 2>/dev/null; docker compose config --quiet; rc=$?; mv apps/api/.env.bak apps/api/.env 2>/dev/null; exit $rc</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && mv apps/api/.env apps/api/.env.bak 2>/dev/null; docker compose config --quiet; rc=$?; mv apps/api/.env.bak apps/api/.env 2>/dev/null; exit $rc</automated>
   </verify>
 
   <acceptance_criteria>
@@ -307,9 +307,9 @@ smoke: ## Prove the stack: every service healthy + the health endpoint ok
 
 ```make
 test-postgres: ## PostGIS-only tests against real PostgreSQL (phpunit.postgres.xml)
-	@$(COMPOSE) exec -T postgres psql -U dominion -d dominion -tc \
-		"SELECT 1 FROM pg_database WHERE datname='dominion_test'" | grep -q 1 \
-		|| $(COMPOSE) exec -T postgres createdb -U dominion dominion_test
+	@$(COMPOSE) exec -T postgres psql -U castleroyale -d castleroyale -tc \
+		"SELECT 1 FROM pg_database WHERE datname='castleroyale_test'" | grep -q 1 \
+		|| $(COMPOSE) exec -T postgres createdb -U castleroyale castleroyale_test
 	$(API) ./vendor/bin/pest --configuration=phpunit.postgres.xml
 ```
 
@@ -331,7 +331,7 @@ recipe stays a wrapper over `docker compose` or `npm`.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && make -n setup >/dev/null && make -n dev >/dev/null && make -n health >/dev/null && make -n smoke >/dev/null && make -n test-postgres >/dev/null && echo MAKEFILE_PARSES</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && make -n setup >/dev/null && make -n dev >/dev/null && make -n health >/dev/null && make -n smoke >/dev/null && make -n test-postgres >/dev/null && echo MAKEFILE_PARSES</automated>
   </verify>
 
   <acceptance_criteria>
@@ -470,7 +470,7 @@ and add this table immediately under the existing host-port table:
 | Service | Healthcheck |
 |---------|-------------|
 | api | `curl -fsS http://localhost:8000/api/v1/health` |
-| postgres | `pg_isready -U dominion -d dominion` |
+| postgres | `pg_isready -U castleroyale -d castleroyale` |
 | redis | `redis-cli ping` |
 | reverb | PHP `fsockopen` on 8081 |
 | horizon | `php artisan horizon:status` |
@@ -485,7 +485,7 @@ Do not restructure either document. Add only the sections described above.
   </action>
 
   <verify>
-    <automated>cd /Users/sierra/Dev/Jogos/MmoMobile && bash -n scripts/stack-smoke.sh && test -x scripts/stack-smoke.sh && grep -q 'make smoke' README.md && grep -q 'make smoke' docs/operations/environments.md && echo SMOKE_SCRIPT_AND_DOCS_OK</automated>
+    <automated>cd /Users/sierra/Dev/Jogos/CastleRoyale && bash -n scripts/stack-smoke.sh && test -x scripts/stack-smoke.sh && grep -q 'make smoke' README.md && grep -q 'make smoke' docs/operations/environments.md && echo SMOKE_SCRIPT_AND_DOCS_OK</automated>
   </verify>
 
   <acceptance_criteria>
