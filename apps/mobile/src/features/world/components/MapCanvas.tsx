@@ -1,21 +1,24 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Canvas, Circle, Group, Path, Skia } from '@shopify/react-native-skia';
+import { Canvas, PaintStyle, Picture, Skia } from '@shopify/react-native-skia';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
 import type { WorldTile } from '@castleroyale/contracts';
 
-import { cullTiles, type TileBounds } from '@/features/world/rendering/cull';
-import { groupTileBatches } from '@/features/world/rendering/batches';
+import { type TileBounds } from '@/features/world/rendering/cull';
+import { buildMapDrawCommands, type MapMarker } from '@/features/world/rendering/commands';
+import { lodForZoom } from '@/features/world/rendering/lod';
 import {
   clampZoom,
   useCameraStore,
 } from '@/features/world/state/cameraStore';
 import { Button } from '@/shared/components/Button';
-import { useTheme } from '@/theme';
+import { useTheme, type AppTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -25,7 +28,7 @@ export type MapCanvasProps = {
   bounds: TileBounds;
   playerX: number;
   playerY: number;
-  cities?: readonly { x: number; y: number; is_player_city: boolean }[];
+  cities?: readonly MapMarker[];
   onTilePress?: (x: number, y: number) => void;
 };
 
@@ -38,6 +41,17 @@ const TERRAIN_COLORS = {
   road: 'accent.bronze',
 } as const;
 
+/** Resolves a dotted `TERRAIN_COLORS` path (e.g. `border.strong`) against the theme. */
+function resolveTerrainColor(theme: AppTheme, terrain: WorldTile['terrain']): string {
+  const segments = TERRAIN_COLORS[terrain].split('.');
+  let value: unknown = theme.color;
+  for (const segment of segments) {
+    value = (value as Record<string, unknown>)[segment];
+  }
+
+  return value as string;
+}
+
 export function MapCanvas({ tiles, bounds, playerX, playerY, cities = [], onTilePress }: MapCanvasProps) {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -49,26 +63,57 @@ export function MapCanvas({ tiles, bounds, playerX, playerY, cities = [], onTile
   const startTranslateY = useSharedValue(0);
   const resetTo = useCameraStore((state) => state.resetTo);
   const selectCoordinate = useCameraStore((state) => state.selectCoordinate);
-  const visibleTiles = useMemo(() => cullTiles(tiles, bounds), [bounds, tiles]);
+  const [lod, setLod] = useState(() => lodForZoom(zoom.value));
   const tileSize = theme.spacing.lg;
   const width = Math.max(1, bounds.maxX - bounds.minX + 1) * tileSize;
   const height = Math.max(1, bounds.maxY - bounds.minY + 1) * tileSize;
 
-  const paths = useMemo(() => {
-    return groupTileBatches(visibleTiles).map(({ terrain, tiles: terrainTiles }) => {
-      const path = Skia.Path.Make();
-      for (const tile of terrainTiles) {
-        path.addRect({
-          x: (tile.x - bounds.minX) * tileSize,
-          y: (tile.y - bounds.minY) * tileSize,
-          width: tileSize,
-          height: tileSize,
-        });
+  // Camera stays UI-thread only; React only re-renders when a LOD tier
+  // boundary is crossed, never per pan/zoom frame.
+  useAnimatedReaction(
+    () => lodForZoom(zoom.value),
+    (next, previous) => {
+      if (next !== previous) {
+        runOnJS(setLod)(next);
+      }
+    },
+  );
+
+  const commands = useMemo(
+    () => buildMapDrawCommands({ tiles, markers: cities, bounds, tileSize, lod }),
+    [tiles, cities, bounds, tileSize, lod],
+  );
+
+  const picture = useMemo(() => {
+    const recorder = Skia.PictureRecorder();
+    const canvas = recorder.beginRecording(Skia.XYWHRect(0, 0, width, height));
+
+    for (const command of commands) {
+      if (command.kind === 'terrain') {
+        const path = Skia.Path.Make();
+        for (const rect of command.rects) {
+          path.addRect(rect);
+        }
+        const paint = Skia.Paint();
+        paint.setColor(Skia.Color(resolveTerrainColor(theme, command.terrain)));
+        canvas.drawPath(path, paint);
+        continue;
       }
 
-      return { terrain, path };
-    });
-  }, [bounds, tileSize, visibleTiles]);
+      const paint = Skia.Paint();
+      const color = command.marker === 'player' ? theme.color.accent.gold : theme.color.accent.steel;
+      paint.setColor(Skia.Color(color));
+      if (command.shape === 'ring') {
+        paint.setStyle(PaintStyle.Stroke);
+        paint.setStrokeWidth(1);
+      }
+      for (const point of command.points) {
+        canvas.drawCircle(point.cx, point.cy, point.r, paint);
+      }
+    }
+
+    return recorder.finishRecordingAsPicture();
+  }, [commands, theme, width, height]);
 
   const pan = Gesture.Pan().onStart(() => {
     startTranslateX.value = translateX.value;
@@ -123,7 +168,7 @@ export function MapCanvas({ tiles, bounds, playerX, playerY, cities = [], onTile
               const { locationX, locationY } = event.nativeEvent;
               let x = Math.floor(locationX / tileSize) + bounds.minX;
               let y = Math.floor(locationY / tileSize) + bounds.minY;
-              
+
               let closestDist = Infinity;
               for (const city of cities) {
                 const cx = (city.x - bounds.minX + 0.5) * tileSize;
@@ -140,24 +185,7 @@ export function MapCanvas({ tiles, bounds, playerX, playerY, cities = [], onTile
               onTilePress?.(x, y);
             }}
           >
-            <Group>
-              {paths.map(({ terrain, path }) => (
-                <Path
-                  key={terrain}
-                  path={path}
-                  color={theme.color[TERRAIN_COLORS[terrain] as keyof typeof theme.color] as string}
-                />
-              ))}
-              {cities.map((city) => (
-                <Circle
-                  key={`${city.x},${city.y}`}
-                  cx={(city.x - bounds.minX + 0.5) * tileSize}
-                  cy={(city.y - bounds.minY + 0.5) * tileSize}
-                  r={tileSize / 3}
-                  color={city.is_player_city ? theme.color.accent.gold : theme.color.accent.steel}
-                />
-              ))}
-            </Group>
+            <Picture picture={picture} />
           </Canvas>
         </AnimatedView>
       </GestureDetector>

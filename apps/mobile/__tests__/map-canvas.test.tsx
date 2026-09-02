@@ -6,19 +6,33 @@ import { MIN_TOUCH_TARGET } from '@castleroyale/tooling/design-tokens';
 jest.mock('@shopify/react-native-skia', () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { View } = require('react-native');
+  const makePaint = () => ({
+    setColor: jest.fn(),
+    setStyle: jest.fn(),
+    setStrokeWidth: jest.fn(),
+  });
+  const makeRecordingCanvas = () => ({
+    drawPath: jest.fn(),
+    drawCircle: jest.fn(),
+  });
+
   return {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Canvas: (props: any) => <View testID="skia-canvas" {...props} />,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Circle: (props: any) => <View testID="skia-circle" {...props} />,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Group: (props: any) => <View testID="skia-group" {...props} />,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Path: (props: any) => <View testID="skia-path" {...props} />,
+    Picture: (props: any) => <View testID="skia-picture" {...props} />,
+    PaintStyle: { Fill: 0, Stroke: 1 },
     Skia: {
       Path: {
         Make: () => ({ addRect: jest.fn() }),
       },
+      Paint: makePaint,
+      Color: (color: string) => color,
+      XYWHRect: (x: number, y: number, width: number, height: number) => ({ x, y, width, height }),
+      PictureRecorder: () => ({
+        beginRecording: makeRecordingCanvas,
+        finishRecordingAsPicture: () => ({}),
+      }),
     },
   };
 });
@@ -51,6 +65,10 @@ jest.mock('react-native-reanimated', () => {
     __esModule: true,
     useSharedValue: jest.fn((init) => ({ value: init })),
     useAnimatedStyle: jest.fn(() => ({})),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useAnimatedReaction: jest.fn((_prepare: any, _react: any) => undefined),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    runOnJS: jest.fn((fn: any) => fn),
     default: {
       createAnimatedComponent,
     },
