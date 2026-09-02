@@ -33,6 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 00: Repository Bootstrap** - Monorepo, Laravel API, Expo app, quality gates, full GSD plan
 - [x] **Phase 01: Engineering Foundation** - Docker stack, CI, migrations against Postgres/PostGIS, dev seeds, Makefile (completed 2026-08-25)
 - [x] **Phase 02: Design System & Mobile Shell** - Design tokens, core components, Expo Router navigation shell
+- [x] **Phase 02.1: Institutional Site and Public Backend Surface** (INSERTED) - Localized Laravel public site, token-backed CSS, SEO, legal pages, support form (completed 2026-08-28)
 - [x] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in (backend complete; mobile auth shell remains) (completed 2026-08-28)
 - [x] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel (completed 2026-08-28)
 - [x] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries (completed 2026-08-28)
