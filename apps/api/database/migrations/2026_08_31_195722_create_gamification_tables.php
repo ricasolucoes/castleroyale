@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,9 +10,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('gamification_progressions', function (Blueprint $table) {
+        Schema::create('gamification_progressions', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('player_id')->constrained('players')->cascadeOnDelete();
+            $table->foreignUlid('player_id')->constrained('players')->cascadeOnDelete();
             $table->integer('level')->default(1);
             $table->bigInteger('xp')->default(0);
             $table->integer('current_streak')->default(0);
@@ -19,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('gamification_achievements', function (Blueprint $table) {
+        Schema::create('gamification_achievements', function (Blueprint $table): void {
             $table->id();
             $table->string('google_play_id')->nullable()->unique();
             $table->string('internal_id')->unique();
@@ -33,9 +35,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('gamification_player_achievements', function (Blueprint $table) {
+        Schema::create('gamification_player_achievements', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('player_id')->constrained('players')->cascadeOnDelete();
+            $table->foreignUlid('player_id')->constrained('players')->cascadeOnDelete();
             $table->foreignId('achievement_id')->constrained('gamification_achievements')->cascadeOnDelete();
             $table->integer('current_steps')->default(0);
             $table->timestamp('unlocked_at')->nullable();

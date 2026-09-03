@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Game\Gamification\Domain\Models;
+namespace Game\Gamification\Infrastructure;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,11 +19,11 @@ final class Achievement extends Model
         'xp_reward',
         'is_incremental',
         'max_steps',
-        'is_hidden'
+        'is_hidden',
     ];
 
     protected $casts = [
         'is_incremental' => 'boolean',
-        'is_hidden' => 'boolean'
+        'is_hidden' => 'boolean',
     ];
 }

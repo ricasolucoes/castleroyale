@@ -52,6 +52,9 @@ arch('domain layer stays free of the framework')
         'Game\World\Infrastructure',
         'Game\World\Application',
         'Game\World\Interface',
+        'Game\Gamification\Application',
+        'Game\Gamification\Infrastructure',
+        'Game\Gamification\Interface',
     ])
     ->group('arch');
 

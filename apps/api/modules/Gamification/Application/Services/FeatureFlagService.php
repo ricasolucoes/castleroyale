@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Game\Gamification\App\Services;
+namespace Game\Gamification\Application\Services;
 
-use Game\Player\Domain\Models\Player;
-use Illuminate\Support\Facades\Cache;
+use Game\Player\Infrastructure\Player;
 
 class FeatureFlagService
 {
+    /** @var array<string, bool> */
     private array $flags = [
         'google_play_sidekick' => false,
         'game_stats' => true,
@@ -18,7 +18,7 @@ class FeatureFlagService
         'streaks' => true,
         'seasons' => false,
         'social_challenges' => false,
-        'new_rewards' => true
+        'new_rewards' => true,
     ];
 
     public function isEnabled(string $feature, ?Player $player = null): bool

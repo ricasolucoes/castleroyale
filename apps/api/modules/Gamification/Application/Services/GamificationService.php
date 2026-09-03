@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Game\Gamification\App\Services;
+namespace Game\Gamification\Application\Services;
 
-use Game\Player\Domain\Models\Player;
-use Game\Gamification\Domain\Models\Progression;
-use Game\Gamification\Domain\Models\Achievement;
-use Game\Gamification\Domain\Models\PlayerAchievement;
 use Game\Gamification\Domain\Events\AchievementUnlocked;
 use Game\Gamification\Domain\Events\PlayerLeveledUp;
+use Game\Gamification\Infrastructure\Achievement;
+use Game\Gamification\Infrastructure\PlayerAchievement;
+use Game\Gamification\Infrastructure\Progression;
+use Game\Player\Infrastructure\Player;
 use Illuminate\Support\Facades\Event;
 
 class GamificationService
@@ -21,7 +21,7 @@ class GamificationService
     {
         return Progression::firstOrCreate(
             ['player_id' => $player->id],
-            ['level' => 1, 'xp' => 0]
+            ['level' => 1, 'xp' => 0],
         );
     }
 
@@ -30,13 +30,15 @@ class GamificationService
      */
     public function addXp(Player $player, int $xpAmount): void
     {
-        if ($xpAmount <= 0) return;
+        if ($xpAmount <= 0) {
+            return;
+        }
 
         $progression = $this->getProgression($player);
         $progression->xp += $xpAmount;
-        
+
         $newLevel = $this->calculateLevel($progression->xp);
-        
+
         if ($newLevel > $progression->level) {
             $progression->level = $newLevel;
             Event::dispatch(new PlayerLeveledUp($player, $newLevel, 0));
@@ -51,14 +53,16 @@ class GamificationService
     public function progressAchievement(Player $player, string $internalId, int $steps = 1): void
     {
         $achievement = Achievement::where('internal_id', $internalId)->first();
-        if (!$achievement) return;
+        if ($achievement === null) {
+            return;
+        }
 
         $playerAchievement = PlayerAchievement::firstOrCreate(
             ['player_id' => $player->id, 'achievement_id' => $achievement->id],
-            ['current_steps' => 0]
+            ['current_steps' => 0],
         );
 
-        if ($playerAchievement->unlocked_at) {
+        if ($playerAchievement->unlocked_at !== null) {
             return; // Already unlocked
         }
 
@@ -67,11 +71,11 @@ class GamificationService
         if ($playerAchievement->current_steps >= $achievement->max_steps) {
             $playerAchievement->current_steps = $achievement->max_steps;
             $playerAchievement->unlocked_at = now();
-            
+
             if ($achievement->xp_reward > 0) {
                 $this->addXp($player, $achievement->xp_reward);
             }
-            
+
             Event::dispatch(new AchievementUnlocked($player, $achievement->internal_id, $achievement->xp_reward));
         }
 
