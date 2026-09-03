@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03: Identity & Authentication** - Accounts, tokens, device sessions, guest play, Apple/Google sign-in (backend complete; mobile auth shell remains) (completed 2026-08-28)
 - [x] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel (completed 2026-08-28)
 - [x] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries (completed 2026-08-28)
-- [ ] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers
+- [x] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers (completed 2026-09-03)
 - [ ] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel
 - [ ] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency
 - [ ] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation
@@ -238,10 +238,11 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 06-01: Skia map canvas with pan, zoom and gesture handling
+- [x] 06-01: Skia map canvas with pan, zoom and gesture handling
 - [x] 06-02: Viewport culling, level of detail and sprite batching
 - [x] 06-03: Tile fetching, client cache and delta application
-- [ ] 06-04: Map markers, selection and the target detail sheet
+- [x] 06-04: Map markers, selection and the target detail sheet
+- [x] 06-05: Gap closure — batched marker draw commands and zoom-driven LOD
 
 ### Phase 07: City Foundation
 **Goal**: A player owns a city with addressable building slots, rendered as a living scene rather than a list.
@@ -1186,7 +1187,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 03. Identity & Authentication | 3/4 | Complete    | 2026-08-28 |
 | 04. Player Profile & Onboarding | 0/4 | Complete    | 2026-08-28 |
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
-| 06. World Map Rendering | 1/4 | In Progress|  |
+| 06. World Map Rendering | 5/5 | Complete   | 2026-09-03 |
 | 07. City Foundation | 0/4 | Not started | - |
 | 08. Resources & Economy | 0/5 | Not started | - |
 | 09. Buildings & Construction | 0/5 | Not started | - |
@@ -1261,7 +1262,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 **Milestone**: Google Play Games & Gamification
 **Success Criteria**:
   1. (Ver objetivos definidos em CONTEXT.md)
-**Plans:** 1/4 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 55 to break down)
