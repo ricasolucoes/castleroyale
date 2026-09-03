@@ -17,6 +17,11 @@ import { groupTileBatches } from '../src/features/world/rendering/batches';
 import { lodForZoom } from '../src/features/world/rendering/lod';
 import { applyTileDelta } from '../src/features/world/rendering/delta';
 import {
+  buildMapDrawCommands,
+  type MapDrawCommand,
+  type MapMarker,
+} from '../src/features/world/rendering/commands';
+import {
   readWorldRegion,
   worldRegionCacheKey,
   writeWorldRegion,
@@ -36,6 +41,18 @@ const tiles: WorldTile[] = [
   { id: '01H00000000000000000000003', region_id: '01H00000000000000000000001', x: 2, y: 0, terrain: 'hills' },
 ];
 
+function isMarkerCommand(
+  command: MapDrawCommand,
+): command is Extract<MapDrawCommand, { kind: 'marker' }> {
+  return command.kind === 'marker';
+}
+
+function isTerrainCommand(
+  command: MapDrawCommand,
+): command is Extract<MapDrawCommand, { kind: 'terrain' }> {
+  return command.kind === 'terrain';
+}
+
 describe('world map camera and culling', () => {
   it('keeps map entities inside one batched Skia canvas', () => {
     const source = readFileSync(
@@ -47,6 +64,12 @@ describe('world map camera and culling', () => {
     expect(source).not.toContain('<Rect');
     expect(source).not.toMatch(/<\/?(Tile|Marker|Terrain)/);
     expect(source).not.toContain('terrainTiles.map');
+    expect(source).not.toContain('cities.map');
+    expect(source).not.toContain('<Circle');
+    expect(source).not.toContain('<Path');
+    expect(source).not.toMatch(/\.map\([^)]*\)\s*=>\s*\(?\s*</);
+    expect(source.match(/<Picture/g)).toHaveLength(1);
+    expect(source).toContain('lodForZoom');
   });
 
   it('expands bounds by a whole-screen margin and culls outside tiles', () => {
@@ -140,5 +163,80 @@ describe('world map camera and culling', () => {
     expect(duration).toBeLessThan(50);
     expect(visible.length).toBe(121);
     expect(batches.length).toBeLessThanOrEqual(terrains.length);
+  });
+});
+
+describe('map draw commands', () => {
+  const markers: MapMarker[] = [
+    { x: 0, y: 0, is_player_city: true },
+    { x: 1, y: 0, is_player_city: false },
+    { x: 2, y: 0, is_player_city: false },
+    { x: 50, y: 50, is_player_city: false },
+  ];
+  const bounds = { minX: 0, maxX: 2, minY: 0, maxY: 0 };
+  const tileSize = 24;
+
+  it('draws only the player city dot at the far LOD and never the out-of-bounds marker', () => {
+    for (const lod of ['far', 'mid', 'near'] as const) {
+      const points = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod })
+        .filter(isMarkerCommand)
+        .flatMap((command) => command.points);
+      expect(points.some((point) => point.cx === 1212 && point.cy === 1212)).toBe(false);
+    }
+
+    const farCommands = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod: 'far' }).filter(
+      isMarkerCommand,
+    );
+    const cityCommands = farCommands.filter((command) => command.marker === 'city');
+    const playerCommands = farCommands.filter((command) => command.marker === 'player');
+
+    expect(cityCommands).toHaveLength(0);
+    expect(playerCommands).toHaveLength(1);
+    expect(playerCommands[0]).toMatchObject({ shape: 'dot', points: [{ cx: 12, cy: 12, r: 6 }] });
+  });
+
+  it('batches every other city into one dot command and the player into one disc at the mid LOD', () => {
+    const midCommands = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod: 'mid' }).filter(
+      isMarkerCommand,
+    );
+    const cityCommands = midCommands.filter((command) => command.marker === 'city');
+    const playerCommands = midCommands.filter((command) => command.marker === 'player');
+
+    expect(cityCommands).toHaveLength(1);
+    expect(cityCommands[0]).toMatchObject({ shape: 'dot' });
+    expect(cityCommands[0]?.points).toHaveLength(2);
+    expect(playerCommands).toHaveLength(1);
+    expect(playerCommands[0]).toMatchObject({ shape: 'disc' });
+    expect(playerCommands[0]?.points).toHaveLength(1);
+  });
+
+  it('adds ring commands after every non-ring marker command at the near LOD', () => {
+    const nearCommands = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod: 'near' }).filter(
+      isMarkerCommand,
+    );
+    const ringIndexes = nearCommands
+      .map((command, index) => (command.shape === 'ring' ? index : -1))
+      .filter((index) => index >= 0);
+    const nonRingIndexes = nearCommands
+      .map((command, index) => (command.shape === 'ring' ? -1 : index))
+      .filter((index) => index >= 0);
+
+    expect(ringIndexes.length).toBeGreaterThan(0);
+    expect(Math.min(...ringIndexes)).toBeGreaterThan(Math.max(...nonRingIndexes));
+
+    const cityDot = nearCommands.find((command) => command.marker === 'city' && command.shape === 'dot');
+    const playerDisc = nearCommands.find((command) => command.marker === 'player' && command.shape === 'disc');
+    expect(cityDot?.points).toHaveLength(2);
+    expect(playerDisc?.points).toHaveLength(1);
+  });
+
+  it('is deterministic and keeps terrain batches in sorted terrain order', () => {
+    const first = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod: 'near' });
+    const second = buildMapDrawCommands({ tiles, markers, bounds, tileSize, lod: 'near' });
+
+    expect(JSON.stringify(first)).toEqual(JSON.stringify(second));
+
+    const terrainOrder = first.filter(isTerrainCommand).map((command) => command.terrain);
+    expect(terrainOrder).toEqual(['forest', 'hills', 'plains']);
   });
 });
