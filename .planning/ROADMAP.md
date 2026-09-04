@@ -1187,7 +1187,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 03. Identity & Authentication | 3/4 | Complete    | 2026-08-28 |
 | 04. Player Profile & Onboarding | 0/4 | Complete    | 2026-08-28 |
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
-| 06. World Map Rendering | 5/5 | Complete   | 2026-09-03 |
+| 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 0/4 | Not started | - |
 | 08. Resources & Economy | 0/5 | Not started | - |
 | 09. Buildings & Construction | 0/5 | Not started | - |
