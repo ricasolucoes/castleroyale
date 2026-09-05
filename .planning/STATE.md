@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 08-01-production-rate-contract-PLAN.md
-last_updated: "2026-09-05T23:31:19.055Z"
+stopped_at: Completed 08-02-capacity-ceiling-strict-credit-PLAN.md
+last_updated: "2026-09-05T23:38:40.503Z"
 progress:
   total_phases: 69
   completed_phases: 8
   total_plans: 40
-  completed_plans: 37
+  completed_plans: 38
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 08 (resources-economy) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Plan: 2 of 5
 | Phase 07 P03 | 13min | 3 tasks | 11 files |
 | Phase 07 P04 | 32min | 3 tasks | 11 files |
 | Phase 08-resources-economy PP01 | 10min | 3 tasks | 6 files |
+| Phase 08-resources-economy P02 | 12min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,7 @@ Recent decisions affecting current work:
 - [Phase 07]: city.state_changed dispatches from ConstructionCompletionService::completeOverdueLocked (the single site an order actually completes), once per completed order, covering both the lazy read-path and the queued CompleteConstruction job
 - [Phase 07]: Realtime transport (cityChannel.ts) uses an injectable socket factory over the plain Pusher protocol Reverb speaks, adding no npm dependency; reconnection, backoff and sequence-gap resync stay Phase 40's
 - [Phase 08]: Wire rate unit is signed integer units per hour (perSecond * 3600); game-data production effect stays per-second
+- [Phase 08]: OverflowPolicy (DiscardAtCap | Refuse) makes WAREHOUSE_CAPACITY_EXCEEDED reachable as an all-or-nothing pre-flight check on creditLocked, defaulting to unchanged discard-at-cap behavior
 
 ### Pending Todos
 
@@ -138,9 +140,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-05T23:31:19.052Z
-Stopped at: Completed 08-01-production-rate-contract-PLAN.md
-Resume with: `/gsd:autonomous` (Phase 08 executing; next: 08-02-capacity-ceiling-strict-credit-PLAN.md)
+Last session: 2026-09-05T23:37:56.957Z
+Stopped at: Completed 08-02-capacity-ceiling-strict-credit-PLAN.md
+Resume with: `/gsd:autonomous` (Phase 08 executing; next: 08-03-ledger-parties-append-only-PLAN.md)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
