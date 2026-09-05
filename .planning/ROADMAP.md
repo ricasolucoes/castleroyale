@@ -274,10 +274,10 @@ Plans:
   3. Two concurrent spend requests for the same resources result in exactly one success and one INSUFFICIENT_RESOURCES, verified by a concurrency test.
   4. Resources never exceed warehouse capacity; overflow is discarded at the cap and recorded, and the API returns WAREHOUSE_CAPACITY_EXCEEDED where relevant.
   5. Summing the ledger for any city reproduces its current balance exactly, verified by a property test over random operation sequences.
-**Plans**: 5 plans
+**Plans**: 1/5 plans executed
 
 Plans:
-- [ ] 08-01-production-rate-contract-PLAN.md — Signed integer-per-hour ResourceRate on the OpenAPI contract, derived from game-data production effects and proven equal to real accrual (wave 1)
+- [x] 08-01-production-rate-contract-PLAN.md — Signed integer-per-hour ResourceRate on the OpenAPI contract, derived from game-data production effects and proven equal to real accrual (completed 2026-09-05)
 - [ ] 08-02-capacity-ceiling-strict-credit-PLAN.md — OverflowPolicy, the all-or-nothing credit that finally raises WAREHOUSE_CAPACITY_EXCEEDED, and the cap proven on the accrual path (wave 2)
 - [ ] 08-03-ledger-parties-append-only-PLAN.md — source/destination columns, the LedgerParty value object, one guarded EconomyLedger::record write path, append-only enforcement (wave 3)
 - [ ] 08-04-locked-spending-concurrency-PLAN.md — Interleaved two-spend race over HTTP, double-submit idempotency at the ledger, seeded random reconciliation property test (wave 4)
@@ -1189,7 +1189,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
-| 08. Resources & Economy | 0/5 | Not started | - |
+| 08. Resources & Economy | 1/5 | In Progress|  |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |
