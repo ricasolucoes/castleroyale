@@ -258,10 +258,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 07-01: City entity, tile claim and build slots
-- [ ] 07-02: City state read API and authorisation rules
-- [ ] 07-03: City scene rendering with tappable buildings
-- [ ] 07-04: City realtime channel and live state updates
+- [ ] 07-01-city-slot-roster-tile-claim-PLAN.md — Fixed 18-plot slot roster in game data; unique-index-backed tile claim returning TILE_OCCUPIED
+- [ ] 07-02-city-state-slots-api-PLAN.md — CitySlot contract, roster-ordered city read, CITY_NOT_OWNED proven over HTTP
+- [ ] 07-03-city-scene-rendering-PLAN.md — Measured, tappable plot grid with pull-to-refresh and detail sheet, replacing the card list
+- [ ] 07-04-city-scene-art-realtime-PLAN.md — Gemini-generated scene art with provenance; city.{id} channel proven both ways and live client refresh
 
 ### Phase 08: Resources & Economy
 **Goal**: Resources accrue over real time, are capped by storage, and can never be duplicated or spent twice.
