@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 07-01-city-slot-roster-tile-claim-PLAN.md
-last_updated: "2026-09-05T17:35:21.234Z"
+stopped_at: Completed 07-02-city-state-slots-api-PLAN.md
+last_updated: "2026-09-05T17:47:54.859Z"
 progress:
   total_phases: 69
   completed_phases: 7
   total_plans: 35
-  completed_plans: 33
+  completed_plans: 34
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 07 (city-foundation) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Plan: 2 of 4
 | Phase 06 P02 | 3 min | 2 tasks | 7 files |
 | Phase 06-world-map-rendering P06-04 | 30 min | 2 tasks | 4 files |
 | Phase 07 P01 | 19min | 3 tasks | 9 files |
+| Phase 07 P02 | 11min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,8 @@ Recent decisions affecting current work:
 - [Phase 06]: Added 44pt circular hit testing inside the Skia canvas onTouchEnd to reliably intercept taps near compact markers.
 - [Phase 06]: Delegated interaction resolution logic to Skia's tap handler, skipping separate React Native pressables for map entities.
 - [Phase 07]: Wrapped City::create in a QueryException catch matching the cities_world_id_x_y_unique index name so the unique index (not the exists() pre-check) is the authority refusing a double tile claim
+- [Phase 07]: Replaced CityData.buildings with CityData.slots (full 18-plot roster, empty or occupied, building required-and-nullable) rather than supplementing it, and extracted realtime into a shared RealtimeConfig schema referenced by both GameBootstrap and CityData
+- [Phase 07]: Tests that switch bearer tokens between different accounts within one Pest method must call app('auth')->forgetGuards() first — Sanctum caches the resolved user on the guard for the test's lifetime
 
 ### Pending Todos
 
@@ -123,9 +126,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-05T17:35:16.113Z
-Stopped at: Completed 07-01-city-slot-roster-tile-claim-PLAN.md
-Resume with: `/gsd:autonomous --from 4` (next: 07-02-city-state-slots-api-PLAN.md)
+Last session: 2026-09-05T17:47:54.855Z
+Stopped at: Completed 07-02-city-state-slots-api-PLAN.md
+Resume with: `/gsd:autonomous --from 4` (next: 07-03-city-scene-rendering-PLAN.md)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
