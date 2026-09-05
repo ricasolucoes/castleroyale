@@ -387,6 +387,7 @@ export interface components {
         CityResources: {
             current: components["schemas"]["ResourceBundle"];
             capacity: components["schemas"]["ResourceBundle"];
+            rate: components["schemas"]["ResourceRate"];
         };
         CityBuilding: {
             slot: string;
@@ -536,6 +537,14 @@ export interface components {
         ResourceType: "food" | "wood" | "stone" | "iron" | "gold";
         /** @description Whole units only — never fractional (ADR-010). Absent keys are zero. */
         ResourceBundle: {
+            food?: number;
+            wood?: number;
+            stone?: number;
+            iron?: number;
+            gold?: number;
+        };
+        /** @description Net production, integer units per hour, signed. Positive accrues toward capacity. A future negative value (troop upkeep, Phase 12) would drain toward zero — the sign is supported now so this contract does not need a rewrite later, even though every rate is >= 0 until Phase 12 ships upkeep. Display-only: the client never uses this figure as the basis of an affordability check (08-CONTEXT.md, Client decision) — only `current`, read fresh from the server, governs what can be spent. */
+        ResourceRate: {
             food?: number;
             wood?: number;
             stone?: number;

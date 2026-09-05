@@ -761,12 +761,14 @@ components:
 
     CityResources:
       type: object
-      required: [current, capacity]
+      required: [current, capacity, rate]
       properties:
         current:
           $ref: '#/components/schemas/ResourceBundle'
         capacity:
           $ref: '#/components/schemas/ResourceBundle'
+        rate:
+          $ref: '#/components/schemas/ResourceRate'
 
     CityBuilding:
       type: object
@@ -1098,6 +1100,24 @@ components:
         stone: { type: integer, minimum: 0 }
         iron: { type: integer, minimum: 0 }
         gold: { type: integer, minimum: 0 }
+
+    ResourceRate:
+      type: object
+      description: >-
+        Net production, integer units per hour, signed. Positive accrues toward
+        capacity. A future negative value (troop upkeep, Phase 12) would drain
+        toward zero — the sign is supported now so this contract does not need a
+        rewrite later, even though every rate is >= 0 until Phase 12 ships upkeep.
+        Display-only: the client never uses this figure as the basis of an
+        affordability check (08-CONTEXT.md, Client decision) — only `current`,
+        read fresh from the server, governs what can be spent.
+      additionalProperties: false
+      properties:
+        food: { type: integer }
+        wood: { type: integer }
+        stone: { type: integer }
+        iron: { type: integer }
+        gold: { type: integer }
 
     ContentVersions:
       type: object
