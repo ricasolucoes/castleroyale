@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
-status: unknown
-stopped_at: Completed 07-03-city-scene-rendering-PLAN.md
-last_updated: "2026-09-05T18:04:16.997Z"
+status: phase-complete
+stopped_at: Completed 07-04-city-scene-art-realtime-PLAN.md — Phase 07 complete (4/4)
+last_updated: "2026-09-05T18:20:13.201Z"
 progress:
   total_phases: 69
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 35
-  completed_plans: 35
+  completed_plans: 36
 ---
 
 # Project State
@@ -19,12 +19,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 07 — city-foundation
+**Current focus:** Phase 07 — city-foundation (complete, ready for verification)
 
 ## Current Position
 
-Phase: 07 (city-foundation) — EXECUTING
-Plan: 4 of 4
+Phase: 07 (city-foundation) — COMPLETE (4/4 plans)
+Plan: 4 of 4 — done
+Next: Phase 08 (Resources & Economy)
 
 ## Performance Metrics
 
@@ -62,6 +63,7 @@ Plan: 4 of 4
 | Phase 07 P01 | 19min | 3 tasks | 9 files |
 | Phase 07 P02 | 11min | 3 tasks | 10 files |
 | Phase 07 P03 | 13min | 3 tasks | 11 files |
+| Phase 07 P04 | 32min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -105,6 +107,9 @@ Recent decisions affecting current work:
 - [Phase 07]: Removed the upgrade CTA from the city scene client-side only; backend /game/city/buildings/{code}/upgrade route and its MvpGameplayTest coverage are untouched, Phase 09 reintroduces the button
 - [Phase 07]: City scene frame is measured via onLayout on the scene container itself, never a hardcoded tab-bar/header pixel constant
 - [Phase 07]: City scene ships on bg.sunken pending 07-04's generated city_ground.png; not a silent placeholder
+- [Phase 07]: Gemini image generation is blocked by a persistent daily quota of 0 on every image model for the shared GCP project; city scene ships on bg.sunken with interim vector glyphs per UI-SPEC Flagged Assumption 3 until billing is enabled and tools/generate-city-assets.py is run
+- [Phase 07]: city.state_changed dispatches from ConstructionCompletionService::completeOverdueLocked (the single site an order actually completes), once per completed order, covering both the lazy read-path and the queued CompleteConstruction job
+- [Phase 07]: Realtime transport (cityChannel.ts) uses an injectable socket factory over the plain Pusher protocol Reverb speaks, adding no npm dependency; reconnection, backoff and sequence-gap resync stay Phase 40's
 
 ### Pending Todos
 
@@ -128,11 +133,13 @@ None yet.
   autonomous session and committed as `e04193d`; they depend on Phase 54 and will be picked up by
   the autonomous loop after Phase 54 unless removed or moved to their own milestone.
 
+- [Phase 07-04] Gemini image generation is quota-blocked (429, daily limit 0 on every image model) for the shared 'Gemini Jogos' GCP project (436393374436) backing GEMINI_API_KEY. Human action needed: enable billing / raise the free-tier image quota, then run 'python3 tools/generate-city-assets.py' and apply the wiring steps in 07-04-city-scene-art-realtime-PLAN.md Task 1. City scene ships on bg.sunken with interim vector glyphs until then (UI-SPEC Flagged Assumption 3).
+
 ## Session Continuity
 
-Last session: 2026-09-05T18:04:16.989Z
-Stopped at: Completed 07-03-city-scene-rendering-PLAN.md
-Resume with: `/gsd:autonomous --from 4` (next: 07-04-city-scene-art-realtime-PLAN.md)
+Last session: 2026-09-05T18:20:13.197Z
+Stopped at: Completed 07-04-city-scene-art-realtime-PLAN.md — Phase 07 complete (4/4)
+Resume with: `/gsd:autonomous` (Phase 07 complete; next: Phase 08 — Resources & Economy)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run

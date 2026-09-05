@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 04: Player Profile & Onboarding** - Player entity, world selection, first-run flow, private realtime channel (completed 2026-08-28)
 - [x] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries (completed 2026-08-28)
 - [x] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers (completed 2026-09-03)
-- [ ] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel
+- [x] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel (completed 2026-09-05)
 - [ ] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency
 - [ ] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation
 - [ ] **Phase 10: Technology & Research** - Research tree with explicit dependencies, effects and a cycle validator
@@ -255,13 +255,13 @@ Plans:
   3. The city screen renders the scene with tappable buildings and reflects server state after a pull-to-refresh.
   4. The `city.{id}` channel authorises the owner and denies non-owners, verified by a test.
   5. Requesting a city the player does not own returns CITY_NOT_OWNED, not 404, and never leaks its contents.
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans complete
 
 Plans:
 - [x] 07-01-city-slot-roster-tile-claim-PLAN.md — Fixed 18-plot slot roster in game data; unique-index-backed tile claim returning TILE_OCCUPIED (completed 2026-09-05)
 - [x] 07-02-city-state-slots-api-PLAN.md — CitySlot contract, roster-ordered city read, CITY_NOT_OWNED proven over HTTP (completed 2026-09-05)
 - [x] 07-03-city-scene-rendering-PLAN.md — Measured, tappable plot grid with pull-to-refresh and detail sheet, replacing the card list (completed 2026-09-05)
-- [ ] 07-04-city-scene-art-realtime-PLAN.md — Gemini-generated scene art with provenance; city.{id} channel proven both ways and live client refresh
+- [x] 07-04-city-scene-art-realtime-PLAN.md — city.{id} channel proven both ways, city.state_changed published and client-subscribed; scene art blocked on an external Gemini billing quota (completed 2026-09-05)
 
 ### Phase 08: Resources & Economy
 **Goal**: Resources accrue over real time, are capped by storage, and can never be duplicated or spent twice.
@@ -1188,7 +1188,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 04. Player Profile & Onboarding | 0/4 | Complete    | 2026-08-28 |
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
-| 07. City Foundation | 3/4 | In Progress|  |
+| 07. City Foundation | 4/4 | Complete   | 2026-09-05 |
 | 08. Resources & Economy | 0/5 | Not started | - |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
