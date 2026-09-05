@@ -15,6 +15,7 @@ use Game\Shared\Application\Error\GameException;
 use Game\Shared\Domain\Time\Clock;
 use Game\Shared\Infrastructure\GameData\GameDataCatalog;
 use Game\World\Infrastructure\World;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 final readonly class GameBootstrapService
@@ -130,20 +131,40 @@ final readonly class GameBootstrapService
                     }
                     $resources = $this->catalog->starterValues('resources');
                     $capacity = $this->catalog->starterValues('capacity');
-                    $city = City::create([
-                        'world_id' => $world->getKey(),
-                        'player_id' => $player->getKey(),
-                        'name_key' => (string) ($cityConfig['name_key'] ?? 'city.starter_name'),
-                        'x' => $cityX,
-                        'y' => $cityY,
-                        'last_accrued_at' => $this->clock->now(),
-                        ...$resources,
-                        'food_capacity' => $capacity['food'],
-                        'wood_capacity' => $capacity['wood'],
-                        'stone_capacity' => $capacity['stone'],
-                        'iron_capacity' => $capacity['iron'],
-                        'gold_capacity' => $capacity['gold'],
-                    ]);
+
+                    try {
+                        $city = City::create([
+                            'world_id' => $world->getKey(),
+                            'player_id' => $player->getKey(),
+                            'name_key' => (string) ($cityConfig['name_key'] ?? 'city.starter_name'),
+                            'x' => $cityX,
+                            'y' => $cityY,
+                            'last_accrued_at' => $this->clock->now(),
+                            ...$resources,
+                            'food_capacity' => $capacity['food'],
+                            'wood_capacity' => $capacity['wood'],
+                            'stone_capacity' => $capacity['stone'],
+                            'iron_capacity' => $capacity['iron'],
+                            'gold_capacity' => $capacity['gold'],
+                        ]);
+                    } catch (QueryException $exception) {
+                        // The SELECT above cannot see a row another transaction commits between the
+                        // check and this INSERT. The unique index is the authority; translate its
+                        // violation instead of leaking a 500.
+                        //
+                        // We match on the index name rather than re-querying, because PostgreSQL
+                        // aborts the whole transaction after a constraint violation and any follow-up
+                        // query would fail with 25P02.
+                        $message = $exception->getMessage();
+                        $isTileConflict = str_contains($message, 'cities_world_id_x_y_unique')
+                            || str_contains($message, 'cities.world_id, cities.x, cities.y');
+
+                        if (in_array($exception->getCode(), ['23000', '23505'], true) && $isTileConflict) {
+                            throw GameException::of(ErrorCode::TileOccupied, 'The city tile is already occupied.');
+                        }
+
+                        throw $exception;
+                    }
 
                     foreach ($this->catalog->starterBuildings() as $building) {
                         CityBuilding::create([
@@ -216,7 +237,7 @@ final readonly class GameBootstrapService
                     ],
                 ];
             });
-        } catch (\Illuminate\Database\QueryException $exception) {
+        } catch (QueryException $exception) {
             if (in_array($exception->getCode(), ['23000', '23505'], true)) {
                 throw GameException::of(ErrorCode::Conflict, 'The player could not be created because it already exists.');
             }
