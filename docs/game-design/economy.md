@@ -22,6 +22,13 @@ integer permille and always truncate downward — bonuses round in the house's f
 tick. A city closed for six hours and one polled every minute must reach the
 identical total. This is the acceptance test of Phase 08.
 
+**Units.** A `production.{resource}` effect in `packages/game-data` is **units per second**
+— that is the figure `CityEconomyService::accrueLocked()` multiplies by elapsed
+seconds. The API publishes `CityResources.rate` as **signed integer units per hour**
+(`perSecond * 3600`) so a client can interpolate against a wall clock. The two
+never disagree: an hour of accrual produces exactly the published rate, counting
+the portion the warehouse cap discards.
+
 **Storage is capped** by warehouse level. Overflow is discarded at the cap and
 recorded — never silently dropped.
 

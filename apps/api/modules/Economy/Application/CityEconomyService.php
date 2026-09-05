@@ -16,6 +16,8 @@ use Game\Shared\Infrastructure\GameData\GameDataCatalog;
 
 final readonly class CityEconomyService
 {
+    private const int SECONDS_PER_HOUR = 3600;
+
     public function __construct(private GameDataCatalog $catalog) {}
 
     public function accrueLocked(City $city, DateTimeImmutable $now): void
@@ -168,6 +170,25 @@ final readonly class CityEconomyService
     public function capacities(City $city): array
     {
         return $this->resourceAttributes($city, '_capacity');
+    }
+
+    /**
+     * Game data authors production per second; the wire contract publishes it per
+     * hour so the client can interpolate against a wall clock without re-deriving
+     * the unit (08-UI-SPEC.md § Data Contract Dependency). The multiplication is
+     * exact — no float, no rounding (ADR-010).
+     *
+     * @return array<string, int>
+     */
+    public function ratesPerHour(City $city): array
+    {
+        $effects = $this->effects($city);
+        $rates = [];
+        foreach (ResourceType::all() as $resource) {
+            $rates[$resource->value] = (int) ($effects['production.'.$resource->value] ?? 0) * self::SECONDS_PER_HOUR;
+        }
+
+        return $rates;
     }
 
     /**

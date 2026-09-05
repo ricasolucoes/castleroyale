@@ -116,6 +116,7 @@ final readonly class CityStateService
                 'resources' => [
                     'current' => $this->economy->balances($city),
                     'capacity' => $this->economy->capacities($city),
+                    'rate' => $this->economy->ratesPerHour($city),
                 ],
                 'slots' => $slots,
                 'construction' => $construction === null ? null : [
