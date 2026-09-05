@@ -1,7 +1,7 @@
 ---
 phase: 07
 slug: city-foundation
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-09-05
@@ -224,11 +224,25 @@ This produces a courtyard-like grid that reads as a "scene" (contiguous plots)
 rather than a card list, satisfies the touch-target floor, and requires no
 redesign when the slot count changes in a later phase.
 
+### Primary visual anchor
+
+**The occupied slot tiles are the focal point of this screen.** They carry the
+highest contrast pairing on the scene (`surface.raised` fill against the
+`bg.sunken` ground, with `border.strong` edges) and they are what the player came
+to read. Everything else is deliberately subordinate: the background scenery
+(`city_ground.png`) is low-contrast ground the tiles sit on and must never
+out-compete them; the resource header is a thin informational strip, not a
+banner; empty slots recede (sunken fill, dashed subtle border) and carry exactly
+one accent mark so an available plot is findable without pulling the eye off the
+built city. If the generated ground art reads loud enough to compete with the
+tiles on a mid-range phone at arm's length, the art is wrong and gets
+regenerated — not the tiles restyled.
+
 ### Slot visual states
 
 | State | Visual treatment | Tap behaviour |
 |-------|-------------------|----------------|
-| Empty | `bg.sunken` fill, dashed `border.subtle` edge, centred `accent.gold` "available" glyph (e.g. `plus-circle-outline` from MaterialCommunityIcons) | Opens the detail sheet with `city.slot_empty` / `city.slot_empty_hint`. No button — informational only |
+| Empty | `bg.sunken` fill, dashed `border.subtle` edge, centred `accent.gold` "available" glyph — **the Gemini-generated `slot_empty_icon.png` is the shipping asset**; `plus-circle-outline` from MaterialCommunityIcons is the interim stand-in used only until that asset lands, and is superseded by it (never both) | Opens the detail sheet with `city.slot_empty` / `city.slot_empty_hint`. No button — informational only |
 | Occupied | `surface.raised` fill, solid `border.strong` edge, a category icon (see Assets below), a `label`-weight building name, a small `caption` level badge (reuse `Badge`, `variant="neutral"`) | Opens the detail sheet with building name (`name_key`), `building.level`, `city.slot_category`, and — if a `Construction` order targets this slot — the existing `Timer` + `city.construction_finish` copy. No upgrade button in this phase (Phase 09 owns that CTA) |
 | Under construction (occupied, has active order) | Same as Occupied, plus a small progress affordance (reuse `Timer`, not a new component) rendered inside the tile itself so the "living scene" reads at a glance without opening the sheet | Same sheet as Occupied, with the timer already visible |
 
@@ -380,11 +394,11 @@ full prompt, per the project's asset-provenance rule.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS (FLAG raised and resolved — focal point declared above; empty-slot glyph ownership resolved in the state table)
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** APPROVED by gsd-ui-checker (2026-09-05) — 5 PASS, 1 FLAG (Dimension 2), both flag recommendations applied above.
