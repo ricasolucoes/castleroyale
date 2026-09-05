@@ -39,8 +39,10 @@ it('lets a guest enter a starter city and play the construction loop', function 
         ->assertJsonPath('data.resources.current.food', 500)
         ->assertJsonPath('data.resources.current.wood', 500)
         ->assertJsonPath('data.resources.current.stone', 500)
-        ->assertJsonPath('data.buildings.0.code', 'farm')
-        ->assertJsonPath('data.buildings.0.level', 1)
+        ->assertJsonPath('data.slots.1.slot', 'plot_02')
+        ->assertJsonPath('data.slots.1.status', 'occupied')
+        ->assertJsonPath('data.slots.1.building.code', 'farm')
+        ->assertJsonPath('data.slots.1.building.level', 1)
         ->assertJsonPath('data.construction', null);
 
     $clock->advanceSeconds(10);
@@ -71,8 +73,8 @@ it('lets a guest enter a starter city and play the construction loop', function 
 
     $completed = $this->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
     $completed->assertOk()
-        ->assertJsonPath('data.buildings.0.code', 'farm')
-        ->assertJsonPath('data.buildings.0.level', 2)
+        ->assertJsonPath('data.slots.1.building.code', 'farm')
+        ->assertJsonPath('data.slots.1.building.level', 2)
         ->assertJsonPath('data.construction', null);
 
     expect(CityBuilding::query()

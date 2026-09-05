@@ -10,6 +10,7 @@ use Game\Player\Application\GameBootstrapService;
 use Game\Player\Infrastructure\Player;
 use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Application\Error\GameException;
+use Game\Shared\Infrastructure\GameData\GameDataCatalog;
 use Game\World\Infrastructure\World;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -34,12 +35,24 @@ it('persists stable starter building slots and returns them in city state', func
 
     $cityId = $bootstrap->json('data.city.id');
     $city = $this->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
-    $slots = collect($city->json('data.buildings'))->pluck('slot');
 
-    $city->assertOk()->assertJsonStructure(['data' => ['buildings' => [['slot', 'code']]]]);
-    expect($slots)->toHaveCount(5)->toEqual($slots->unique());
-    expect(CityBuilding::query()->where('world_id', $bootstrap->json('data.world.id'))->where('city_id', $cityId)->count())
-        ->toBe(5);
+    $city->assertOk()->assertJsonStructure(['data' => ['slots' => [['slot', 'status', 'building']]]]);
+
+    $slots = collect($city->json('data.slots'));
+    expect($slots)->toHaveCount(18)
+        ->and($slots->pluck('slot')->all())->toBe(app(GameDataCatalog::class)->citySlots())
+        ->and($slots->where('status', 'occupied')->count())->toBe(5)
+        ->and($slots->where('status', 'empty')->count())->toBe(13)
+        ->and($slots->pluck('status')->unique()->sort()->values()->all())->toBe(['empty', 'occupied'])
+        ->and($slots->where('status', 'empty')->pluck('building')->unique()->all())->toBe([null])
+        ->and($slots->where('status', 'occupied')->every(fn (array $slot): bool => is_array($slot['building'])))->toBeTrue();
+
+    expect($city->json('data.slots.0.slot'))->toBe('plot_01')
+        ->and($city->json('data.slots.0.building.code'))->toBe('palace');
+    expect(CityBuilding::query()
+        ->where('world_id', $bootstrap->json('data.world.id'))
+        ->where('city_id', $cityId)
+        ->count())->toBe(5);
 });
 
 it('returns TILE_OCCUPIED when a second player claims an occupied tile', function (): void {
