@@ -133,7 +133,7 @@ BuildingUpgradeService::start(
 ```php
 $guest = $this->withHeader('Idempotency-Key', 'some-unique-key')
     ->postJson('/api/v1/auth/guest');
-$token = $guest->json('data.tokens.access_token');
+$token = $guest->json('data.access_token');
 $this->withToken($token)->getJson('/api/v1/game/city');
 ```
 
@@ -167,7 +167,7 @@ locally with one environment variable.
     - apps/api/tests/Feature/City/CityTileClaimTest.php (the whole file — the `Event::listen('eloquent.creating: ...')` one-shot `$raced` technique and the `expect($raced)->toBeTrue()` guard this test copies)
     - apps/api/modules/Construction/Application/BuildingUpgradeService.php (the whole `start()` method, so the interleaving seam in the interfaces block above is verified against live code before writing the listener)
     - apps/api/modules/Construction/Interface/Http/BuildingUpgradeController.php (the bootstrap-then-start order)
-    - apps/api/tests/Feature/Mvp/MvpGameplayTest.php (the guest → token → upgrade HTTP flow and the exact `data.tokens.access_token` path)
+    - apps/api/tests/Feature/Mvp/MvpGameplayTest.php (the guest → token → upgrade HTTP flow; the access token is returned FLAT as `data.access_token`, NOT nested under `data.tokens`)
     - apps/api/tests/Pest.php (`freezeClock`, `toBeApiError`)
     - packages/game-data/data/buildings.json (confirm farm L2 and lumber_mill L2 costs before relying on them)
   </read_first>
@@ -196,7 +196,7 @@ it('resolves two competing spends for the same resources to one success and one 
     // not just the service.
     $guest = $this->withHeader('Idempotency-Key', 'economy-race-guest')
         ->postJson('/api/v1/auth/guest');
-    $token = (string) $guest->json('data.tokens.access_token');
+    $token = (string) $guest->json('data.access_token');
 
     $this->withToken($token)->getJson('/api/v1/game/city')->assertOk();
 
@@ -325,7 +325,7 @@ it('debits exactly once when the same spend is submitted twice', function (): vo
 
     $guest = $this->withHeader('Idempotency-Key', 'economy-replay-guest')
         ->postJson('/api/v1/auth/guest');
-    $token = (string) $guest->json('data.tokens.access_token');
+    $token = (string) $guest->json('data.access_token');
     $this->withToken($token)->getJson('/api/v1/game/city')->assertOk();
 
     $city = City::query()->firstOrFail();

@@ -12,6 +12,7 @@ files_modified:
   - apps/api/modules/Player/Application/GameBootstrapService.php
   - apps/api/modules/Construction/Application/BuildingUpgradeService.php
   - apps/api/tests/Feature/Economy/CityEconomyFoundationTest.php
+  - apps/api/tests/Feature/Economy/WarehouseCapacityTest.php
   - apps/api/tests/Feature/Economy/LedgerAuditTrailTest.php
   - apps/api/tests/Architecture/ArchitectureTest.php
 autonomous: true
@@ -282,6 +283,7 @@ summary.
     - apps/api/modules/Construction/Application/BuildingUpgradeService.php (the single `debitLocked` call, line ~113)
     - apps/api/modules/Economy/Domain/OverflowPolicy.php (from plan 08-02 — mirror its file header, namespace and comment style)
     - apps/api/tests/Feature/Economy/CityEconomyFoundationTest.php (the two `creditLocked` / `debitLocked` call sites that need a new argument — change ONLY the call signatures, never an assertion)
+    - apps/api/tests/Feature/Economy/WarehouseCapacityTest.php (from plan 08-02 — its two `OverflowPolicy::Refuse` calls pass the policy as the FIFTH positional argument, which the new `LedgerParty $source` parameter now occupies; they break with a TypeError unless fixed in Step 8)
     - .planning/codebase/CONVENTIONS.md (§ PHP — static factories over public constructors for value objects; exceptions named for the rule broken)
   </read_first>
   <behavior>
@@ -484,12 +486,50 @@ and NOTHING else in this file may change:
 
 Add the import. Do not touch a single `expect(...)` line — if an assertion now fails,
 the conversion is wrong, not the assertion.
+
+**Step 8 — `WarehouseCapacityTest` (created by plan 08-02) MUST be re-argumented too.**
+This file is the one call site that breaks silently at runtime rather than at analysis
+time, so do it deliberately. Plan 08-02 wrote both of its strict-grant calls passing
+the policy **positionally as the fifth argument**:
+
+```php
+app(CityEconomyService::class)->creditLocked(
+    $locked,
+    ResourceBundle::fromArray(['food' => 700]),
+    'test.strict_grant',
+    'warehouse-capacity-test',
+    OverflowPolicy::Refuse,
+);
+```
+
+Position 5 is now `LedgerParty $source`, so `OverflowPolicy::Refuse` would bind to a
+`LedgerParty` parameter and throw a `TypeError` before the test ever reaches its
+assertion. In **both** `OverflowPolicy::Refuse` call sites in this file (the 700-food
+overflow test and the exact-capacity boundary test), insert
+`LedgerParty::system('test_strict_grant')` immediately BEFORE `OverflowPolicy::Refuse`,
+making the policy the sixth positional argument:
+
+```php
+app(CityEconomyService::class)->creditLocked(
+    $locked,
+    ResourceBundle::fromArray(['food' => 700]),
+    'test.strict_grant',
+    'warehouse-capacity-test',
+    LedgerParty::system('test_strict_grant'),
+    OverflowPolicy::Refuse,
+);
+```
+
+Add the `Game\Economy\Domain\LedgerParty` import to this file as well. Change nothing
+else — every `expect(...)` in this file must still pass unmodified.
   </action>
   <verify>
     <automated>cd apps/api && ./vendor/bin/pest --filter=CityEconomyFoundation && ./vendor/bin/pest --filter=WarehouseCapacity && ./vendor/bin/phpstan analyse --memory-limit=1G</automated>
   </verify>
   <acceptance_criteria>
     - `grep -q "final readonly class LedgerParty" apps/api/modules/Economy/Domain/LedgerParty.php` succeeds.
+    - `grep -q "LedgerParty::system('test_strict_grant')" apps/api/tests/Feature/Economy/WarehouseCapacityTest.php` succeeds (both `OverflowPolicy::Refuse` call sites re-argumented).
+    - `cd apps/api && ./vendor/bin/pest --filter=WarehouseCapacity` exits 0 — no `TypeError`.
     - `grep -q "public static function record(" apps/api/modules/Economy/Infrastructure/EconomyLedger.php` succeeds.
     - `grep -q "static::updating" apps/api/modules/Economy/Infrastructure/EconomyLedger.php` and `grep -q "static::deleting" apps/api/modules/Economy/Infrastructure/EconomyLedger.php` both succeed.
     - `grep -c "EconomyLedger::record(" apps/api/modules/Economy/Application/CityEconomyService.php` returns 3.
