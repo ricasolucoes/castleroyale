@@ -108,3 +108,49 @@ it('resolves two competing spends for the same resources to one success and one 
             ->toBeGreaterThanOrEqual(0);
     }
 });
+
+it('debits exactly once when the same spend is submitted twice', function (): void {
+    freezeClock('2026-08-28T00:00:00+00:00');
+
+    $guest = $this->withHeader('Idempotency-Key', 'economy-replay-guest')
+        ->postJson('/api/v1/auth/guest');
+    $token = (string) $guest->json('data.access_token');
+    $this->withToken($token)->getJson('/api/v1/game/city')->assertOk();
+
+    $city = City::query()->firstOrFail();
+    $worldId = (string) $city->world_id;
+    $cityId = (string) $city->getKey();
+
+    DB::table('cities')->where('id', $cityId)->update([
+        'food' => 500, 'wood' => 500, 'stone' => 500, 'iron' => 0, 'gold' => 0,
+    ]);
+
+    $first = $this->withToken($token)
+        ->withHeader('Idempotency-Key', 'economy-replay-upgrade')
+        ->postJson('/api/v1/game/city/buildings/farm/upgrade');
+
+    $second = $this->withToken($token)
+        ->withHeader('Idempotency-Key', 'economy-replay-upgrade')
+        ->postJson('/api/v1/game/city/buildings/farm/upgrade');
+
+    $first->assertStatus(201);
+    $second->assertStatus(201);
+    expect($second->json('data.construction.id'))->toBe($first->json('data.construction.id'));
+
+    expect(ConstructionOrder::query()->where('world_id', $worldId)->count())->toBe(1);
+
+    // farm level 2 costs wood 120 + stone 60. Twice would be 240 / 120.
+    $debits = EconomyLedger::query()
+        ->where('world_id', $worldId)->where('city_id', $cityId)
+        ->where('reason', 'building.upgrade')
+        ->get()
+        ->groupBy('resource')
+        ->map(static fn ($rows): int => (int) $rows->sum('amount'));
+
+    expect($debits->get('wood'))->toBe(-120)
+        ->and($debits->get('stone'))->toBe(-60);
+
+    $fresh = City::query()->whereKey($cityId)->firstOrFail();
+    expect((int) $fresh->wood)->toBe(380)
+        ->and((int) $fresh->stone)->toBe(440);
+});
