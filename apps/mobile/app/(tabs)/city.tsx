@@ -6,6 +6,7 @@ import { ApiError, apiRequest } from '@/api/client';
 import { Button } from '@/shared/components/Button';
 import { Text } from '@/shared/components/Text';
 import { CityScene } from '@/features/city/components/CityScene';
+import { useCityRealtime } from '@/features/city/realtime/useCityRealtime';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -20,6 +21,10 @@ export default function CityScreen() {
     queryKey: ['game', 'city'],
     queryFn: () => apiRequest<CityData>('/game/city', {}, { authenticated: true }),
   });
+
+  // Hook order must stay stable across renders, so this is called
+  // unconditionally above the pending/error early returns below.
+  useCityRealtime(cityQuery.data?.city.id ?? null, cityQuery.data?.realtime ?? null);
 
   if (cityQuery.isPending) {
     return (
