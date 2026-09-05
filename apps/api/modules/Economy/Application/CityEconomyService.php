@@ -7,6 +7,7 @@ namespace Game\Economy\Application;
 use DateTimeImmutable;
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
+use Game\Economy\Domain\LedgerParty;
 use Game\Economy\Domain\OverflowPolicy;
 use Game\Economy\Infrastructure\EconomyLedger;
 use Game\Shared\Application\Error\ErrorCode;
@@ -56,16 +57,18 @@ final readonly class CityEconomyService
             }
 
             if ($credited > 0 || $overflow > 0) {
-                EconomyLedger::create([
-                    'world_id' => $city->world_id,
-                    'city_id' => $city->getKey(),
-                    'resource' => $name,
-                    'amount' => $credited,
-                    'overflow_amount' => $overflow,
-                    'reason' => 'production.elapsed',
-                    'reference' => $city->getKey(),
-                    'economy_version' => (int) config('game.versions.economy', 1),
-                ]);
+                EconomyLedger::record(
+                    worldId: (string) $city->world_id,
+                    cityId: (string) $city->getKey(),
+                    source: LedgerParty::system('production'),
+                    destination: LedgerParty::city((string) $city->getKey()),
+                    resource: $name,
+                    amount: $credited,
+                    overflowAmount: $overflow,
+                    reason: 'production.elapsed',
+                    reference: (string) $city->getKey(),
+                    economyVersion: (int) config('game.versions.economy', 1),
+                );
             }
         }
 
@@ -73,8 +76,13 @@ final readonly class CityEconomyService
         $city->save();
     }
 
-    public function debitLocked(City $city, ResourceBundle $cost, string $reason, string $reference): void
-    {
+    public function debitLocked(
+        City $city,
+        ResourceBundle $cost,
+        string $reason,
+        string $reference,
+        LedgerParty $destination,
+    ): void {
         $balances = $this->balances($city);
         if (! ResourceBundle::fromArray($balances)->covers($cost)) {
             throw GameException::of(
@@ -90,16 +98,18 @@ final readonly class CityEconomyService
             }
 
             $city->setAttribute($resource, $balances[$resource] - $amount);
-            EconomyLedger::create([
-                'world_id' => $city->world_id,
-                'city_id' => $city->getKey(),
-                'resource' => $resource,
-                'amount' => -$amount,
-                'overflow_amount' => 0,
-                'reason' => $reason,
-                'reference' => $reference,
-                'economy_version' => (int) config('game.versions.economy', 1),
-            ]);
+            EconomyLedger::record(
+                worldId: (string) $city->world_id,
+                cityId: (string) $city->getKey(),
+                source: LedgerParty::city((string) $city->getKey()),
+                destination: $destination,
+                resource: $resource,
+                amount: -$amount,
+                overflowAmount: 0,
+                reason: $reason,
+                reference: $reference,
+                economyVersion: (int) config('game.versions.economy', 1),
+            );
         }
 
         $city->save();
@@ -123,6 +133,7 @@ final readonly class CityEconomyService
         ResourceBundle $grant,
         string $reason,
         string $reference,
+        LedgerParty $source,
         OverflowPolicy $policy = OverflowPolicy::DiscardAtCap,
     ): array {
         $balances = $this->balances($city);
@@ -164,16 +175,18 @@ final readonly class CityEconomyService
             }
 
             if ($accepted > 0 || $discarded > 0) {
-                EconomyLedger::create([
-                    'world_id' => $city->world_id,
-                    'city_id' => $city->getKey(),
-                    'resource' => $resource,
-                    'amount' => $accepted,
-                    'overflow_amount' => $discarded,
-                    'reason' => $reason,
-                    'reference' => $reference,
-                    'economy_version' => (int) config('game.versions.economy', 1),
-                ]);
+                EconomyLedger::record(
+                    worldId: (string) $city->world_id,
+                    cityId: (string) $city->getKey(),
+                    source: $source,
+                    destination: LedgerParty::city((string) $city->getKey()),
+                    resource: $resource,
+                    amount: $accepted,
+                    overflowAmount: $discarded,
+                    reason: $reason,
+                    reference: $reference,
+                    economyVersion: (int) config('game.versions.economy', 1),
+                );
             }
         }
 

@@ -7,6 +7,7 @@ namespace Tests\Feature\Economy;
 use Game\City\Application\CityStateService;
 use Game\City\Infrastructure\City;
 use Game\Economy\Application\CityEconomyService;
+use Game\Economy\Domain\LedgerParty;
 use Game\Economy\Domain\OverflowPolicy;
 use Game\Economy\Infrastructure\EconomyLedger;
 use Game\Identity\Domain\Account;
@@ -43,6 +44,7 @@ it('refuses a strict grant the warehouse cannot hold and changes nothing', funct
                 ResourceBundle::fromArray(['food' => 700]),
                 'test.strict_grant',
                 'warehouse-capacity-test',
+                LedgerParty::system('test_strict_grant'),
                 OverflowPolicy::Refuse,
             );
         });
@@ -76,6 +78,7 @@ it('accepts a strict grant that fills the warehouse exactly to capacity', functi
             ResourceBundle::fromArray(['food' => 500]),
             'test.strict_grant_exact',
             'warehouse-capacity-test',
+            LedgerParty::system('test_strict_grant'),
             OverflowPolicy::Refuse,
         );
     });

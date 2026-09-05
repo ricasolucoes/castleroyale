@@ -7,6 +7,7 @@ namespace Tests\Feature\Economy;
 use Game\City\Application\CityStateService;
 use Game\City\Infrastructure\City;
 use Game\Economy\Application\CityEconomyService;
+use Game\Economy\Domain\LedgerParty;
 use Game\Economy\Infrastructure\EconomyLedger;
 use Game\Identity\Domain\Account;
 use Game\Player\Application\GameBootstrapService;
@@ -54,6 +55,7 @@ it('caps server grants and records discarded overflow in the ledger', function (
             ResourceBundle::fromArray(['food' => 700]),
             'test.grant',
             'economy-foundation-test',
+            LedgerParty::system('test_grant'),
         );
     });
 
@@ -90,6 +92,7 @@ it('reconciles every city balance to the append-only ledger after a sequence of 
                     ResourceBundle::fromArray([$resource => $amount]),
                     'test.sequence.credit',
                     'step-'.$step,
+                    LedgerParty::system('test_grant'),
                 );
 
                 return;
@@ -102,6 +105,7 @@ it('reconciles every city balance to the append-only ledger after a sequence of 
                 ResourceBundle::fromArray([$resource => $debit]),
                 'test.sequence.debit',
                 'step-'.$step,
+                LedgerParty::system('test_sink'),
             );
         });
     }

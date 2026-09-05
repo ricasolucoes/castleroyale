@@ -10,6 +10,7 @@ use Game\City\Infrastructure\CityBuilding;
 use Game\Construction\Infrastructure\ConstructionOrder;
 use Game\Construction\Interface\Jobs\CompleteConstruction;
 use Game\Economy\Application\CityEconomyService;
+use Game\Economy\Domain\LedgerParty;
 use Game\Identity\Domain\Account;
 use Game\Player\Infrastructure\Player;
 use Game\Shared\Application\Error\ErrorCode;
@@ -111,7 +112,13 @@ final readonly class BuildingUpgradeService
                 );
             }
 
-            $this->economy->debitLocked($city, $cost, 'building.upgrade', $idempotencyKey);
+            $this->economy->debitLocked(
+                $city,
+                $cost,
+                'building.upgrade',
+                $idempotencyKey,
+                LedgerParty::system('construction'),
+            );
             $rawDuration = (int) ($target['build_time_seconds'] ?? 0);
             $timeScale = max(1, (int) config('game.time_scale'));
             $duration = intdiv($rawDuration, $timeScale);

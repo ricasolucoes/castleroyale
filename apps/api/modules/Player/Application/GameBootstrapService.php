@@ -6,6 +6,7 @@ namespace Game\Player\Application;
 
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
+use Game\Economy\Domain\LedgerParty;
 use Game\Economy\Infrastructure\EconomyLedger;
 use Game\Identity\Domain\Account;
 use Game\Player\Domain\PlayerNamePolicy;
@@ -181,16 +182,18 @@ final readonly class GameBootstrapService
                             continue;
                         }
 
-                        EconomyLedger::create([
-                            'world_id' => $world->getKey(),
-                            'city_id' => $city->getKey(),
-                            'resource' => $resource,
-                            'amount' => $amount,
-                            'overflow_amount' => 0,
-                            'reason' => 'starter.grant',
-                            'reference' => $account->getKey(),
-                            'economy_version' => (int) config('game.versions.economy', 1),
-                        ]);
+                        EconomyLedger::record(
+                            worldId: (string) $world->getKey(),
+                            cityId: (string) $city->getKey(),
+                            source: LedgerParty::system('starter'),
+                            destination: LedgerParty::city((string) $city->getKey()),
+                            resource: $resource,
+                            amount: $amount,
+                            overflowAmount: 0,
+                            reason: 'starter.grant',
+                            reference: (string) $account->getKey(),
+                            economyVersion: (int) config('game.versions.economy', 1),
+                        );
                     }
 
                     $world->forceFill([
