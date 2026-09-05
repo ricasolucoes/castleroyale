@@ -126,3 +126,49 @@ it('keeps institutional code out of game domains and gameplay handlers', functio
         expect($source)->not->toMatch('/(?:use|new|app)\\s*\\(?\\s*Game\\\\/');
     }
 })->group('arch');
+
+it('routes every ledger write through EconomyLedger::record', function (): void {
+    $offenders = [];
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(base_path('modules'), RecursiveDirectoryIterator::SKIP_DOTS),
+    );
+
+    foreach ($files as $file) {
+        if (! $file->isFile() || $file->getExtension() !== 'php') {
+            continue;
+        }
+        if (str_ends_with((string) $file->getPathname(), 'Economy/Infrastructure/EconomyLedger.php')) {
+            continue;
+        }
+        $contents = (string) file_get_contents((string) $file->getPathname());
+        if (str_contains($contents, 'EconomyLedger::create(')) {
+            $offenders[] = (string) $file->getPathname();
+        }
+    }
+
+    expect($offenders)->toBe([]);
+})->group('arch');
+
+it('never updates or deletes economy_ledger rows from module code', function (): void {
+    // A generic "->update(" / "->delete(" file walk is too noisy — those method names
+    // are common across unrelated models in the same file — so this checks the one
+    // thing that would actually bypass the append-only guard: a raw query builder
+    // write against the table name itself.
+    $offenders = [];
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(base_path('modules'), RecursiveDirectoryIterator::SKIP_DOTS),
+    );
+
+    foreach ($files as $file) {
+        if (! $file->isFile() || $file->getExtension() !== 'php') {
+            continue;
+        }
+        $contents = (string) file_get_contents((string) $file->getPathname());
+        if (str_contains($contents, "DB::table('economy_ledger')->update(")
+            || str_contains($contents, "DB::table('economy_ledger')->delete(")) {
+            $offenders[] = (string) $file->getPathname();
+        }
+    }
+
+    expect($offenders)->toBe([]);
+})->group('arch');
