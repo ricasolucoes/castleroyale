@@ -7,6 +7,7 @@ namespace Game\Economy\Application;
 use DateTimeImmutable;
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
+use Game\Economy\Domain\OverflowPolicy;
 use Game\Economy\Infrastructure\EconomyLedger;
 use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Application\Error\GameException;
@@ -111,11 +112,41 @@ final readonly class CityEconomyService
      * credited amount so an operator can distinguish a capped faucet from a
      * missing mutation.
      *
+     * @param OverflowPolicy $policy `DiscardAtCap` (default) fills to the cap and
+     *                               discards the rest, for passive faucets like elapsed-time production.
+     *                               `Refuse` is all-or-nothing: an explicit transfer asked for an exact
+     *                               amount and cannot have it, so it is refused before any mutation.
      * @return array{credited: ResourceBundle, overflow: ResourceBundle}
      */
-    public function creditLocked(City $city, ResourceBundle $grant, string $reason, string $reference): array
-    {
+    public function creditLocked(
+        City $city,
+        ResourceBundle $grant,
+        string $reason,
+        string $reference,
+        OverflowPolicy $policy = OverflowPolicy::DiscardAtCap,
+    ): array {
         $balances = $this->balances($city);
+
+        if ($policy === OverflowPolicy::Refuse) {
+            // Checked before the first mutation so the refusal is all-or-nothing —
+            // a half-delivered transfer is the duplication bug this error exists to
+            // prevent, not a lesser version of success.
+            $exceeded = [];
+            foreach ($grant->toArray() as $resource => $amount) {
+                if ((int) $city->getAttribute($resource.'_capacity') < $balances[$resource] + $amount) {
+                    $exceeded[] = $resource;
+                }
+            }
+
+            if ($exceeded !== []) {
+                throw GameException::of(
+                    ErrorCode::WarehouseCapacityExceeded,
+                    'The warehouse cannot hold this delivery.',
+                    ['exceeded' => $exceeded],
+                );
+            }
+        }
+
         $credited = [];
         $overflow = [];
 
