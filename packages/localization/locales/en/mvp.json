@@ -132,7 +132,11 @@
     "wood": "Wood",
     "stone": "Stone",
     "iron": "Iron",
-    "gold": "Gold"
+    "gold": "Gold",
+    "storage_full_short": "MAX",
+    "bar_accessibility": "Resource levels",
+    "accessible_reading": "{resource}: {amount} of {capacity}",
+    "accessible_full": "{resource}: storage full at {capacity}"
   },
   "buildings": {
     "palace": "Palace",

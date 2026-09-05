@@ -13,6 +13,7 @@ import type { components } from './generated/api.ts';
 export type ErrorCode = components['schemas']['ErrorCode'];
 export type ErrorResponse = components['schemas']['ErrorResponse'];
 export type ResourceBundle = components['schemas']['ResourceBundle'];
+export type ResourceRate = components['schemas']['ResourceRate'];
 export type ResourceType = components['schemas']['ResourceType'];
 export type ContentVersions = components['schemas']['ContentVersions'];
 export type Pagination = components['schemas']['Pagination'];

@@ -132,7 +132,11 @@
     "wood": "Madera",
     "stone": "Piedra",
     "iron": "Hierro",
-    "gold": "Oro"
+    "gold": "Oro",
+    "storage_full_short": "MÁX",
+    "bar_accessibility": "Niveles de recursos",
+    "accessible_reading": "{resource}: {amount} de {capacity}",
+    "accessible_full": "{resource}: almacenamiento lleno en {capacity}"
   },
   "buildings": {
     "palace": "Palacio",
