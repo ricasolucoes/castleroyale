@@ -122,11 +122,26 @@ that assumption rather than patched for it later.
 
 ## Current Understanding
 
-Phases 00, 01, and 02 are done and committed. Phase 02.1 is now the next executable
-phase for the public institutional surface; Phase 03 remains the next gameplay API
-phase after it.
+Phases 00 through 07 are done and committed (including the inserted Phase 02.1).
+Phase 08 — Resources & Economy — is the next executable phase.
 
-Phase 02 (2026-08-26) implemented the design system and mobile shell, validating REQ-08 (touch targets, tokens, premium UI) and REQ-13 (localization pt-BR, en, es). The mobile app now contains core components (built strictly with `@shopify/restyle`), an Expo Router tab shell, light/dark mode support, and an automated touch-target testing suite.
+Phase 07 (2026-09-05) gave a player a city with a fixed, addressable roster of 18 build
+plots and replaced the card list with a real scene. All five ROADMAP criteria verified:
+the one-city-per-tile rule is now enforced by the database constraint (the unique-index
+violation is caught and returned as TILE_OCCUPIED, proven by a race test), `CityData.slots`
+always returns the full roster with each plot empty or holding exactly one building, the
+city screen measures its own frame at runtime and renders tappable plots holding a 44pt
+touch floor, the private `city.{id}` channel is proven on one allow and three deny paths,
+and CITY_NOT_OWNED returns 400 — never 404 — leaking nothing. REQ-01 is materially
+advanced but still spans later phases, so it stays Active.
+
+One item from Phase 07 is outstanding and needs a human: the four generated city-scene art
+assets. `tools/generate-city-assets.py` is written and ready, but the Gemini "Jogos" GCP
+project (436393374436) has a hard image-generation quota of 0 — a billing gate, not a rate
+limit. The scene ships on `bg.sunken` with interim vector glyphs until billing is enabled
+and that script is run (UI-SPEC Flagged Assumption 3).
+
+Phase 02 (2026-08-26) implemented the design system and mobile shell, validating REQ-08 (touch targets, tokens, premium UI) and REQ-13 (localization pt-BR, en, es). The mobile app now contains core components (built on the local `@castleroyale/tooling/design-tokens`; `@shopify/restyle` was removed in Phase 02 to avoid a second styling vocabulary), an Expo Router tab shell, light/dark mode support, and an automated touch-target testing suite.
 
 Phase 01 (2026-08-25) made Docker the canonical environment — seven healthy services,
 migrations and a double seed proven against real PostGIS, `/api/v1/health` reporting every
@@ -144,4 +159,4 @@ pre-written CONTEXT.md locking its implementation decisions. Executing agents ar
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded
 as an ADR or a DECISIONS entry — it is not silently designed around.
 
-Last updated: 2026-08-27
+Last updated: 2026-09-05
