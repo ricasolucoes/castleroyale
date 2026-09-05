@@ -212,6 +212,33 @@ final class GameDataCatalog
     }
 
     /**
+     * The fixed build-plot roster.
+     *
+     * Order is the roster order the client renders in — never re-sorted downstream.
+     *
+     * @return list<string>
+     */
+    public function citySlots(): array
+    {
+        $rows = $this->read('city-slots.json');
+        $slots = [];
+
+        foreach ($rows as $row) {
+            if (! is_array($row) || ! is_string($row['code'] ?? null)) {
+                throw new RuntimeException('City slot roster entry is invalid.');
+            }
+
+            $slots[] = $row['code'];
+        }
+
+        if ($slots === []) {
+            throw new RuntimeException('City slot roster is empty.');
+        }
+
+        return $slots;
+    }
+
+    /**
      * @return list<array{slot: string, code: string, level: int}>
      */
     public function starterBuildings(): array
@@ -219,6 +246,7 @@ final class GameDataCatalog
         $starter = $this->starter();
         $city = $starter['city'] ?? null;
         $rows = is_array($city) && is_array($city['buildings'] ?? null) ? $city['buildings'] : [];
+        $roster = $this->citySlots();
         $result = [];
 
         foreach ($rows as $row) {
@@ -226,11 +254,12 @@ final class GameDataCatalog
                 continue;
             }
 
-            $result[] = [
-                'slot' => (string) ($row['slot'] ?? $row['code']),
-                'code' => (string) $row['code'],
-                'level' => (int) $row['level'],
-            ];
+            $slot = $row['slot'] ?? null;
+            if (! is_string($slot) || ! in_array($slot, $roster, true)) {
+                throw new RuntimeException('Starter building "'.((string) $row['code']).'" has no valid slot.');
+            }
+
+            $result[] = ['slot' => $slot, 'code' => (string) $row['code'], 'level' => (int) $row['level']];
         }
 
         return $result;
