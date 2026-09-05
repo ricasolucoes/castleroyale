@@ -274,7 +274,7 @@ Plans:
   3. Two concurrent spend requests for the same resources result in exactly one success and one INSUFFICIENT_RESOURCES, verified by a concurrency test.
   4. Resources never exceed warehouse capacity; overflow is discarded at the cap and recorded, and the API returns WAREHOUSE_CAPACITY_EXCEEDED where relevant.
   5. Summing the ledger for any city reproduces its current balance exactly, verified by a property test over random operation sequences.
-**Plans**: 2/5 plans executed
+**Plans**: 4/5 plans executed
 
 Plans:
 - [x] 08-01-production-rate-contract-PLAN.md — Signed integer-per-hour ResourceRate on the OpenAPI contract, derived from game-data production effects and proven equal to real accrual (completed 2026-09-05)
@@ -1189,7 +1189,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
-| 08. Resources & Economy | 2/5 | In Progress|  |
+| 08. Resources & Economy | 4/5 | In Progress|  |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |

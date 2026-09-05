@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 08-02-capacity-ceiling-strict-credit-PLAN.md
-last_updated: "2026-09-05T23:38:40.503Z"
+stopped_at: Completed 08-03-ledger-parties-append-only-PLAN.md
+last_updated: "2026-09-05T23:49:18.384Z"
 progress:
   total_phases: 69
   completed_phases: 8
   total_plans: 40
-  completed_plans: 38
+  completed_plans: 40
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 08 (resources-economy) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Plan: 3 of 5
 | Phase 07 P04 | 32min | 3 tasks | 11 files |
 | Phase 08-resources-economy PP01 | 10min | 3 tasks | 6 files |
 | Phase 08-resources-economy P02 | 12min | 3 tasks | 3 files |
+| Phase 08-resources-economy P03 | 6min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,7 @@ Recent decisions affecting current work:
 - [Phase 07]: Realtime transport (cityChannel.ts) uses an injectable socket factory over the plain Pusher protocol Reverb speaks, adding no npm dependency; reconnection, backoff and sequence-gap resync stay Phase 40's
 - [Phase 08]: Wire rate unit is signed integer units per hour (perSecond * 3600); game-data production effect stays per-second
 - [Phase 08]: OverflowPolicy (DiscardAtCap | Refuse) makes WAREHOUSE_CAPACITY_EXCEEDED reachable as an all-or-nothing pre-flight check on creditLocked, defaulting to unchanged discard-at-cap behavior
+- [Phase 08]: LedgerParty value object (city:{ulid} / system:{name}) is the sole shape for a ledger counterparty; EconomyLedger::record() is the only sanctioned write path, enforced by an architecture test and Eloquent update/delete guards
 
 ### Pending Todos
 
@@ -140,9 +142,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-05T23:37:56.957Z
-Stopped at: Completed 08-02-capacity-ceiling-strict-credit-PLAN.md
-Resume with: `/gsd:autonomous` (Phase 08 executing; next: 08-03-ledger-parties-append-only-PLAN.md)
+Last session: 2026-09-05T23:49:03.727Z
+Stopped at: Completed 08-03-ledger-parties-append-only-PLAN.md
+Resume with: `/gsd:autonomous` (Phase 08 executing; next: 08-04-locked-spending-concurrency-PLAN.md)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
