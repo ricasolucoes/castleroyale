@@ -7,6 +7,7 @@ namespace Game\Construction\Application;
 use DateTimeImmutable;
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
+use Game\City\Interface\Broadcasting\CityStateChanged;
 use Game\Construction\Infrastructure\ConstructionOrder;
 use Illuminate\Support\Collection;
 
@@ -36,6 +37,12 @@ final class ConstructionCompletionService
             }
 
             $order->forceFill(['completed_at' => $now])->save();
+
+            CityStateChanged::dispatch(
+                (string) $city->getKey(),
+                (string) $city->world_id,
+                $now->format(DATE_ATOM),
+            );
         }
     }
 }

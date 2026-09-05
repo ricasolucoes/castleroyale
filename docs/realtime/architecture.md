@@ -17,9 +17,11 @@ are busy is itself strategic intelligence.
 
 ## Deny by default
 
-Every callback in `routes/channels.php` currently returns `false`. That is
-deliberate (DEBT-001): a channel is unusable until the phase that owns it
-implements authorisation properly.
+`player.{playerId}` (Phase 04) and `city.{cityId}` (Phase 07) are implemented for
+real and tested both ways. `alliance.{allianceId}`, `battle.{battleId}` and
+`world.{worldId}.region.{regionId}` still return `false` unconditionally
+(DEBT-001): each is unusable until the phase that owns it implements
+authorisation properly.
 
 **Both the allow path and the deny path are tested** in the implementing phase. An
 untested deny path is how a player ends up subscribed to a rival's city.

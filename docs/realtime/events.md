@@ -28,6 +28,7 @@ already happened, never requests.
 
 | Event | Channel | Phase |
 |-------|---------|-------|
+| `city.state_changed` | `city.{id}` | 07 |
 | `resources.updated` | `city.{id}` | 08 |
 | `building.started` | `city.{id}` | 09 |
 | `building.completed` | `city.{id}` | 09 |
