@@ -133,7 +133,7 @@ None yet.
   autonomous session and committed as `e04193d`; they depend on Phase 54 and will be picked up by
   the autonomous loop after Phase 54 unless removed or moved to their own milestone.
 
-- [Phase 07-04] Gemini image generation is quota-blocked (429, daily limit 0 on every image model) for the shared 'Gemini Jogos' GCP project (436393374436) backing GEMINI_API_KEY. Human action needed: enable billing / raise the free-tier image quota, then run 'python3 tools/generate-city-assets.py' and apply the wiring steps in 07-04-city-scene-art-realtime-PLAN.md Task 1. City scene ships on bg.sunken with interim vector glyphs until then (UI-SPEC Flagged Assumption 3).
+- [Phase 07-04] BOTH image-generation routes are billing-blocked; verified 2026-09-05. (a) Gemini: 429 RESOURCE_EXHAUSTED, quota metric generate_content_free_tier_input_token_count with limit 0, on every image model, for the shared 'Gemini Jogos' GCP project (436393374436) backing GEMINI_API_KEY. (b) OpenAI fallback (tried at the user's explicit direction, overriding the Jogos CLAUDE.md 'sempre Gemini' rule): 429 credit_balance_exhausted, 'You have no credits remaining' — account-wide, text and image alike, so gpt-image-1 is not an option either. Do not retry either key until credit/billing is added. Human action needed: enable billing / raise the free-tier image quota, then run 'python3 tools/generate-city-assets.py' and apply the wiring steps in 07-04-city-scene-art-realtime-PLAN.md Task 1. City scene ships on bg.sunken with interim vector glyphs until then (UI-SPEC Flagged Assumption 3).
 
 ## Session Continuity
 
