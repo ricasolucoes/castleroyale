@@ -55,7 +55,14 @@
     "buildings": "Buildings",
     "construction": "Under construction",
     "construction_finish": "Finishes in",
-    "empty_construction": "No construction in progress"
+    "empty_construction": "No construction in progress",
+    "scene_accessibility": "Interactive city scene",
+    "selected_slot": "Selected plot",
+    "slot_empty": "This plot is empty",
+    "slot_empty_hint": "Building options will open in a future update.",
+    "slot_category": "Category: {category}",
+    "slot_accessible_empty": "Empty plot",
+    "slot_accessible_occupied": "{building}, level {level}"
   },
   "world": {
     "title": "World",
@@ -155,7 +162,9 @@
     ,"WORLD_FULL": "This world is full.",
     "WORLD_CLOSED": "This world is closed.",
     "CONTENT_REJECTED": "Choose another governor name.",
-    "CONFLICT": "This choice is no longer available."
+    "CONFLICT": "This choice is no longer available.",
+    "CITY_NOT_OWNED": "This city does not belong to you.",
+    "TILE_OCCUPIED": "That tile is already claimed."
   },
   "common": {
     "retry": "Try again",

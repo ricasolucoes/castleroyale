@@ -55,7 +55,14 @@
     "buildings": "Edificações",
     "construction": "Em construção",
     "construction_finish": "Conclui em",
-    "empty_construction": "Nenhuma obra em andamento"
+    "empty_construction": "Nenhuma obra em andamento",
+    "scene_accessibility": "Cena interativa da cidade",
+    "selected_slot": "Lote selecionado",
+    "slot_empty": "Este lote está vazio",
+    "slot_empty_hint": "As opções de construção serão liberadas em uma atualização futura.",
+    "slot_category": "Categoria: {category}",
+    "slot_accessible_empty": "Lote vazio",
+    "slot_accessible_occupied": "{building}, nível {level}"
   },
   "world": {
     "title": "Mundo",
@@ -155,7 +162,9 @@
     ,"WORLD_FULL": "Este mundo está lotado.",
     "WORLD_CLOSED": "Este mundo está fechado.",
     "CONTENT_REJECTED": "Escolha outro nome de governador.",
-    "CONFLICT": "Essa escolha não está mais disponível."
+    "CONFLICT": "Essa escolha não está mais disponível.",
+    "CITY_NOT_OWNED": "Esta cidade não pertence a você.",
+    "TILE_OCCUPIED": "Esse tile já está ocupado."
   },
   "common": {
     "retry": "Tentar novamente",
