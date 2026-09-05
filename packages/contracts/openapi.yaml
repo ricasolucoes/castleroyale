@@ -789,6 +789,40 @@ components:
         build_time_seconds:
           type: integer
 
+    CitySlot:
+      type: object
+      description: >-
+        One plot of the city's fixed build roster. The array is always returned
+        in full and in roster order; an empty plot is an entry, not an omission.
+      required: [slot, status, building]
+      properties:
+        slot:
+          type: string
+        status:
+          type: string
+          enum: [empty, occupied]
+        building:
+          oneOf:
+            - $ref: '#/components/schemas/CityBuilding'
+            - type: 'null'
+
+    RealtimeConfig:
+      type: object
+      required: [key, host, port, scheme, auth_endpoint]
+      properties:
+        key:
+          type: string
+        host:
+          type: string
+        port:
+          type: integer
+        scheme:
+          type: string
+          enum: [http, https]
+        auth_endpoint:
+          type: string
+          format: uri
+
     Construction:
       type: object
       required: [id, building_code, from_level, target_level, started_at, finishes_at]
@@ -826,18 +860,11 @@ components:
             economy: { type: integer }
             combat: { type: integer }
         realtime:
-          type: object
-          required: [key, host, port, scheme, auth_endpoint]
-          properties:
-            key: { type: string }
-            host: { type: string }
-            port: { type: integer }
-            scheme: { type: string, enum: [http, https] }
-            auth_endpoint: { type: string, format: uri }
+          $ref: '#/components/schemas/RealtimeConfig'
 
     CityData:
       type: object
-      required: [player, world, city, resources, buildings, construction, server_time]
+      required: [player, world, city, resources, slots, construction, realtime, server_time]
       properties:
         player:
           $ref: '#/components/schemas/Player'
@@ -847,14 +874,16 @@ components:
           $ref: '#/components/schemas/CityIdentity'
         resources:
           $ref: '#/components/schemas/CityResources'
-        buildings:
+        slots:
           type: array
           items:
-            $ref: '#/components/schemas/CityBuilding'
+            $ref: '#/components/schemas/CitySlot'
         construction:
           oneOf:
             - $ref: '#/components/schemas/Construction'
             - type: 'null'
+        realtime:
+          $ref: '#/components/schemas/RealtimeConfig'
         server_time:
           type: string
           format: date-time

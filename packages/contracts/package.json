@@ -12,6 +12,6 @@
     "lint": "eslint . --max-warnings=0"
   },
   "devDependencies": {
-    "openapi-typescript": "^7.5.0"
+    "openapi-typescript": "^7.13.0"
   }
 }

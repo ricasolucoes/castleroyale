@@ -398,6 +398,22 @@ export interface components {
             next_level_cost: components["schemas"]["ResourceBundle"];
             build_time_seconds: number;
         };
+        /** @description One plot of the city's fixed build roster. The array is always returned in full and in roster order; an empty plot is an entry, not an omission. */
+        CitySlot: {
+            slot: string;
+            /** @enum {string} */
+            status: "empty" | "occupied";
+            building: components["schemas"]["CityBuilding"] | null;
+        };
+        RealtimeConfig: {
+            key: string;
+            host: string;
+            port: number;
+            /** @enum {string} */
+            scheme: "http" | "https";
+            /** Format: uri */
+            auth_endpoint: string;
+        };
         Construction: {
             id: components["schemas"]["Ulid"];
             building_code: string;
@@ -417,23 +433,16 @@ export interface components {
                 economy: number;
                 combat: number;
             };
-            realtime: {
-                key: string;
-                host: string;
-                port: number;
-                /** @enum {string} */
-                scheme: "http" | "https";
-                /** Format: uri */
-                auth_endpoint: string;
-            };
+            realtime: components["schemas"]["RealtimeConfig"];
         };
         CityData: {
             player: components["schemas"]["Player"];
             world: components["schemas"]["World"];
             city: components["schemas"]["CityIdentity"];
             resources: components["schemas"]["CityResources"];
-            buildings: components["schemas"]["CityBuilding"][];
+            slots: components["schemas"]["CitySlot"][];
             construction: components["schemas"]["Construction"] | null;
+            realtime: components["schemas"]["RealtimeConfig"];
             /** Format: date-time */
             server_time: string;
         };
