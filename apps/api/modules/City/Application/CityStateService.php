@@ -56,7 +56,8 @@ final readonly class CityStateService
             $this->economy->accrueLocked($city, $now);
             $city->refresh();
 
-            $buildings = [];
+            /** @var array<string, array<string, mixed>> $occupied */
+            $occupied = [];
             $cityBuildingsQuery = CityBuilding::query()
                 ->where('world_id', $worldId)
                 ->where('city_id', $city->getKey());
@@ -72,7 +73,7 @@ final readonly class CityStateService
                 $level = (int) $cityBuilding->level;
                 $maxLevel = (int) ($definition['max_level'] ?? $level);
                 $next = $level < $maxLevel ? $this->catalog->buildingLevel($cityBuilding->building_code, $level + 1) : null;
-                $buildings[] = [
+                $occupied[(string) $cityBuilding->slot] = [
                     'slot' => (string) $cityBuilding->slot,
                     'code' => $cityBuilding->building_code,
                     'name_key' => (string) ($definition['name_key'] ?? $cityBuilding->building_code),
@@ -81,6 +82,18 @@ final readonly class CityStateService
                     'max_level' => $maxLevel,
                     'next_level_cost' => $next === null ? $this->emptyBundle() : $this->cost($next),
                     'build_time_seconds' => $next === null ? 0 : (int) ($next['build_time_seconds'] ?? 0),
+                ];
+            }
+
+            // The roster is the contract: the client renders a fixed scene and must never
+            // have to infer how many plots exist from how many are built.
+            $slots = [];
+            foreach ($this->catalog->citySlots() as $slotCode) {
+                $building = $occupied[$slotCode] ?? null;
+                $slots[] = [
+                    'slot' => $slotCode,
+                    'status' => $building === null ? 'empty' : 'occupied',
+                    'building' => $building,
                 ];
             }
 
@@ -104,7 +117,7 @@ final readonly class CityStateService
                     'current' => $this->economy->balances($city),
                     'capacity' => $this->economy->capacities($city),
                 ],
-                'buildings' => $buildings,
+                'slots' => $slots,
                 'construction' => $construction === null ? null : [
                     'id' => (string) $construction->getKey(),
                     'building_code' => (string) $construction->building_code,
@@ -113,6 +126,7 @@ final readonly class CityStateService
                     'started_at' => $construction->started_at?->toDateTimeImmutable()->format(DATE_ATOM),
                     'finishes_at' => $construction->finishes_at?->toDateTimeImmutable()->format(DATE_ATOM),
                 ],
+                'realtime' => $bootstrap['realtime'],
                 'server_time' => $now->format(DATE_ATOM),
             ];
         });

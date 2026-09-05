@@ -99,6 +99,7 @@ export default function CityScreen() {
 
   const city = cityQuery.data;
   const construction = city.construction;
+  const buildings = city.slots.flatMap((slot) => (slot.building ? [slot.building] : []));
   const constructionTarget = construction
     ? Date.parse(construction.finishes_at) + (Date.now() - Date.parse(city.server_time))
     : null;
@@ -150,7 +151,7 @@ export default function CityScreen() {
 
       <View style={styles.buildings}>
         <Text variant="heading">{t('city.buildings')}</Text>
-        {city.buildings.map((building) => {
+        {buildings.map((building) => {
           const isBusy = construction?.building_code === building.code;
           const isMax = building.level >= building.max_level;
 
