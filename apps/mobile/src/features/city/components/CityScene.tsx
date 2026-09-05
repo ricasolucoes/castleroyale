@@ -1,19 +1,14 @@
 import { useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { CityData } from '@castleroyale/contracts';
-import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
 import { computeSlotLayout } from '@/features/city/rendering/grid';
 import { useCitySelectionStore } from '@/features/city/state/citySelectionStore';
 import { CitySlot } from './CitySlot';
 import { CitySlotDetailSheet } from './CitySlotDetailSheet';
-import { ResourceCounter } from '@/shared/components/ResourceCounter';
 import { Text } from '@/shared/components/Text';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
-
-const RESOURCE_KEYS: ResourceKey[] = ['food', 'wood', 'stone', 'iron', 'gold'];
 
 export type CitySceneProps = {
   city: CityData;
@@ -23,7 +18,6 @@ export type CitySceneProps = {
 
 export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const [frameWidth, setFrameWidth] = useState(0);
   const selectedSlot = useCitySelectionStore((state) => state.selectedSlot);
@@ -51,7 +45,9 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
       contentContainerStyle={{
         flexGrow: 1,
         paddingHorizontal: theme.spacing.sm,
-        paddingTop: insets.top + theme.spacing.sm,
+        // The resource bar above the tab navigator owns the top safe area
+        // now; re-adding the top inset here would count the notch twice.
+        paddingTop: theme.spacing.sm,
         paddingBottom: theme.spacing.sm,
         gap: theme.spacing.sm,
       }}
@@ -68,16 +64,6 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
         <Text color={theme.color.text.secondary}>
           {t('city.location', { x: city.city.x, y: city.city.y })}
         </Text>
-      </View>
-
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }}>
-        {RESOURCE_KEYS.map((resource) => (
-          <ResourceCounter
-            key={resource}
-            resource={resource}
-            amount={city.resources.current[resource] ?? 0}
-          />
-        ))}
       </View>
 
       <View

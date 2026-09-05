@@ -104,6 +104,7 @@ function buildCity(): CityData {
     resources: {
       current: { food: 100, wood: 100, stone: 100, iron: 100, gold: 100 },
       capacity: { food: 1000, wood: 1000, stone: 1000, iron: 1000, gold: 1000 },
+      rate: { food: 3600, wood: 3600, stone: 3600, iron: 0, gold: 0 },
     },
     slots,
     construction: null,
@@ -200,5 +201,25 @@ describe('city tab screen architecture', () => {
     expect(source).not.toContain('<Card');
     expect(source).not.toContain('useMutation');
     expect(source).not.toContain('/upgrade');
+  });
+
+  it('leaves the top safe area to the resource bar and drops the duplicated resource row', () => {
+    const scene = readFileSync(join(__dirname, '../src/features/city/components/CityScene.tsx'), 'utf8');
+    expect(scene).not.toContain('insets.top');
+    expect(scene).not.toContain('ResourceCounter');
+
+    const layout = readFileSync(join(__dirname, '../app/(tabs)/_layout.tsx'), 'utf8');
+    expect(layout).toContain('<ResourceBar />');
+    expect(layout.indexOf('<ResourceBar />')).toBeLessThan(layout.indexOf('<Tabs'));
+
+    const bar = readFileSync(join(__dirname, '../src/features/economy/components/ResourceBar.tsx'), 'utf8');
+    expect(bar).toContain('insets.top');
+    expect(bar).not.toMatch(/height:\s*\d/);
+  });
+
+  it('refetches on app resume rather than extrapolating across a backgrounding gap', () => {
+    const root = readFileSync(join(__dirname, '../app/_layout.tsx'), 'utf8');
+    expect(root).toContain('focusManager.setEventListener');
+    expect(root).toContain('AppState');
   });
 });
