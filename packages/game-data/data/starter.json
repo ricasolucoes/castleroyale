@@ -28,11 +28,11 @@
       "gold": 500
     },
     "buildings": [
-      { "code": "palace", "level": 1 },
-      { "code": "farm", "level": 1 },
-      { "code": "lumber_mill", "level": 1 },
-      { "code": "quarry", "level": 1 },
-      { "code": "warehouse", "level": 1 }
+      { "code": "palace", "level": 1, "slot": "plot_01" },
+      { "code": "farm", "level": 1, "slot": "plot_02" },
+      { "code": "lumber_mill", "level": 1, "slot": "plot_03" },
+      { "code": "quarry", "level": 1, "slot": "plot_04" },
+      { "code": "warehouse", "level": 1, "slot": "plot_05" }
     ],
     "units": [
       { "code": "militia", "quantity": 20 }

@@ -86,12 +86,18 @@ export type Technology = {
   }[];
 };
 
+/** A fixed, stable build plot. Identity never changes once shipped — the client addresses it. */
+export type CitySlot = {
+  code: string;
+};
+
 export type Dataset = {
   buildings?: Building[];
   units?: Unit[];
   counters?: CounterMatrix;
   technologies?: Technology[];
+  'city-slots'?: CitySlot[];
 };
 
-export const DATASET_NAMES = ['buildings', 'units', 'counters', 'technologies'] as const;
+export const DATASET_NAMES = ['buildings', 'units', 'counters', 'technologies', 'city-slots'] as const;
 export type DatasetName = (typeof DATASET_NAMES)[number];

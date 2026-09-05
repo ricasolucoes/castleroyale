@@ -164,6 +164,53 @@ for (const file of files) {
   }
 }
 
+// The fixed build-plot roster and the starter buildings that address it. This
+// is a dangling-reference rule the generic per-file loop above cannot express
+// (it only knows about `requirements[].type` graphs), so it is checked here.
+if (existsSync(join(dataDir, 'city-slots.json')) && existsSync(join(dataDir, 'starter.json'))) {
+  const roster: string[] = [];
+  const rosterRaw = readDataset('city-slots.json');
+
+  if (!Array.isArray(rosterRaw)) {
+    fail('city-slots', 'is not a JSON array');
+  } else {
+    for (const row of rosterRaw as Record<string, unknown>[]) {
+      const code = row['code'];
+      if (typeof code !== 'string' || !/^plot_\d{2}$/.test(code)) {
+        fail('city-slots', `"${String(code)}" is not a valid plot id (expected plot_NN)`);
+        continue;
+      }
+      roster.push(code);
+    }
+  }
+
+  const starter = readDataset('starter.json') as Record<string, unknown>;
+  const city = (starter['city'] ?? {}) as Record<string, unknown>;
+  const starterBuildings = Array.isArray(city['buildings'])
+    ? (city['buildings'] as Record<string, unknown>[])
+    : [];
+
+  const assignedSlots = new Set<string>();
+  for (const building of starterBuildings) {
+    const code = String(building['code'] ?? '<unknown>');
+    const slot = building['slot'];
+
+    if (slot === undefined) {
+      fail('starter', `building "${code}" has no "slot"`);
+      continue;
+    }
+    if (typeof slot !== 'string' || !roster.includes(slot)) {
+      fail('starter', `building "${code}" is assigned unknown slot "${String(slot)}"`);
+      continue;
+    }
+    if (assignedSlots.has(slot)) {
+      fail('starter', `slot "${slot}" is assigned twice`);
+      continue;
+    }
+    assignedSlots.add(slot);
+  }
+}
+
 if (problems.length > 0) {
   console.error(`Game data validation FAILED — ${problems.length} problem(s):\n`);
   for (const p of problems) console.error(`  [${p.dataset}] ${p.message}`);
