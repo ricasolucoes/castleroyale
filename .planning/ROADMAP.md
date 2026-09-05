@@ -255,10 +255,10 @@ Plans:
   3. The city screen renders the scene with tappable buildings and reflects server state after a pull-to-refresh.
   4. The `city.{id}` channel authorises the owner and denies non-owners, verified by a test.
   5. Requesting a city the player does not own returns CITY_NOT_OWNED, not 404, and never leaks its contents.
-**Plans**: 4 plans
+**Plans**: 4 plans (1/4 executed)
 
 Plans:
-- [ ] 07-01-city-slot-roster-tile-claim-PLAN.md — Fixed 18-plot slot roster in game data; unique-index-backed tile claim returning TILE_OCCUPIED
+- [x] 07-01-city-slot-roster-tile-claim-PLAN.md — Fixed 18-plot slot roster in game data; unique-index-backed tile claim returning TILE_OCCUPIED (completed 2026-09-05)
 - [ ] 07-02-city-state-slots-api-PLAN.md — CitySlot contract, roster-ordered city read, CITY_NOT_OWNED proven over HTTP
 - [ ] 07-03-city-scene-rendering-PLAN.md — Measured, tappable plot grid with pull-to-refresh and detail sheet, replacing the card list
 - [ ] 07-04-city-scene-art-realtime-PLAN.md — Gemini-generated scene art with provenance; city.{id} channel proven both ways and live client refresh
@@ -1188,7 +1188,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 04. Player Profile & Onboarding | 0/4 | Complete    | 2026-08-28 |
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
-| 07. City Foundation | 0/4 | Not started | - |
+| 07. City Foundation | 1/4 | In Progress | - |
 | 08. Resources & Economy | 0/5 | Not started | - |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
@@ -1262,7 +1262,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 **Milestone**: Google Play Games & Gamification
 **Success Criteria**:
   1. (Ver objetivos definidos em CONTEXT.md)
-**Plans:** 5/5 plans complete
+**Plans:** 0 plans
 
 Plans:
 - [ ] TBD (run /gsd-plan-phase 55 to break down)

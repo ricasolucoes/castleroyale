@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 06-04-markers-selection-detail-PLAN.md
-last_updated: "2026-09-03T13:29:14.653Z"
+stopped_at: Completed 07-01-city-slot-roster-tile-claim-PLAN.md
+last_updated: "2026-09-05T17:35:21.234Z"
 progress:
   total_phases: 69
   completed_phases: 7
-  total_plans: 31
-  completed_plans: 32
+  total_plans: 35
+  completed_plans: 33
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 06 — world-map-rendering
+**Current focus:** Phase 07 — city-foundation
 
 ## Current Position
 
-Phase: 06 (world-map-rendering) — EXECUTING
-Plan: 1 of 5
+Phase: 07 (city-foundation) — EXECUTING
+Plan: 2 of 4
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Plan: 1 of 5
 | Phase 06 P01 | 15 min | 2 tasks | 4 files |
 | Phase 06 P02 | 3 min | 2 tasks | 7 files |
 | Phase 06-world-map-rendering P06-04 | 30 min | 2 tasks | 4 files |
+| Phase 07 P01 | 19min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,7 @@ Recent decisions affecting current work:
 - [Phase 06]: Used Zustand to store only selected coordinates; derived the selected tile directly from TanStack Query's viewport cache.
 - [Phase 06]: Added 44pt circular hit testing inside the Skia canvas onTouchEnd to reliably intercept taps near compact markers.
 - [Phase 06]: Delegated interaction resolution logic to Skia's tap handler, skipping separate React Native pressables for map entities.
+- [Phase 07]: Wrapped City::create in a QueryException catch matching the cities_world_id_x_y_unique index name so the unique index (not the exists() pre-check) is the authority refusing a double tile claim
 
 ### Pending Todos
 
@@ -121,9 +123,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T03:46:00.000Z
-Stopped at: Completed 06-04-markers-selection-detail-PLAN.md
-Resume with: `/gsd:autonomous --from 4`
+Last session: 2026-09-05T17:35:16.113Z
+Stopped at: Completed 07-01-city-slot-roster-tile-claim-PLAN.md
+Resume with: `/gsd:autonomous --from 4` (next: 07-02-city-state-slots-api-PLAN.md)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
