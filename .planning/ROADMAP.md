@@ -277,11 +277,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 08-01: Resource storage, production rates and capacity
-- [ ] 08-02: Elapsed-time production accrual on read
-- [ ] 08-03: The transactional ledger and audit trail
-- [ ] 08-04: Locked, idempotent spending and concurrency tests
-- [ ] 08-05: Mobile resource bar with live client-side interpolation
+- [ ] 08-01-production-rate-contract-PLAN.md — Signed integer-per-hour ResourceRate on the OpenAPI contract, derived from game-data production effects and proven equal to real accrual (wave 1)
+- [ ] 08-02-capacity-ceiling-strict-credit-PLAN.md — OverflowPolicy, the all-or-nothing credit that finally raises WAREHOUSE_CAPACITY_EXCEEDED, and the cap proven on the accrual path (wave 2)
+- [ ] 08-03-ledger-parties-append-only-PLAN.md — source/destination columns, the LedgerParty value object, one guarded EconomyLedger::record write path, append-only enforcement (wave 3)
+- [ ] 08-04-locked-spending-concurrency-PLAN.md — Interleaved two-spend race over HTTP, double-submit idempotency at the ledger, seeded random reconciliation property test (wave 4)
+- [ ] 08-05-mobile-resource-bar-PLAN.md — Persistent ticking resource bar above the tabs, clamped interpolation, resource icons, MAX signalling, safe-area handover (wave 2)
 
 ### Phase 09: Buildings & Construction
 **Goal**: A player queues building upgrades that cost resources, take server-controlled time, and complete reliably even if a worker dies.
