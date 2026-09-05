@@ -1,11 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
 import { ActivityIndicator, View } from 'react-native';
-import type { CityData } from '@castleroyale/contracts';
 
-import { ApiError, apiRequest } from '@/api/client';
+import { ApiError } from '@/api/client';
 import { Button } from '@/shared/components/Button';
 import { Text } from '@/shared/components/Text';
 import { CityScene } from '@/features/city/components/CityScene';
+import { useCityQuery } from '@/features/city/api/useCityQuery';
 import { useCityRealtime } from '@/features/city/realtime/useCityRealtime';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -17,10 +16,7 @@ function errorKey(error: unknown): string {
 export default function CityScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const cityQuery = useQuery({
-    queryKey: ['game', 'city'],
-    queryFn: () => apiRequest<CityData>('/game/city', {}, { authenticated: true }),
-  });
+  const cityQuery = useCityQuery();
 
   // Hook order must stay stable across renders, so this is called
   // unconditionally above the pending/error early returns below.
