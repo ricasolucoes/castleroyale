@@ -28,6 +28,7 @@ final readonly class BuildingUpgradeService
         private GameDataCatalog $catalog,
         private CityEconomyService $economy,
         private ConstructionCompletionService $completion,
+        private BuildingRequirementEvaluator $requirements,
     ) {}
 
     /**
@@ -76,6 +77,29 @@ final readonly class BuildingUpgradeService
             $maxLevel = (int) ($definition['max_level'] ?? $fromLevel);
             if ($targetLevel > $maxLevel) {
                 throw GameException::of(ErrorCode::BuildingMaxLevel, 'This building has reached its maximum level.');
+            }
+
+            // Requirements are read inside the same lock that will spend the cost. A
+            // prerequisite that was true when the client rendered its sheet may not be
+            // true now — the lock, not the client's snapshot, decides. This read cannot
+            // observe a torn state: every mutation of a CityBuilding in this codebase
+            // (ConstructionCompletionService::completeOverdueLocked) acquires the city
+            // lock first, and that lock is already held above.
+            /** @var array<string, int> $currentLevels */
+            $currentLevels = CityBuilding::query()
+                ->where('world_id', $worldId)
+                ->where('city_id', $city->getKey())
+                ->pluck('level', 'building_code')
+                ->map(static fn (mixed $level): int => (int) $level)
+                ->all();
+
+            $unmet = $this->requirements->unmet($buildingCode, $targetLevel, $currentLevels);
+            if ($unmet !== []) {
+                throw GameException::of(
+                    ErrorCode::BuildingRequirementsNotMet,
+                    'This upgrade is not available yet.',
+                    ['missing' => $unmet],
+                );
             }
 
             $activeOrdersQuery = ConstructionOrder::query()

@@ -173,6 +173,29 @@ it('never updates or deletes economy_ledger rows from module code', function ():
     expect($offenders)->toBe([]);
 })->group('arch');
 
+it('gates buildings from data, never from a hardcoded prerequisite', function (): void {
+    // docs/game-design/buildings.md § The Palace gate is a data rule (ADR-013).
+    // A string comparison against a building code inside the Construction module
+    // would move progression back into PHP where designers cannot review it.
+    $offenders = [];
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(base_path('modules/Construction'), RecursiveDirectoryIterator::SKIP_DOTS),
+    );
+
+    foreach ($files as $file) {
+        if (! $file->isFile() || $file->getExtension() !== 'php') {
+            continue;
+        }
+
+        $contents = (string) file_get_contents((string) $file->getPathname());
+        if (preg_match('/[\'"](palace|barracks|academy|warehouse|walls)[\'"]/', $contents) === 1) {
+            $offenders[] = (string) $file->getPathname();
+        }
+    }
+
+    expect($offenders)->toBe([]);
+})->group('arch');
+
 it('keeps cost, duration and effect tables out of PHP', function (): void {
     // ADR-013: balance is authored in packages/game-data and imported; PHP may
     // read it but never restate it. What lives in config/game.php is deliberately
