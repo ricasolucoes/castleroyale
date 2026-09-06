@@ -122,8 +122,21 @@ that assumption rather than patched for it later.
 
 ## Current Understanding
 
-Phases 00 through 07 are done and committed (including the inserted Phase 02.1).
-Phase 08 — Resources & Economy — is the next executable phase.
+Phases 00 through 08 are done and committed (including the inserted Phase 02.1).
+Phase 09 — Buildings & Construction — is the next executable phase.
+
+Phase 08 (2026-09-06) made the economy trustworthy. All five ROADMAP criteria verified:
+production is still computed from elapsed server time on read (a city closed six hours and
+one polled every minute reach the identical total); every ledger row now records a typed
+`source` and `destination` party, with `EconomyLedger::record()` the only sanctioned write
+path and `update()`/`delete()` guarded to throw; two competing spends resolve to exactly one
+success and one INSUFFICIENT_RESOURCES, proven by an interleaved-race test that was
+adversarially tampered with twice to confirm it fails without the race; storage caps hold and
+WAREHOUSE_CAPACITY_EXCEEDED became reachable from real code for the first time; and summing
+the ledger reproduces the balance exactly under a 120-step randomised property test seeded by
+ECONOMY_PROPERTY_SEED so any red run is replayable. The mobile client gained a persistent
+resource bar whose interpolation is clamped to capacity, never extrapolates backward, and is
+never fed into an affordability check — the server still owns the truth.
 
 Phase 07 (2026-09-05) gave a player a city with a fixed, addressable roster of 18 build
 plots and replaced the card list with a real scene. All five ROADMAP criteria verified:
@@ -159,4 +172,4 @@ pre-written CONTEXT.md locking its implementation decisions. Executing agents ar
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded
 as an ADR or a DECISIONS entry — it is not silently designed around.
 
-Last updated: 2026-09-05
+Last updated: 2026-09-06

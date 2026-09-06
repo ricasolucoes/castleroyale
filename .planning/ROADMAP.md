@@ -1189,7 +1189,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
-| 08. Resources & Economy | 5/5 | Complete   | 2026-09-06 |
+| 08. Resources & Economy | 5/5 | Complete    | 2026-09-06 |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |
