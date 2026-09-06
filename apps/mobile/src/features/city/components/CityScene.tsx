@@ -6,6 +6,7 @@ import { computeSlotLayout } from '@/features/city/rendering/grid';
 import { useCitySelectionStore } from '@/features/city/state/citySelectionStore';
 import { CitySlot } from './CitySlot';
 import { CitySlotDetailSheet } from './CitySlotDetailSheet';
+import { ConstructionQueueStrip } from './ConstructionQueueStrip';
 import { Text } from '@/shared/components/Text';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -39,6 +40,17 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
     city.constructions.map((construction) => [construction.building_code, construction]),
   );
 
+  // One pass over the roster serves both queue-strip resolvers: a pip knows only
+  // a building_code, but tapping it must open that building's plot.
+  const plotByBuildingCode = new Map(
+    city.slots
+      .filter((slot) => slot.building !== null)
+      .map((slot) => [
+        slot.building!.code,
+        { slot: slot.slot, nameKey: slot.building!.name_key },
+      ]),
+  );
+
   const selected = city.slots.find((s) => s.slot === selectedSlot) ?? null;
   const selectedConstruction =
     selected?.building ? (constructionByCode.get(selected.building.code) ?? null) : null;
@@ -69,6 +81,15 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
           {t('city.location', { x: city.city.x, y: city.city.y })}
         </Text>
       </View>
+
+      <ConstructionQueueStrip
+        constructions={city.constructions}
+        queueLimit={city.queue_limit}
+        slotForBuildingCode={(code) => plotByBuildingCode.get(code)?.slot ?? null}
+        nameKeyForBuildingCode={(code) => plotByBuildingCode.get(code)?.nameKey ?? null}
+        serverTime={city.server_time}
+        onSelectSlot={selectSlot}
+      />
 
       <View
         accessibilityLabel={t('city.scene_accessibility')}
@@ -105,6 +126,9 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
         slot={selected}
         construction={selectedConstruction}
         serverTime={city.server_time}
+        resources={city.resources.current}
+        activeConstructions={city.constructions.length}
+        queueLimit={city.queue_limit}
         open={selectedSlot !== null}
         onClose={clearSelection}
         onConstructionFinish={onRefresh}
