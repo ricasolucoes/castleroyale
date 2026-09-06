@@ -43,7 +43,7 @@ it('lets a guest enter a starter city and play the construction loop', function 
         ->assertJsonPath('data.slots.1.status', 'occupied')
         ->assertJsonPath('data.slots.1.building.code', 'farm')
         ->assertJsonPath('data.slots.1.building.level', 1)
-        ->assertJsonPath('data.construction', null);
+        ->assertJsonCount(0, 'data.constructions');
 
     $clock->advanceSeconds(10);
 
@@ -75,7 +75,7 @@ it('lets a guest enter a starter city and play the construction loop', function 
     $completed->assertOk()
         ->assertJsonPath('data.slots.1.building.code', 'farm')
         ->assertJsonPath('data.slots.1.building.level', 2)
-        ->assertJsonPath('data.construction', null);
+        ->assertJsonCount(0, 'data.constructions');
 
     expect(CityBuilding::query()
         ->where('world_id', $worldId)

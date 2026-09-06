@@ -2,9 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\City;
-
+use Game\Identity\Application\TokenIssuer;
+use Game\Identity\Domain\Account;
 use Illuminate\Support\Carbon;
+
+/**
+ * @return array{access_token: string, refresh_token: string}
+ */
+function constructionQueueTokens(string $suffix): array
+{
+    $account = Account::factory()->create();
+
+    return app(TokenIssuer::class)->issue($account, [
+        'device_id' => 'construction-queue-device-'.$suffix,
+        'device_name' => 'Construction queue test device',
+        'platform' => 'test',
+        'ip' => '127.0.0.1',
+    ]);
+}
 
 it('previews the same build duration the server will actually schedule', function (): void {
     freezeClock('2026-09-06T12:00:00+00:00');
@@ -58,6 +73,86 @@ it('previews the same build duration the server will actually schedule', functio
     $started2 = Carbon::parse($upgrade2->json('data.construction.started_at'));
     $finishes2 = Carbon::parse($upgrade2->json('data.construction.finishes_at'));
     expect((int) abs($finishes2->diffInSeconds($started2)))->toBe($previewedDuration2);
+});
+
+it('returns an empty array, not null, when nothing is building', function (): void {
+    freezeClock('2026-09-06T12:00:00+00:00');
+    $tokens = constructionQueueTokens('empty-queue');
+
+    test()->withToken($tokens['access_token'])
+        ->withHeader('Idempotency-Key', 'ctq-empty-bootstrap-001')
+        ->postJson('/api/v1/game/bootstrap');
+
+    $city = test()->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
+
+    $city->assertOk()
+        ->assertJsonPath('data.constructions', [])
+        ->assertJsonPath('data.queue_limit', 4);
+});
+
+it('returns every concurrent order in completion order', function (): void {
+    freezeClock('2026-09-06T12:00:00+00:00');
+    $tokens = constructionQueueTokens('concurrent-orders');
+
+    test()->withToken($tokens['access_token'])
+        ->withHeader('Idempotency-Key', 'ctq-concurrent-bootstrap-001')
+        ->postJson('/api/v1/game/bootstrap');
+
+    // Starter resources (500/500/500/250/100) cover the three level-2 costs
+    // (food 80+0+0=80, wood 0+180+120=300, stone 100+160+60=320) with room to
+    // spare — no resource grant needed.
+    foreach (['lumber_mill', 'warehouse', 'farm'] as $index => $buildingCode) {
+        test()->withToken($tokens['access_token'])
+            ->withHeader('Idempotency-Key', "ctq-concurrent-upgrade-{$index}")
+            ->postJson("/api/v1/game/city/buildings/{$buildingCode}/upgrade")
+            ->assertStatus(201);
+    }
+
+    $city = test()->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
+    $city->assertOk()->assertJsonCount(3, 'data.constructions');
+
+    $finishTimes = collect($city->json('data.constructions'))
+        ->map(static fn (array $order): int => Carbon::parse($order['finishes_at'])->getTimestamp())
+        ->values()
+        ->all();
+    $sorted = $finishTimes;
+    sort($sorted);
+    expect($finishTimes)->toBe($sorted);
+});
+
+it('echoes the configured ceiling', function (): void {
+    freezeClock('2026-09-06T12:00:00+00:00');
+    config(['game.limits.max_build_queue_slots' => 2]);
+    $tokens = constructionQueueTokens('ceiling');
+
+    test()->withToken($tokens['access_token'])
+        ->withHeader('Idempotency-Key', 'ctq-ceiling-bootstrap-001')
+        ->postJson('/api/v1/game/bootstrap');
+
+    $city = test()->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
+    $city->assertOk()->assertJsonPath('data.queue_limit', 2);
+});
+
+it('drops a completed order from the queue', function (): void {
+    $clock = freezeClock('2026-09-06T12:00:00+00:00');
+    $tokens = constructionQueueTokens('completed-order');
+
+    test()->withToken($tokens['access_token'])
+        ->withHeader('Idempotency-Key', 'ctq-completed-bootstrap-001')
+        ->postJson('/api/v1/game/bootstrap');
+
+    test()->withToken($tokens['access_token'])
+        ->withHeader('Idempotency-Key', 'ctq-completed-upgrade-001')
+        ->postJson('/api/v1/game/city/buildings/farm/upgrade')
+        ->assertStatus(201);
+
+    $clock->advanceSeconds(21);
+
+    $city = test()->withToken($tokens['access_token'])->getJson('/api/v1/game/city');
+    $city->assertOk()
+        ->assertJsonPath('data.constructions', [])
+        ->assertJsonPath('data.slots.1.building.code', 'farm')
+        ->assertJsonPath('data.slots.1.building.level', 2);
 });
 
 it('cannot let the time accelerator escape local', function (): void {

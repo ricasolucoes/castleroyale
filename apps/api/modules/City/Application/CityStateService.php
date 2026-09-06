@@ -17,6 +17,7 @@ use Game\Shared\Application\Error\GameException;
 use Game\Shared\Domain\Economy\ResourceType;
 use Game\Shared\Domain\Time\Clock;
 use Game\Shared\Infrastructure\GameData\GameDataCatalog;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final readonly class CityStateService
@@ -101,12 +102,12 @@ final readonly class CityStateService
                 ];
             }
 
-            $constructionQuery = ConstructionOrder::query()
+            $constructionsQuery = ConstructionOrder::query()
                 ->where('world_id', $worldId)
                 ->where('city_id', $city->getKey());
-            $constructionQuery->getQuery()->whereNull('completed_at')->orderBy('finishes_at');
-            /** @var ConstructionOrder|null $construction */
-            $construction = $constructionQuery->first();
+            $constructionsQuery->getQuery()->whereNull('completed_at')->orderBy('finishes_at');
+            /** @var Collection<int, ConstructionOrder> $constructions */
+            $constructions = $constructionsQuery->get();
 
             return [
                 'player' => $bootstrap['player'],
@@ -123,14 +124,18 @@ final readonly class CityStateService
                     'rate' => $this->economy->ratesPerHour($city),
                 ],
                 'slots' => $slots,
-                'construction' => $construction === null ? null : [
-                    'id' => (string) $construction->getKey(),
-                    'building_code' => (string) $construction->building_code,
-                    'from_level' => (int) $construction->from_level,
-                    'target_level' => (int) $construction->target_level,
-                    'started_at' => $construction->started_at?->toDateTimeImmutable()->format(DATE_ATOM),
-                    'finishes_at' => $construction->finishes_at?->toDateTimeImmutable()->format(DATE_ATOM),
-                ],
+                'constructions' => $constructions
+                    ->map(static fn (ConstructionOrder $order): array => [
+                        'id' => (string) $order->getKey(),
+                        'building_code' => (string) $order->building_code,
+                        'from_level' => (int) $order->from_level,
+                        'target_level' => (int) $order->target_level,
+                        'started_at' => $order->started_at?->toDateTimeImmutable()->format(DATE_ATOM),
+                        'finishes_at' => $order->finishes_at?->toDateTimeImmutable()->format(DATE_ATOM),
+                    ])
+                    ->values()
+                    ->all(),
+                'queue_limit' => max(1, (int) config('game.limits.max_build_queue_slots')),
                 'realtime' => $bootstrap['realtime'],
                 'server_time' => $now->format(DATE_ATOM),
             ];

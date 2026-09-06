@@ -605,6 +605,15 @@ paths:
                     properties:
                       construction:
                         $ref: '#/components/schemas/Construction'
+        '400':
+          description: >-
+            The upgrade cannot be applied: BUILDING_MAX_LEVEL,
+            BUILDING_REQUIREMENTS_NOT_MET, BUILD_QUEUE_FULL, CITY_BUSY or
+            INSUFFICIENT_RESOURCES.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '409':
@@ -866,7 +875,7 @@ components:
 
     CityData:
       type: object
-      required: [player, world, city, resources, slots, construction, realtime, server_time]
+      required: [player, world, city, resources, slots, constructions, queue_limit, realtime, server_time]
       properties:
         player:
           $ref: '#/components/schemas/Player'
@@ -880,10 +889,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CitySlot'
-        construction:
-          oneOf:
-            - $ref: '#/components/schemas/Construction'
-            - type: 'null'
+        constructions:
+          type: array
+          description: >-
+            Every active order for this city (completed_at IS NULL), ordered the
+            way the server will complete them. An empty array, never null, when
+            nothing is building — the same "array always present, in full"
+            convention CitySlot established in Phase 07.
+          items:
+            $ref: '#/components/schemas/Construction'
+        queue_limit:
+          type: integer
+          description: >-
+            game.limits.max_build_queue_slots, echoed back so the client never
+            hardcodes a structural limit.
         realtime:
           $ref: '#/components/schemas/RealtimeConfig'
         server_time:

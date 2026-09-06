@@ -442,7 +442,10 @@ export interface components {
             city: components["schemas"]["CityIdentity"];
             resources: components["schemas"]["CityResources"];
             slots: components["schemas"]["CitySlot"][];
-            construction: components["schemas"]["Construction"] | null;
+            /** @description Every active order for this city (completed_at IS NULL), ordered the way the server will complete them. An empty array, never null, when nothing is building — the same "array always present, in full" convention CitySlot established in Phase 07. */
+            constructions: components["schemas"]["Construction"][];
+            /** @description game.limits.max_build_queue_slots, echoed back so the client never hardcodes a structural limit. */
+            queue_limit: number;
             realtime: components["schemas"]["RealtimeConfig"];
             /** Format: date-time */
             server_time: string;
@@ -1314,6 +1317,15 @@ export interface operations {
                             construction: components["schemas"]["Construction"];
                         };
                     };
+                };
+            };
+            /** @description The upgrade cannot be applied: BUILDING_MAX_LEVEL, BUILDING_REQUIREMENTS_NOT_MET, BUILD_QUEUE_FULL, CITY_BUSY or INSUFFICIENT_RESOURCES. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             401: components["responses"]["Unauthorized"];
