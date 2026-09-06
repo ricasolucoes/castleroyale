@@ -39,7 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 05: World Architecture** - Worlds, regions, tiles, coordinates, PostGIS indexing, viewport queries (completed 2026-08-28)
 - [x] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers (completed 2026-09-03)
 - [x] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel (completed 2026-09-05)
-- [ ] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency
+- [x] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency (completed 2026-09-06)
 - [ ] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation
 - [ ] **Phase 10: Technology & Research** - Research tree with explicit dependencies, effects and a cycle validator
 - [ ] **Phase 11: Unit System** - Unit catalogue, stats, counter matrix, power contribution
@@ -274,14 +274,14 @@ Plans:
   3. Two concurrent spend requests for the same resources result in exactly one success and one INSUFFICIENT_RESOURCES, verified by a concurrency test.
   4. Resources never exceed warehouse capacity; overflow is discarded at the cap and recorded, and the API returns WAREHOUSE_CAPACITY_EXCEEDED where relevant.
   5. Summing the ledger for any city reproduces its current balance exactly, verified by a property test over random operation sequences.
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans complete
 
 Plans:
 - [x] 08-01-production-rate-contract-PLAN.md — Signed integer-per-hour ResourceRate on the OpenAPI contract, derived from game-data production effects and proven equal to real accrual (completed 2026-09-05)
 - [x] 08-02-capacity-ceiling-strict-credit-PLAN.md — OverflowPolicy, the all-or-nothing credit that finally raises WAREHOUSE_CAPACITY_EXCEEDED, and the cap proven on the accrual path (wave 2) (completed 2026-09-05)
 - [ ] 08-03-ledger-parties-append-only-PLAN.md — source/destination columns, the LedgerParty value object, one guarded EconomyLedger::record write path, append-only enforcement (wave 3)
-- [ ] 08-04-locked-spending-concurrency-PLAN.md — Interleaved two-spend race over HTTP, double-submit idempotency at the ledger, seeded random reconciliation property test (wave 4)
-- [ ] 08-05-mobile-resource-bar-PLAN.md — Persistent ticking resource bar above the tabs, clamped interpolation, resource icons, MAX signalling, safe-area handover (wave 2)
+- [x] 08-04-locked-spending-concurrency-PLAN.md — Interleaved two-spend race over HTTP, double-submit idempotency at the ledger, seeded random reconciliation property test (completed 2026-09-06)
+- [x] 08-05-mobile-resource-bar-PLAN.md — Persistent ticking resource bar above the tabs, clamped interpolation, resource icons, MAX signalling, safe-area handover (completed 2026-09-05)
 
 ### Phase 09: Buildings & Construction
 **Goal**: A player queues building upgrades that cost resources, take server-controlled time, and complete reliably even if a worker dies.
@@ -1189,7 +1189,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 05. World Architecture | 0/4 | Complete    | 2026-08-28 |
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
-| 08. Resources & Economy | 4/5 | In Progress|  |
+| 08. Resources & Economy | 5/5 | Complete   | 2026-09-06 |
 | 09. Buildings & Construction | 0/5 | Not started | - |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |

@@ -4,12 +4,12 @@ milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
 stopped_at: Completed 08-05-mobile-resource-bar-PLAN.md
-last_updated: "2026-09-05T23:50:39.855Z"
+last_updated: "2026-09-06T00:01:37.913Z"
 progress:
   total_phases: 69
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 40
-  completed_plans: 40
+  completed_plans: 41
 ---
 
 # Project State
@@ -23,8 +23,9 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 
 ## Current Position
 
-Phase: 08 (resources-economy) — EXECUTING
-Plan: 4 of 5
+Phase: 08 (resources-economy) — COMPLETE (all 5 plans executed, ready for verification)
+Plan: 5 of 5
+Next: Phase 09 (Buildings & Construction)
 
 ## Performance Metrics
 
@@ -67,6 +68,7 @@ Plan: 4 of 5
 | Phase 08-resources-economy P02 | 12min | 3 tasks | 3 files |
 | Phase 08-resources-economy P03 | 6min | 3 tasks | 10 files |
 | Phase 08-resources-economy P05 | 25min | 3 tasks | 16 files |
+| Phase 08-resources-economy P04 | 7min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -118,6 +120,9 @@ Recent decisions affecting current work:
 - [Phase 08]: LedgerParty value object (city:{ulid} / system:{name}) is the sole shape for a ledger counterparty; EconomyLedger::record() is the only sanctioned write path, enforced by an architecture test and Eloquent update/delete guards
 - [Phase 08-resources-economy]: ResourceBar owns the top safe-area inset and the resource-type icon mapping (resourceIcons.ts); CityScene drops insets.top and its duplicated resource row
 - [Phase 08-resources-economy]: Exported ResourceRate from @castleroyale/contracts (08-01 added the schema but never re-exported the type)
+- [Phase 08-resources-economy P04]: Concurrency proof over SQLite :memory: fires a one-shot Event::listen on `eloquent.retrieved` for Player at the exact seam between BuildingUpgradeController's committed bootstrap transaction and BuildingUpgradeService::start()'s own locked transaction; manually verified by disabling the listener and observing the test fail before restoring it — the Phase 07 CityTileClaimTest technique, now applied to resource spending
+- [Phase 08-resources-economy P04]: Test fixtures that need to pre-adjust a city balance for contention purposes go through the same locked debitLocked()/creditLocked() path as gameplay, never a raw DB::table write — a raw write broke the plan's own ledger-reconciliation assertion because the starter grant (500/500/500/250/100) wasn't reflected in a compensating ledger row
+- [Phase 08-resources-economy P04]: Property test seeds mt_srand from ECONOMY_PROPERTY_SEED (falling back to random_int), and every failure assertion prints the seed so a red CI run is replayable with one exported variable
 
 ### Pending Todos
 
@@ -145,9 +150,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-05T23:50:39.852Z
-Stopped at: Completed 08-05-mobile-resource-bar-PLAN.md
-Resume with: `/gsd:autonomous` (Phase 08 executing; next: 08-04-locked-spending-concurrency-PLAN.md)
+Last session: 2026-09-06T00:00:35Z
+Stopped at: Completed 08-04-locked-spending-concurrency-PLAN.md (Phase 08 all 5 plans complete)
+Resume with: `/gsd:autonomous` (Phase 08 ready for verification; next phase: 09-buildings-construction)
 Resume file: None
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
