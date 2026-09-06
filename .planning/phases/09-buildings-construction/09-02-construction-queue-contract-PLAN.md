@@ -175,6 +175,8 @@ const isBuilding = slot.building !== null && city.construction?.building_code ==
       `slots[n].building.build_time_seconds === 20` for a building whose catalogue
       duration is 60, and a subsequent upgrade of that building produces
       `finishes_at - started_at === 20` seconds
+    - `game.time_scale` resolves to `1` whenever `APP_ENV` is not `local`, even with
+      `DEBUG_TIME_SCALE=60` set — the accelerator cannot escape a developer machine
   </behavior>
 
   <action>
@@ -243,6 +245,37 @@ slot (catalogue level 2 is 20s, so 20/3 = 6); `POST
 previewed number exactly. Then repeat the whole flow with
 `config(['game.time_scale' => 1])` and assert it equals 20 — proving the scale is
 applied, not merely that two numbers agree at 1.
+
+**Test 3 — "the time accelerator cannot escape local".** `config/game.php` has
+forced `time_scale` to `1` outside `local` since the bootstrap commit, but no test
+has ever exercised it (`grep -rn "time_scale" apps/api/tests` is empty today), and
+Phase 09 is the first phase where that value actually drives gameplay timers.
+Pin it now. Re-evaluate the config file directly rather than trusting the already
+-booted container, because `APP_ENV` is `testing` for the whole suite:
+
+```php
+$evaluate = static function (string $appEnv, string $debugScale): int {
+    $previousEnv = $_ENV['APP_ENV'] ?? null;
+    $previousScale = $_ENV['DEBUG_TIME_SCALE'] ?? null;
+    $_ENV['APP_ENV'] = $appEnv;
+    $_ENV['DEBUG_TIME_SCALE'] = $debugScale;
+
+    try {
+        return (int) (require base_path('config/game.php'))['time_scale'];
+    } finally {
+        $previousEnv === null ? ($_ENV['APP_ENV'] = 'testing') : ($_ENV['APP_ENV'] = $previousEnv);
+        $previousScale === null ? unset($_ENV['DEBUG_TIME_SCALE']) : ($_ENV['DEBUG_TIME_SCALE'] = $previousScale);
+    }
+};
+
+expect($evaluate('local', '60'))->toBe(60);      // a developer may accelerate
+expect($evaluate('production', '60'))->toBe(1);  // production may not
+expect($evaluate('staging', '60'))->toBe(1);     // nor may anything else
+```
+
+If `env()` proves to read from `getenv()` rather than `$_ENV` under this Laravel
+version, use `putenv()`/`getenv()` for the same three assertions — the assertions
+are the point, not the mechanism.
   </action>
 
   <acceptance_criteria>
@@ -253,6 +286,7 @@ applied, not merely that two numbers agree at 1.
     - `grep -cE "\b(config|now|app)\(" apps/api/modules/Construction/Domain/BuildDuration.php` is `0`
     - `cd apps/api && ./vendor/bin/pest --group=arch` is green
     - `cd apps/api && ./vendor/bin/pest --filter=CityConstructionQueue` reports the duration test passing
+    - `grep -rn "time_scale" apps/api/tests` is no longer empty — the outside-local forcing is pinned by a test
   </acceptance_criteria>
 
   <verify>

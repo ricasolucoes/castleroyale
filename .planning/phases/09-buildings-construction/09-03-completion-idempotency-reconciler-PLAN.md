@@ -297,7 +297,11 @@ config(['queue.default' => 'redis']);
 Queue::fake();
 Event::fake([CityStateChanged::class]);
 
-$ctx = startFarmUpgrade('reconcile-single');   // same helper shape as Task 1
+$ctx = startFarmUpgradeForReconciler('reconcile-single');   // same helper shape as Task 1,
+// declared locally in THIS file under this distinct name. Do NOT reuse the name
+// `startFarmUpgrade` — ConstructionCompletionTest.php already declares a top-level
+// function by that name in the same directory, and PHPUnit require()s every *Test.php
+// in one process, so a duplicate name is a fatal "Cannot redeclare" error.
 $order = ConstructionOrder::query()->where('city_id', $ctx['cityId'])->firstOrFail();
 
 $clock->advanceSeconds(30);
