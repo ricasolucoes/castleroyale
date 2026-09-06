@@ -70,39 +70,56 @@ it('caps server grants and records discarded overflow in the ledger', function (
             ->value('overflow_amount'))->toBe(200);
 });
 
-it('reconciles every city balance to the append-only ledger after a sequence of operations', function (): void {
-    freezeClock('2026-08-28T00:00:00+00:00');
+it('reconciles every city balance to the append-only ledger over a random operation sequence', function (): void {
+    // A random test without a reproducible seed is a flaky test. Export
+    // ECONOMY_PROPERTY_SEED=<n> to replay the exact sequence a red run produced.
+    $seed = (int) (getenv('ECONOMY_PROPERTY_SEED') ?: random_int(1, 2_147_483_647));
+    mt_srand($seed);
+
+    $clock = freezeClock('2026-08-28T00:00:00+00:00');
     $account = Account::factory()->create();
     $bootstrap = app(GameBootstrapService::class)->handle($account);
     $cityId = $bootstrap['city']['id'];
     $worldId = $bootstrap['world']['id'];
     $economy = app(CityEconomyService::class);
+    $resources = ResourceType::all();
 
-    foreach (range(1, 40) as $step) {
-        DB::transaction(function () use ($economy, $worldId, $cityId, $step): void {
+    foreach (range(1, 120) as $step) {
+        $operation = mt_rand(0, 2);   // 0 = credit, 1 = debit, 2 = advance time
+        $resource = $resources[mt_rand(0, count($resources) - 1)]->value;
+        $amount = mt_rand(0, 400);
+        $seconds = mt_rand(1, 900);
+
+        DB::transaction(function () use (
+            $economy, $worldId, $cityId, $step, $operation, $resource, $amount, $seconds, $clock
+        ): void {
             $query = City::query()->where('world_id', $worldId)->whereKey($cityId);
             $query->getQuery()->lockForUpdate();
             $city = $query->firstOrFail();
-            $resource = ResourceType::all()[$step % count(ResourceType::all())]->value;
-            $amount = ($step * 37) % 121;
 
-            if ($step % 2 === 0) {
+            if ($operation === 2) {
+                $clock->advanceSeconds($seconds);
+                $economy->accrueLocked($city, $clock->now());
+
+                return;
+            }
+
+            if ($operation === 0) {
                 $economy->creditLocked(
                     $city,
                     ResourceBundle::fromArray([$resource => $amount]),
                     'test.sequence.credit',
                     'step-'.$step,
-                    LedgerParty::system('test_grant'),
+                    LedgerParty::system('test_faucet'),
                 );
 
                 return;
             }
 
             $available = (int) $city->getAttribute($resource);
-            $debit = min($available, $amount);
             $economy->debitLocked(
                 $city,
-                ResourceBundle::fromArray([$resource => $debit]),
+                ResourceBundle::fromArray([$resource => min($available, $amount)]),
                 'test.sequence.debit',
                 'step-'.$step,
                 LedgerParty::system('test_sink'),
@@ -118,8 +135,27 @@ it('reconciles every city balance to the append-only ledger after a sequence of 
         ->groupBy('resource')
         ->map(static fn ($rows): int => (int) $rows->sum('amount'));
 
-    foreach (ResourceType::all() as $resource) {
-        expect($ledgerBalances->get($resource->value, 0))
-            ->toBe((int) $city->getAttribute($resource->value));
+    foreach ($resources as $resource) {
+        $stored = (int) $city->getAttribute($resource->value);
+        $summed = $ledgerBalances->get($resource->value, 0);
+
+        // PHPUnit's assertion is used rather than expect()->toBe() because it is the
+        // one guaranteed to carry the seed in the failure message.
+        $this->assertSame(
+            $stored,
+            $summed,
+            sprintf(
+                'Ledger sum for %s does not reproduce the balance. Replay with ECONOMY_PROPERTY_SEED=%d',
+                $resource->value,
+                $seed,
+            ),
+        );
+
+        $this->assertGreaterThanOrEqual(0, $stored, "Negative balance for {$resource->value}; seed {$seed}");
+        $this->assertLessThanOrEqual(
+            (int) $city->getAttribute($resource->value.'_capacity'),
+            $stored,
+            "Balance above capacity for {$resource->value}; seed {$seed}",
+        );
     }
 });
