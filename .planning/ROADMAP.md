@@ -297,7 +297,7 @@ Plans:
 **Plans**: 1/5 plans executed
 
 Plans:
-- [ ] 09-01-building-catalogue-balance-boundary-PLAN.md — The eighteen-building catalogue, the Palace gate as data, `game:import-data` validation and the architecture test keeping balance out of PHP (wave 1)
+- [x] 09-01-building-catalogue-balance-boundary-PLAN.md — The eighteen-building catalogue, the Palace gate as data, `game:import-data` validation and the architecture test keeping balance out of PHP (wave 1) (completed 2026-09-06)
 - [x] 09-02-construction-queue-contract-PLAN.md — `CityData.constructions[]` + `queue_limit`, one shared time-scaled `BuildDuration`, the documented 400 on the upgrade endpoint (wave 1) (completed 2026-09-06)
 - [ ] 09-04-building-requirements-unlocks-PLAN.md — Generic requirement evaluation inside the lock; BUILDING_REQUIREMENTS_NOT_MET names what is missing (wave 2)
 - [ ] 09-05-mobile-upgrade-flow-queue-ui-PLAN.md — Eighteen building glyphs, the five-state upgrade CTA on the server snapshot, the construction queue strip (wave 2)

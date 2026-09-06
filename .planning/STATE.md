@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 09-02-construction-queue-contract-PLAN.md (ran in parallel with 09-01, wave 1)
-last_updated: "2026-09-06T02:59:41.479Z"
+stopped_at: Completed 09-01-building-catalogue-balance-boundary-PLAN.md
+last_updated: "2026-09-06T03:06:17.963Z"
 progress:
   total_phases: 69
   completed_phases: 9
   total_plans: 45
-  completed_plans: 42
+  completed_plans: 43
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 09 (buildings-construction) — EXECUTING
-Plan: 2 of 5 complete (09-02 done; 09-01 running in parallel, wave 1; 09-04/09-05 wave 2; 09-03 wave 3)
+Plan: 2 of 5 complete (09-01, 09-02 done — wave 1 complete; 09-04/09-05 wave 2 next; 09-03 wave 3)
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Plan: 2 of 5 complete (09-02 done; 09-01 running in parallel, wave 1; 09-04/09-0
 | Phase 08-resources-economy P05 | 25min | 3 tasks | 16 files |
 | Phase 08-resources-economy P04 | 7min | 3 tasks | 2 files |
 | Phase 09 P02 | 15min | 3 tasks | 9 files |
+| Phase 09-buildings-construction P01 | 25min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -125,6 +126,11 @@ Recent decisions affecting current work:
 - [Phase 08-resources-economy P04]: Property test seeds mt_srand from ECONOMY_PROPERTY_SEED (falling back to random_int), and every failure assertion prints the seed so a red CI run is replayable with one exported variable
 - [Phase 09]: [Phase 09 P02]: A building code occupies at most one construction slot today; the client resolves the busy slot by matching building_code against slots[].building.code, not a slot field on Construction (09-UI-SPEC.md Flagged Assumption 2, unchanged).
 - [Phase 09]: [Phase 09 P02]: BuildDuration::scaled() is the single place game.time_scale is applied, shared by CityStateService's preview and BuildingUpgradeService's scheduler, so the two can never drift.
+- [Phase 09 P01]: Starter Palace raised to level 3 (was 1) so the newly-live Palace gate does not retroactively invalidate Phase 07/08's tested farm/lumber_mill/quarry/warehouse upgrade progressions; Palace itself carries no building requirement at any level.
+- [Phase 09 P01]: iron_mine and treasury effects use value:1 at every level (no scaling curve), matching the four pre-existing producers' placeholder balance — the curve is Phase 46's (Economy Balance Pass) to design.
+- [Phase 09 P01]: ADR-020 defers ADR-013's database-import clause — packages/game-data JSON stays the runtime source of truth through Phase 09; game:import-data is still the real, load-bearing import-time validator. Revisit at Phase 31 (Events & LiveOps) or Phase 34 (Admin), whichever lands first.
+- [Phase 09 P01]: Failure messages that must contain a literal locale name (for grep-based verification) are built with explicit per-locale if/return branches, not string interpolation — interpolating a loop variable puts the variable reference, not its value, into the file's source bytes.
+- [Phase 09 P01]: $this->artisan(...)->expectsOutputToContain() cannot assert two substrings that both live on the same single output line — each call backs a separate Mockery expectation on doWrite(), and one real call only satisfies one of them. Use Artisan::call() + Artisan::output() with plain str_contains-based assertions instead when a failure message must be checked for multiple substrings at once.
 
 ### Pending Todos
 
@@ -152,17 +158,23 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-06T02:59:41.474Z
-Stopped at: Completed 09-02-construction-queue-contract-PLAN.md (ran in parallel with 09-01, wave 1).
-  09-02 shipped all 3 tasks (BuildDuration, constructions[]/queue_limit, mobile call sites) and is
-  fully committed. 09-01 was still running concurrently in the same working tree when 09-02 finished;
-  its GameDataImportTest.php/DebugTest.php files were uncommitted and briefly red — not caused by 09-02.
-Resume with: `/gsd:autonomous --from 9` (or execute 09-04/09-05 once 09-01 lands, then 09-03)
+Last session: 2026-09-06T03:06:17.952Z
+Stopped at: Completed 09-01-building-catalogue-balance-boundary-PLAN.md. Wave 1 (09-01 + 09-02) is
+  now fully complete. 09-01 shipped all 3 tasks: the eighteen-building catalogue with the Palace gate
+  as data, packages/game-data/schema/buildings.schema.json, php artisan game:import-data (naming the
+  offending code on shape/level/duplicate/dangling-reference/Palace-gate/translation/starter-integrity
+  failures), the architecture test forbidding balance tables in PHP (proven to bite), and ADR-020
+  (defers ADR-013's database-import clause; JSON stays the runtime source through Phase 09). Note: due
+  to a shared-git-index race with the concurrent 09-02 agent, Task 3's four files (ArchitectureTest.php,
+  config/game.php, ADR-020, DECISIONS.md) landed inside 09-02's completion commit (`1b6b52f`) rather
+  than a dedicated 09-01 commit — content confirmed intact via `git show --stat`/`git show -- <path>`,
+  nothing lost, see 09-01-SUMMARY.md § Issues Encountered.
+Resume with: `/gsd:autonomous --from 9` (execute wave 2: 09-04 ∥ 09-05, then wave 3: 09-03)
 Resume file: None
 
 Wave plan for 09, already verified collision-free for parallel execution in one tree:
-  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files — 09-02 DONE, 09-01 in progress
-  wave 2: 09-04 (requirements) ∥ 09-05 (mobile)        — no shared files
+  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files — BOTH DONE
+  wave 2: 09-04 (requirements) ∥ 09-05 (mobile)        — no shared files — next
   wave 3: 09-03 (completion/reconciler proof suite)
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
