@@ -86,6 +86,7 @@ return [
     */
 
     'data_path' => env('GAME_DATA_PATH', base_path('../../packages/game-data')),
+    'localization_path' => env('GAME_LOCALIZATION_PATH', base_path('../../packages/localization')),
 
     /*
     |--------------------------------------------------------------------------

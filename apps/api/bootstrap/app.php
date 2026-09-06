@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Game\Shared\Application\Error\ErrorCode;
 use Game\Shared\Application\Error\GameException;
+use Game\Shared\Interface\Console\ImportGameDataCommand;
 use Game\Shared\Interface\Http\ApiResponse;
 use Game\World\Interface\Console\GenerateWorldCommand;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -47,7 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
             });
         },
     )
-    ->withCommands([GenerateWorldCommand::class])
+    ->withCommands([GenerateWorldCommand::class, ImportGameDataCommand::class])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
             Game\Shared\Interface\Http\Middleware\AttachRequestContext::class,

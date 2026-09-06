@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://castleroyale.game/schema/buildings.schema.json",
+  "title": "Building catalogue",
+  "type": "array",
+  "items": { "$ref": "#/$defs/building" },
+  "$defs": {
+    "resourceCost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "food": { "$ref": "#/$defs/wholeUnits" },
+        "wood": { "$ref": "#/$defs/wholeUnits" },
+        "stone": { "$ref": "#/$defs/wholeUnits" },
+        "iron": { "$ref": "#/$defs/wholeUnits" },
+        "gold": { "$ref": "#/$defs/wholeUnits" }
+      }
+    },
+    "wholeUnits": { "type": "integer", "minimum": 0 },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "code", "level"],
+      "properties": {
+        "type": { "enum": ["building", "technology", "nobility", "player_level"] },
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "level": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "operation", "value"],
+      "properties": {
+        "target": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$" },
+        "operation": { "enum": ["add", "multiply"] },
+        "value": { "type": "integer" }
+      }
+    },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "cost", "build_time_seconds", "requirements", "effects"],
+      "properties": {
+        "level": { "type": "integer", "minimum": 1 },
+        "cost": { "$ref": "#/$defs/resourceCost" },
+        "build_time_seconds": { "$ref": "#/$defs/wholeUnits" },
+        "requirements": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "capacity": { "$ref": "#/$defs/wholeUnits" }
+      }
+    },
+    "building": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "name_key", "category", "max_level", "levels"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "name_key": { "type": "string", "pattern": "^buildings\\.[a-z][a-z0-9_]*$" },
+        "category": { "enum": ["core", "economy", "military", "defense", "support"] },
+        "max_level": { "type": "integer", "minimum": 1 },
+        "levels": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/level" } }
+      }
+    }
+  }
+}
