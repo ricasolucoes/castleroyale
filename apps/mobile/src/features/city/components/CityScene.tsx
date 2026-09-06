@@ -33,11 +33,15 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
 
   // The device clock is never trusted as the source of the deadline — same
   // skew correction the sheet and the pre-scene screen already applied.
-  const constructionFinishTimestamp = city.construction
-    ? Date.parse(city.construction.finishes_at) + (Date.now() - Date.parse(city.server_time))
-    : null;
+  const clockSkewMs = Date.now() - Date.parse(city.server_time);
+
+  const constructionByCode = new Map(
+    city.constructions.map((construction) => [construction.building_code, construction]),
+  );
 
   const selected = city.slots.find((s) => s.slot === selectedSlot) ?? null;
+  const selectedConstruction =
+    selected?.building ? (constructionByCode.get(selected.building.code) ?? null) : null;
 
   return (
     <ScrollView
@@ -79,8 +83,8 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
       >
         {layout.tileSize > 0 &&
           city.slots.map((slot) => {
-            const isBuilding =
-              slot.building !== null && city.construction?.building_code === slot.building.code;
+            const construction = slot.building ? (constructionByCode.get(slot.building.code) ?? null) : null;
+            const isBuilding = construction !== null;
 
             return (
               <CitySlot
@@ -88,7 +92,9 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
                 slot={slot}
                 size={layout.tileSize}
                 isBuilding={isBuilding}
-                constructionFinishTimestamp={isBuilding ? constructionFinishTimestamp : null}
+                constructionFinishTimestamp={
+                  construction ? Date.parse(construction.finishes_at) + clockSkewMs : null
+                }
                 onPress={selectSlot}
               />
             );
@@ -97,7 +103,7 @@ export function CityScene({ city, isRefreshing, onRefresh }: CitySceneProps) {
 
       <CitySlotDetailSheet
         slot={selected}
-        construction={city.construction}
+        construction={selectedConstruction}
         serverTime={city.server_time}
         open={selectedSlot !== null}
         onClose={clearSelection}

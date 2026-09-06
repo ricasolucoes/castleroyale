@@ -28,8 +28,7 @@ export function CitySlotDetailSheet({
   const theme = useTheme();
   const { t } = useTranslation();
   const building = slot?.building ?? null;
-  const showConstruction =
-    building !== null && construction !== null && construction.building_code === building.code;
+  const showConstruction = building !== null && construction !== null;
 
   return (
     <BottomSheet

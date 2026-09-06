@@ -107,7 +107,8 @@ function buildCity(): CityData {
       rate: { food: 3600, wood: 3600, stone: 3600, iron: 0, gold: 0 },
     },
     slots,
-    construction: null,
+    constructions: [],
+    queue_limit: 4,
     realtime: { key: 'k', host: 'realtime.test', port: 443, scheme: 'https', auth_endpoint: 'https://realtime.test/auth' },
     server_time: new Date().toISOString(),
   } as unknown as CityData;
@@ -189,6 +190,41 @@ describe('CityScene', () => {
     expect(useCitySelectionStore.getState().selectedSlot).toBe('plot_01');
     expect(getByText('building.level {"level":1}')).toBeTruthy();
     expect(queryByText('building.upgrade')).toBeNull();
+  });
+
+  it('ticks a timer on every plot with an open order, not just the soonest', () => {
+    const now = Date.now();
+    const city = buildCity();
+    city.server_time = new Date(now).toISOString();
+    city.constructions = [
+      {
+        id: 'construction-farm',
+        building_code: 'farm',
+        from_level: 1,
+        target_level: 2,
+        started_at: new Date(now - 10_000).toISOString(),
+        finishes_at: new Date(now + 30_000).toISOString(),
+      },
+      {
+        id: 'construction-quarry',
+        building_code: 'quarry',
+        from_level: 1,
+        target_level: 2,
+        started_at: new Date(now - 10_000).toISOString(),
+        finishes_at: new Date(now + 90_000).toISOString(),
+      },
+    ];
+
+    const { getByLabelText, getAllByText } = render(
+      <CityScene city={city} isRefreshing={false} onRefresh={jest.fn()} />,
+    );
+
+    const sceneFrame = getByLabelText('city.scene_accessibility');
+    fireEvent(sceneFrame, 'layout', {
+      nativeEvent: { layout: { width: 390, height: 600, x: 0, y: 0 } },
+    });
+
+    expect(getAllByText(/^\d{2}:\d{2}:\d{2}$/)).toHaveLength(2);
   });
 });
 
