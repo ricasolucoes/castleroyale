@@ -150,10 +150,25 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-06T00:00:35Z
-Stopped at: Completed 08-04-locked-spending-concurrency-PLAN.md (Phase 08 all 5 plans complete)
-Resume with: `/gsd:autonomous` (Phase 08 ready for verification; next phase: 09-buildings-construction)
+Last session: 2026-09-06T00:35:00Z
+Stopped at: Phase 09 PLANNED (5 plans, committed 0e4961e) — halted before execution by an
+  account-level monthly spend limit, not by any project problem. Phases 07 and 08 are both
+  COMPLETE and verified 5/5 against their ROADMAP criteria.
+Resume with: `/gsd:autonomous --from 9`
 Resume file: None
+
+**Exact resume point.** Phase 09's five plans exist and validate, and its UI-SPEC is approved
+(5 PASS + 1 flag, applied). The ONLY step not finished is the plan-checker pass over those
+plans — the checker agent was killed mid-run by the spend limit. On resume, either re-run the
+plan checker over `.planning/phases/09-buildings-construction/09-0*-PLAN.md` and then execute,
+or execute directly and accept that the plans are unchecked. For context, the checker found a
+real blocker on Phase 08's plans (a positional-argument collision that would have thrown a
+TypeError at runtime), so the pass has earned its keep and is worth repeating here.
+
+Wave plan for 09, already verified collision-free for parallel execution in one tree:
+  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files
+  wave 2: 09-04 (requirements) ∥ 09-05 (mobile)        — no shared files
+  wave 3: 09-03 (completion/reconciler proof suite)
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
 https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 (green, 4 jobs).
