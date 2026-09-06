@@ -143,7 +143,20 @@
     "farm": "Granja",
     "lumber_mill": "Aserradero",
     "quarry": "Cantera",
-    "warehouse": "Almacén"
+    "warehouse": "Almacén",
+    "barracks": "Cuartel",
+    "archery_range": "Campo de Tiro",
+    "stable": "Establo",
+    "siege_workshop": "Taller de Asedio",
+    "academy": "Academia",
+    "embassy": "Embajada",
+    "marketplace": "Mercado",
+    "hospital": "Hospital",
+    "walls": "Murallas",
+    "watchtower": "Torre de Vigía",
+    "iron_mine": "Mina de Hierro",
+    "treasury": "Tesorería",
+    "tavern": "Taberna"
   },
   "building": {
     "level": "Nivel {level}",
@@ -162,8 +175,8 @@
     "ALLIANCE_NAME_TAKEN": "Ese nombre o sigla ya está en uso.",
     "ALREADY_IN_ALLIANCE": "Ya perteneces a una alianza.",
     "TOKEN_EXPIRED": "Tu sesión ha caducado.",
-    "DEVICE_SESSION_REVOKED": "Esta sesión fue revocada."
-    ,"WORLD_FULL": "Este mundo está lleno.",
+    "DEVICE_SESSION_REVOKED": "Esta sesión fue revocada.",
+    "WORLD_FULL": "Este mundo está lleno.",
     "WORLD_CLOSED": "Este mundo está cerrado.",
     "CONTENT_REJECTED": "Elige otro nombre de gobernador.",
     "CONFLICT": "Esta elección ya no está disponible.",

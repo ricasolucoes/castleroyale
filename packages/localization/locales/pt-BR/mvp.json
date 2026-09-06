@@ -143,7 +143,20 @@
     "farm": "Fazenda",
     "lumber_mill": "Serraria",
     "quarry": "Pedreira",
-    "warehouse": "Armazém"
+    "warehouse": "Armazém",
+    "barracks": "Quartel",
+    "archery_range": "Campo de Tiro",
+    "stable": "Estábulo",
+    "siege_workshop": "Oficina de Cerco",
+    "academy": "Academia",
+    "embassy": "Embaixada",
+    "marketplace": "Mercado",
+    "hospital": "Hospital",
+    "walls": "Muralhas",
+    "watchtower": "Torre de Vigia",
+    "iron_mine": "Mina de Ferro",
+    "treasury": "Tesouraria",
+    "tavern": "Taverna"
   },
   "building": {
     "level": "Nível {level}",
@@ -162,8 +175,8 @@
     "ALLIANCE_NAME_TAKEN": "Esse nome ou sigla já está em uso.",
     "ALREADY_IN_ALLIANCE": "Você já pertence a uma aliança.",
     "TOKEN_EXPIRED": "Sua sessão expirou.",
-    "DEVICE_SESSION_REVOKED": "Esta sessão foi revogada."
-    ,"WORLD_FULL": "Este mundo está lotado.",
+    "DEVICE_SESSION_REVOKED": "Esta sessão foi revogada.",
+    "WORLD_FULL": "Este mundo está lotado.",
     "WORLD_CLOSED": "Este mundo está fechado.",
     "CONTENT_REJECTED": "Escolha outro nome de governador.",
     "CONFLICT": "Essa escolha não está mais disponível.",

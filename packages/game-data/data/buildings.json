@@ -45,14 +45,14 @@
         "level": 2,
         "cost": { "wood": 120, "stone": 60 },
         "build_time_seconds": 20,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
         "effects": [{ "target": "production.food", "operation": "add", "value": 1 }]
       },
       {
         "level": 3,
         "cost": { "wood": 300, "stone": 180 },
         "build_time_seconds": 45,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
         "effects": [{ "target": "production.food", "operation": "add", "value": 1 }]
       }
     ]
@@ -74,14 +74,14 @@
         "level": 2,
         "cost": { "food": 80, "stone": 100 },
         "build_time_seconds": 20,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
         "effects": [{ "target": "production.wood", "operation": "add", "value": 1 }]
       },
       {
         "level": 3,
         "cost": { "food": 200, "stone": 260 },
         "build_time_seconds": 45,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
         "effects": [{ "target": "production.wood", "operation": "add", "value": 1 }]
       }
     ]
@@ -103,14 +103,14 @@
         "level": 2,
         "cost": { "food": 100, "wood": 100 },
         "build_time_seconds": 20,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
         "effects": [{ "target": "production.stone", "operation": "add", "value": 1 }]
       },
       {
         "level": 3,
         "cost": { "food": 250, "wood": 240 },
         "build_time_seconds": 45,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
         "effects": [{ "target": "production.stone", "operation": "add", "value": 1 }]
       }
     ]
@@ -132,7 +132,7 @@
         "level": 2,
         "cost": { "wood": 180, "stone": 160 },
         "build_time_seconds": 25,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
         "effects": [
           { "target": "storage.food", "operation": "add", "value": 500 },
           { "target": "storage.wood", "operation": "add", "value": 500 },
@@ -145,7 +145,7 @@
         "level": 3,
         "cost": { "wood": 420, "stone": 400, "iron": 80 },
         "build_time_seconds": 50,
-        "requirements": [],
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
         "effects": [
           { "target": "storage.food", "operation": "add", "value": 500 },
           { "target": "storage.wood", "operation": "add", "value": 500 },
@@ -153,6 +153,317 @@
           { "target": "storage.iron", "operation": "add", "value": 500 },
           { "target": "storage.gold", "operation": "add", "value": 250 }
         ]
+      }
+    ]
+  },
+  {
+    "code": "barracks",
+    "name_key": "buildings.barracks",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 150, "wood": 200, "stone": 120 },
+        "build_time_seconds": 35,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 380, "wood": 500, "stone": 300, "iron": 60 },
+        "build_time_seconds": 70,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "archery_range",
+    "name_key": "buildings.archery_range",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 120, "wood": 240, "stone": 100 },
+        "build_time_seconds": 35,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 300, "wood": 600, "stone": 250, "iron": 60 },
+        "build_time_seconds": 70,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "stable",
+    "name_key": "buildings.stable",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 260, "wood": 180, "stone": 100 },
+        "build_time_seconds": 40,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 650, "wood": 450, "stone": 250, "iron": 80 },
+        "build_time_seconds": 80,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "siege_workshop",
+    "name_key": "buildings.siege_workshop",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "wood": 300, "stone": 220, "iron": 120 },
+        "build_time_seconds": 45,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 750, "stone": 550, "iron": 300 },
+        "build_time_seconds": 90,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "academy",
+    "name_key": "buildings.academy",
+    "category": "support",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 180, "wood": 220, "stone": 200 },
+        "build_time_seconds": 40,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 550, "stone": 500, "iron": 100 },
+        "build_time_seconds": 80,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "embassy",
+    "name_key": "buildings.embassy",
+    "category": "support",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 140, "wood": 200, "stone": 160 },
+        "build_time_seconds": 35,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 350, "wood": 500, "stone": 400, "gold": 60 },
+        "build_time_seconds": 70,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "marketplace",
+    "name_key": "buildings.marketplace",
+    "category": "support",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 160, "wood": 260, "stone": 140 },
+        "build_time_seconds": 35,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 400, "wood": 650, "stone": 350, "gold": 80 },
+        "build_time_seconds": 70,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "hospital",
+    "name_key": "buildings.hospital",
+    "category": "support",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 200, "wood": 180, "stone": 160 },
+        "build_time_seconds": 35,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 500, "wood": 450, "stone": 400, "iron": 60 },
+        "build_time_seconds": 70,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "walls",
+    "name_key": "buildings.walls",
+    "category": "defense",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "wood": 150, "stone": 300 },
+        "build_time_seconds": 40,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 380, "stone": 750, "iron": 100 },
+        "build_time_seconds": 80,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "watchtower",
+    "name_key": "buildings.watchtower",
+    "category": "defense",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "wood": 200, "stone": 180 },
+        "build_time_seconds": 30,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 500, "stone": 450, "iron": 60 },
+        "build_time_seconds": 60,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
+      }
+    ]
+  },
+  {
+    "code": "iron_mine",
+    "name_key": "buildings.iron_mine",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": [{ "target": "production.iron", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 120, "wood": 160, "stone": 140 },
+        "build_time_seconds": 25,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": [{ "target": "production.iron", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 300, "wood": 400, "stone": 350 },
+        "build_time_seconds": 50,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": [{ "target": "production.iron", "operation": "add", "value": 1 }]
+      }
+    ]
+  },
+  {
+    "code": "treasury",
+    "name_key": "buildings.treasury",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": {},
+        "build_time_seconds": 0,
+        "requirements": [],
+        "effects": [{ "target": "production.gold", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 150, "wood": 200, "stone": 260 },
+        "build_time_seconds": 30,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": [{ "target": "production.gold", "operation": "add", "value": 1 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 380, "wood": 500, "stone": 650 },
+        "build_time_seconds": 60,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": [{ "target": "production.gold", "operation": "add", "value": 1 }]
+      }
+    ]
+  },
+  {
+    "code": "tavern",
+    "name_key": "buildings.tavern",
+    "category": "support",
+    "max_level": 3,
+    "levels": [
+      { "level": 1, "cost": {}, "build_time_seconds": 0, "requirements": [], "effects": [] },
+      {
+        "level": 2,
+        "cost": { "food": 220, "wood": 200, "gold": 60 },
+        "build_time_seconds": 30,
+        "requirements": [{ "type": "building", "code": "palace", "level": 2 }],
+        "effects": []
+      },
+      {
+        "level": 3,
+        "cost": { "food": 550, "wood": 500, "gold": 150 },
+        "build_time_seconds": 60,
+        "requirements": [{ "type": "building", "code": "palace", "level": 3 }],
+        "effects": []
       }
     ]
   }

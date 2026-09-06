@@ -143,7 +143,20 @@
     "farm": "Farm",
     "lumber_mill": "Lumber Mill",
     "quarry": "Quarry",
-    "warehouse": "Warehouse"
+    "warehouse": "Warehouse",
+    "barracks": "Barracks",
+    "archery_range": "Archery Range",
+    "stable": "Stable",
+    "siege_workshop": "Siege Workshop",
+    "academy": "Academy",
+    "embassy": "Embassy",
+    "marketplace": "Marketplace",
+    "hospital": "Hospital",
+    "walls": "Walls",
+    "watchtower": "Watchtower",
+    "iron_mine": "Iron Mine",
+    "treasury": "Treasury",
+    "tavern": "Tavern"
   },
   "building": {
     "level": "Level {level}",
@@ -162,8 +175,8 @@
     "ALLIANCE_NAME_TAKEN": "That name or tag is already in use.",
     "ALREADY_IN_ALLIANCE": "You are already in an alliance.",
     "TOKEN_EXPIRED": "Your session has expired.",
-    "DEVICE_SESSION_REVOKED": "This session was revoked."
-    ,"WORLD_FULL": "This world is full.",
+    "DEVICE_SESSION_REVOKED": "This session was revoked.",
+    "WORLD_FULL": "This world is full.",
     "WORLD_CLOSED": "This world is closed.",
     "CONTENT_REJECTED": "Choose another governor name.",
     "CONFLICT": "This choice is no longer available.",
