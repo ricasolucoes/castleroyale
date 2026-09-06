@@ -172,3 +172,45 @@ it('never updates or deletes economy_ledger rows from module code', function ():
 
     expect($offenders)->toBe([]);
 })->group('arch');
+
+it('keeps cost, duration and effect tables out of PHP', function (): void {
+    // ADR-013: balance is authored in packages/game-data and imported; PHP may
+    // read it but never restate it. What lives in config/game.php is deliberately
+    // different — `limits.max_build_queue_slots` bounds the server's worst case
+    // and `time_scale` is a local development knob. Neither is a balance *table*,
+    // so neither pattern below can match them: the patterns look for a resource
+    // name mapped to a number, a named duration column mapped to a number, or a
+    // constant named for a cost/duration/capacity. A structural ceiling keyed on
+    // a limit name is not any of those.
+    $patterns = [
+        'a resource cost table' => '/[\'"](food|wood|stone|iron|gold)[\'"]\s*=>\s*[0-9]+/',
+        'a hardcoded build, research or training duration' => '/\b(build_time_seconds|research_time_seconds|training_time_seconds)\s*=>\s*[0-9]+/',
+        'a balance constant' => '/\bconst\s+[A-Z_]*(COST|DURATION|CAPACITY|PRODUCTION|UPKEEP|BUILD_TIME)[A-Z_]*\s*=\s*[0-9]/',
+        'an effect table' => '/[\'"](target|operation)[\'"]\s*=>\s*[\'"](production|storage|combat|training)\./',
+    ];
+
+    $offenders = [];
+    $roots = [base_path('modules'), base_path('config')];
+
+    foreach ($roots as $root) {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
+        );
+
+        foreach ($files as $file) {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $contents = (string) file_get_contents((string) $file->getPathname());
+
+            foreach ($patterns as $label => $pattern) {
+                if (preg_match($pattern, $contents) === 1) {
+                    $offenders[] = $label.' in '.$file->getPathname();
+                }
+            }
+        }
+    }
+
+    expect($offenders)->toBe([]);
+})->group('arch');

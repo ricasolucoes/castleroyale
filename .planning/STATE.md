@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 08-04-locked-spending-concurrency-PLAN.md (Phase 08 all 5 plans complete)
-last_updated: "2026-09-06T00:13:00.553Z"
+stopped_at: Completed 09-02-construction-queue-contract-PLAN.md (ran in parallel with 09-01, wave 1)
+last_updated: "2026-09-06T02:59:41.479Z"
 progress:
   total_phases: 69
   completed_phases: 9
-  total_plans: 40
-  completed_plans: 41
+  total_plans: 45
+  completed_plans: 42
 ---
 
 # Project State
@@ -19,13 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 08 — resources-economy
+**Current focus:** Phase 09 — buildings-construction
 
 ## Current Position
 
-Phase: 08 (resources-economy) — COMPLETE (all 5 plans executed, ready for verification)
-Plan: 5 of 5
-Next: Phase 09 (Buildings & Construction)
+Phase: 09 (buildings-construction) — EXECUTING
+Plan: 2 of 5 complete (09-02 done; 09-01 running in parallel, wave 1; 09-04/09-05 wave 2; 09-03 wave 3)
 
 ## Performance Metrics
 
@@ -69,6 +68,7 @@ Next: Phase 09 (Buildings & Construction)
 | Phase 08-resources-economy P03 | 6min | 3 tasks | 10 files |
 | Phase 08-resources-economy P05 | 25min | 3 tasks | 16 files |
 | Phase 08-resources-economy P04 | 7min | 3 tasks | 2 files |
+| Phase 09 P02 | 15min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -123,6 +123,8 @@ Recent decisions affecting current work:
 - [Phase 08-resources-economy P04]: Concurrency proof over SQLite :memory: fires a one-shot Event::listen on `eloquent.retrieved` for Player at the exact seam between BuildingUpgradeController's committed bootstrap transaction and BuildingUpgradeService::start()'s own locked transaction; manually verified by disabling the listener and observing the test fail before restoring it — the Phase 07 CityTileClaimTest technique, now applied to resource spending
 - [Phase 08-resources-economy P04]: Test fixtures that need to pre-adjust a city balance for contention purposes go through the same locked debitLocked()/creditLocked() path as gameplay, never a raw DB::table write — a raw write broke the plan's own ledger-reconciliation assertion because the starter grant (500/500/500/250/100) wasn't reflected in a compensating ledger row
 - [Phase 08-resources-economy P04]: Property test seeds mt_srand from ECONOMY_PROPERTY_SEED (falling back to random_int), and every failure assertion prints the seed so a red CI run is replayable with one exported variable
+- [Phase 09]: [Phase 09 P02]: A building code occupies at most one construction slot today; the client resolves the busy slot by matching building_code against slots[].building.code, not a slot field on Construction (09-UI-SPEC.md Flagged Assumption 2, unchanged).
+- [Phase 09]: [Phase 09 P02]: BuildDuration::scaled() is the single place game.time_scale is applied, shared by CityStateService's preview and BuildingUpgradeService's scheduler, so the two can never drift.
 
 ### Pending Todos
 
@@ -150,23 +152,16 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-06T00:35:00Z
-Stopped at: Phase 09 PLANNED (5 plans, committed 0e4961e) — halted before execution by an
-  account-level monthly spend limit, not by any project problem. Phases 07 and 08 are both
-  COMPLETE and verified 5/5 against their ROADMAP criteria.
-Resume with: `/gsd:autonomous --from 9`
+Last session: 2026-09-06T02:59:41.474Z
+Stopped at: Completed 09-02-construction-queue-contract-PLAN.md (ran in parallel with 09-01, wave 1).
+  09-02 shipped all 3 tasks (BuildDuration, constructions[]/queue_limit, mobile call sites) and is
+  fully committed. 09-01 was still running concurrently in the same working tree when 09-02 finished;
+  its GameDataImportTest.php/DebugTest.php files were uncommitted and briefly red — not caused by 09-02.
+Resume with: `/gsd:autonomous --from 9` (or execute 09-04/09-05 once 09-01 lands, then 09-03)
 Resume file: None
 
-**Exact resume point.** Phase 09's five plans exist and validate, and its UI-SPEC is approved
-(5 PASS + 1 flag, applied). The ONLY step not finished is the plan-checker pass over those
-plans — the checker agent was killed mid-run by the spend limit. On resume, either re-run the
-plan checker over `.planning/phases/09-buildings-construction/09-0*-PLAN.md` and then execute,
-or execute directly and accept that the plans are unchecked. For context, the checker found a
-real blocker on Phase 08's plans (a positional-argument collision that would have thrown a
-TypeError at runtime), so the pass has earned its keep and is worth repeating here.
-
 Wave plan for 09, already verified collision-free for parallel execution in one tree:
-  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files
+  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files — 09-02 DONE, 09-01 in progress
   wave 2: 09-04 (requirements) ∥ 09-05 (mobile)        — no shared files
   wave 3: 09-03 (completion/reconciler proof suite)
 

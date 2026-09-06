@@ -161,3 +161,24 @@ attribute a re-run must not overwrite. Covered by
 `tests/Feature/Database/SeederTest.php`.
 **ADR:** none needed — an implementation detail of a seeder, not an architectural
 decision. ADR-016 and the mass-assignment posture are unchanged.
+
+### 2026-09-06 — Phase 09 — Database game-data import deferred; JSON stays the runtime source
+
+**Type:** Change
+**What:** ADR-013 states the database is the runtime source of truth for game
+data, imported by `php artisan game:import-data`. Phase 09 ships
+`game:import-data` as a real, load-bearing command — the import-time validator
+ADR-013 also calls for — but it validates the versioned JSON bundle in place; it
+does not write to a database table, and `GameDataCatalog` keeps reading the JSON
+bundle from disk at request time, as it has since Phase 05.
+**Why:** Phases 05-08 already ship seven consumers of `GameDataCatalog` reading
+JSON at runtime. Making the database authoritative now would mean a new table
+and migration, a rewrite of every consumer, and new `RefreshDatabase` seeding
+for every feature test touching a building — none of which any Phase 09 success
+criterion requires, and none of which is needed until a phase actually wants
+content to ship without a deploy.
+**Impact:** Content changes still require a deploy until the database path
+lands. `config/game.php`'s "Game data source" comment reflects this. The
+database becomes the runtime source when Phase 31 (Events & LiveOps) or
+Phase 34 (Admin) — whichever lands first — actually needs it.
+**ADR:** ADR-020.

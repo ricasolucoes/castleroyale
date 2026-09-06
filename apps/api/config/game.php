@@ -80,8 +80,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Balancing datasets are authored as JSON in the shared monorepo package
-    | and imported into the database by `php artisan game:import-data`. The
-    | database is the runtime source of truth; the JSON is the reviewable one.
+    | and are read at runtime by `GameDataCatalog`, validated at import time by
+    | `php artisan game:import-data`. The database import ADR-013 describes is
+    | deferred per ADR-020: the JSON bundle is the runtime source of truth for
+    | now, and becomes staged content behind a database import once a phase
+    | needs content to ship without a deploy.
     |
     */
 

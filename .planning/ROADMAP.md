@@ -294,11 +294,11 @@ Plans:
   3. A completion job is idempotent: running it twice completes the upgrade once, verified by a test.
   4. Killing the queue worker mid-timer and running the reconciler completes every overdue upgrade exactly once.
   5. Exceeding the build queue slot limit returns BUILD_QUEUE_FULL and a max-level building returns BUILDING_MAX_LEVEL.
-**Plans**: 5 plans in 3 waves
+**Plans**: 1/5 plans executed
 
 Plans:
 - [ ] 09-01-building-catalogue-balance-boundary-PLAN.md — The eighteen-building catalogue, the Palace gate as data, `game:import-data` validation and the architecture test keeping balance out of PHP (wave 1)
-- [ ] 09-02-construction-queue-contract-PLAN.md — `CityData.constructions[]` + `queue_limit`, one shared time-scaled `BuildDuration`, the documented 400 on the upgrade endpoint (wave 1)
+- [x] 09-02-construction-queue-contract-PLAN.md — `CityData.constructions[]` + `queue_limit`, one shared time-scaled `BuildDuration`, the documented 400 on the upgrade endpoint (wave 1) (completed 2026-09-06)
 - [ ] 09-04-building-requirements-unlocks-PLAN.md — Generic requirement evaluation inside the lock; BUILDING_REQUIREMENTS_NOT_MET names what is missing (wave 2)
 - [ ] 09-05-mobile-upgrade-flow-queue-ui-PLAN.md — Eighteen building glyphs, the five-state upgrade CTA on the server snapshot, the construction queue strip (wave 2)
 - [ ] 09-03-completion-idempotency-reconciler-PLAN.md — Job idempotency, worker death + reconciler, BUILD_QUEUE_FULL / BUILDING_MAX_LEVEL and server-owned UTC timers (wave 3)
@@ -1190,7 +1190,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
 | 08. Resources & Economy | 5/5 | Complete    | 2026-09-06 |
-| 09. Buildings & Construction | 0/5 | Not started | - |
+| 09. Buildings & Construction | 1/5 | In Progress | - |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |
 | 12. Training System | 0/4 | Not started | - |
