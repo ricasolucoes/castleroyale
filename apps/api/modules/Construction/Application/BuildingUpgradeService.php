@@ -7,6 +7,7 @@ namespace Game\Construction\Application;
 use DateInterval;
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
+use Game\Construction\Domain\BuildDuration;
 use Game\Construction\Infrastructure\ConstructionOrder;
 use Game\Construction\Interface\Jobs\CompleteConstruction;
 use Game\Economy\Application\CityEconomyService;
@@ -119,9 +120,10 @@ final readonly class BuildingUpgradeService
                 $idempotencyKey,
                 LedgerParty::system('construction'),
             );
-            $rawDuration = (int) ($target['build_time_seconds'] ?? 0);
-            $timeScale = max(1, (int) config('game.time_scale'));
-            $duration = intdiv($rawDuration, $timeScale);
+            $duration = BuildDuration::scaled(
+                (int) ($target['build_time_seconds'] ?? 0),
+                (int) config('game.time_scale'),
+            );
             $finishesAt = $now->add(new DateInterval('PT'.$duration.'S'));
             $order = ConstructionOrder::create([
                 'world_id' => $worldId,

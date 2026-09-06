@@ -7,6 +7,7 @@ namespace Game\City\Application;
 use Game\City\Infrastructure\City;
 use Game\City\Infrastructure\CityBuilding;
 use Game\Construction\Application\ConstructionCompletionService;
+use Game\Construction\Domain\BuildDuration;
 use Game\Construction\Infrastructure\ConstructionOrder;
 use Game\Economy\Application\CityEconomyService;
 use Game\Identity\Domain\Account;
@@ -81,7 +82,10 @@ final readonly class CityStateService
                     'level' => $level,
                     'max_level' => $maxLevel,
                     'next_level_cost' => $next === null ? $this->emptyBundle() : $this->cost($next),
-                    'build_time_seconds' => $next === null ? 0 : (int) ($next['build_time_seconds'] ?? 0),
+                    'build_time_seconds' => $next === null ? 0 : BuildDuration::scaled(
+                        (int) ($next['build_time_seconds'] ?? 0),
+                        (int) config('game.time_scale'),
+                    ),
                 ];
             }
 
