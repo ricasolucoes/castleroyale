@@ -62,7 +62,12 @@
     "slot_empty_hint": "As opções de construção serão liberadas em uma atualização futura.",
     "slot_category": "Categoria: {category}",
     "slot_accessible_empty": "Lote vazio",
-    "slot_accessible_occupied": "{building}, nível {level}"
+    "slot_accessible_occupied": "{building}, nível {level}",
+    "queue_title": "Fila de construção",
+    "queue_slots": "{active} de {max} vagas em uso",
+    "queue_accessibility": "Fila de construção: {active} de {max} vagas em uso",
+    "queue_slot_accessible": "{building}, em construção",
+    "queue_slot_free": "Vaga de fila disponível"
   },
   "world": {
     "title": "Mundo",
@@ -164,7 +169,13 @@
     "max_level": "Nível máximo",
     "cost": "Custo",
     "seconds": "segundos",
-    "no_cost": "Sem custo"
+    "no_cost": "Sem custo",
+    "cannot_afford": "Recursos insuficientes",
+    "queue_full": "Fila cheia",
+    "upgrading": "Iniciando...",
+    "cost_accessible": "Custo: {cost}",
+    "duration_accessible": "Tempo de construção: {duration}",
+    "upgrade_accessible": "Melhorar {building}"
   },
   "errors": {
     "generic": "Não foi possível concluir a ação.",
@@ -172,6 +183,8 @@
     "INSUFFICIENT_RESOURCES": "Recursos insuficientes.",
     "BUILD_QUEUE_FULL": "A fila de construção está cheia.",
     "CITY_BUSY": "Este edifício já está em melhoria.",
+    "BUILDING_MAX_LEVEL": "Esta edificação já está no nível máximo.",
+    "BUILDING_REQUIREMENTS_NOT_MET": "Esta melhoria ainda não está disponível.",
     "ALLIANCE_NAME_TAKEN": "Esse nome ou sigla já está em uso.",
     "ALREADY_IN_ALLIANCE": "Você já pertence a uma aliança.",
     "TOKEN_EXPIRED": "Sua sessão expirou.",

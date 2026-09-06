@@ -2,7 +2,7 @@ import React from 'react';
 import { View, type ViewProps } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from './Text';
-import { STORAGE_FULL_ICON } from './resourceIcons';
+import { RESOURCE_KEYS, STORAGE_FULL_ICON } from './resourceIcons';
 import { useTheme } from '@/theme';
 import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
@@ -29,6 +29,22 @@ export function formatResourceAmount(amount: number): string {
     return (amount / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
   }
   return Math.floor(amount).toString();
+}
+
+/**
+ * "Wood 120 · Stone 60". Zero-cost resources are omitted; an all-zero cost
+ * returns '' and the caller renders `building.no_cost` instead. Restores,
+ * verbatim in behaviour, the `formatCost` helper deleted with the pre-Phase-07
+ * card list — exported this time, since the upgrade sheet needs it now and a
+ * future screen (Phase 12's training queue) will too.
+ */
+export function formatResourceCost(
+  cost: Partial<Record<ResourceKey, number>>,
+  resourceLabel: (resource: ResourceKey) => string,
+): string {
+  return RESOURCE_KEYS.filter((resource) => (cost[resource] ?? 0) > 0)
+    .map((resource) => `${resourceLabel(resource)} ${formatResourceAmount(cost[resource] ?? 0)}`)
+    .join(' · ');
 }
 
 export function ResourceCounter({

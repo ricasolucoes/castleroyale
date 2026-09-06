@@ -62,7 +62,12 @@
     "slot_empty_hint": "Building options will open in a future update.",
     "slot_category": "Category: {category}",
     "slot_accessible_empty": "Empty plot",
-    "slot_accessible_occupied": "{building}, level {level}"
+    "slot_accessible_occupied": "{building}, level {level}",
+    "queue_title": "Construction queue",
+    "queue_slots": "{active} of {max} slots in use",
+    "queue_accessibility": "Construction queue: {active} of {max} slots in use",
+    "queue_slot_accessible": "{building}, under construction",
+    "queue_slot_free": "Queue slot available"
   },
   "world": {
     "title": "World",
@@ -164,7 +169,13 @@
     "max_level": "Max level",
     "cost": "Cost",
     "seconds": "seconds",
-    "no_cost": "No cost"
+    "no_cost": "No cost",
+    "cannot_afford": "Not enough resources",
+    "queue_full": "Queue full",
+    "upgrading": "Starting...",
+    "cost_accessible": "Cost: {cost}",
+    "duration_accessible": "Build time: {duration}",
+    "upgrade_accessible": "Upgrade {building}"
   },
   "errors": {
     "generic": "The action could not be completed.",
@@ -172,6 +183,8 @@
     "INSUFFICIENT_RESOURCES": "Not enough resources.",
     "BUILD_QUEUE_FULL": "The construction queue is full.",
     "CITY_BUSY": "This building is already being upgraded.",
+    "BUILDING_MAX_LEVEL": "This building is already at its maximum level.",
+    "BUILDING_REQUIREMENTS_NOT_MET": "This upgrade is not available yet.",
     "ALLIANCE_NAME_TAKEN": "That name or tag is already in use.",
     "ALREADY_IN_ALLIANCE": "You are already in an alliance.",
     "TOKEN_EXPIRED": "Your session has expired.",

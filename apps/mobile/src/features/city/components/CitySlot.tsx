@@ -3,6 +3,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { CitySlot as CitySlotData } from '@castleroyale/contracts';
 
 import { Badge } from '@/shared/components/Badge';
+import { buildingIcon } from '@/shared/components/buildingIcons';
 import { Text } from '@/shared/components/Text';
 import { Timer } from '@/shared/components/Timer';
 import { useTheme } from '@/theme';
@@ -72,7 +73,7 @@ export function CitySlot({
           }}
         >
           <MaterialCommunityIcons
-            name={building.category === 'core' ? 'castle' : 'sprout-outline'}
+            name={buildingIcon(building.code)}
             size={theme.spacing.xl}
             color={theme.color.text.secondary}
           />
