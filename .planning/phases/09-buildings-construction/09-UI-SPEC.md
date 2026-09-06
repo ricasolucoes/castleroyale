@@ -1,7 +1,7 @@
 ---
 phase: 09
 slug: buildings-construction
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-09-05
@@ -250,6 +250,7 @@ Add to `packages/localization/locales/*/mvp.json`, following the existing flat
 | `building.upgrading` | Starting... | Iniciando... | Iniciando... |
 | `building.cost_accessible` | Cost: {cost} | Custo: {cost} | Coste: {cost} |
 | `building.duration_accessible` | Build time: {duration} | Tempo de construção: {duration} | Tiempo de construcción: {duration} |
+| `building.upgrade_accessible` | Upgrade {building} | Melhorar {building} | Mejorar {building} |
 | `city.queue_title` | Construction queue | Fila de construção | Cola de construcción |
 | `city.queue_accessibility` | Construction queue: {active} of {max} slots in use | Fila de construção: {active} de {max} vagas em uso | Cola de construcción: {active} de {max} espacios en uso |
 | `city.queue_slot_accessible` | {building}, under construction | {building}, em construção | {building}, en construcción |
@@ -306,7 +307,7 @@ const affordable = shortfalls.length === 0;
 | 2 | `isThisBuildingBusy` | **Unchanged from Phase 07** — the existing Timer only, no button. Adding a disabled "Upgrading..." button here would duplicate a fact the Timer already states unambiguously and risks looking like a second, contradictory affordance |
 | 3 | `queueFull` | `Button variant="secondary" disabled title={t('building.queue_full')}` |
 | 4 | `!affordable` | `Button variant="secondary" disabled title={t('building.cannot_afford')}`, plus each short resource's cost chip (see B, below) gets a trailing 12pt `alert-circle-outline` glyph, `color={theme.color.text.secondary}` |
-| 5 | else | `Button variant="primary" title={t('building.upgrade')} onPress={() => upgrade.mutate(building.code)}` |
+| 5 | else | `Button variant="primary" title={t('building.upgrade')} accessibilityLabel={t('building.upgrade_accessible', { building: t(building.name_key) })} onPress={() => upgrade.mutate(building.code)}` — the visible label stays the single word (the heading above supplies the noun), but the accessibility label carries the building name so a screen-reader user landing directly on the button, without traversing the sheet linearly, still knows what is being upgraded |
 
 While the mutation is in flight (`upgrade.isPending`), state 5's button title
 switches to `t('building.upgrading')` and `disabled` becomes `true` — no spinner
@@ -539,11 +540,11 @@ introduced by this phase.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** APPROVED by gsd-ui-checker (2026-09-06) — 5 PASS, 1 FLAG (Dimension 1). The flag's recommendation is applied above: the primary CTA keeps its single-word visible label but gains `building.upgrade_accessible` interpolating the building name. All three data-contract claims and every named glyph were independently verified against live code.
