@@ -294,14 +294,14 @@ Plans:
   3. A completion job is idempotent: running it twice completes the upgrade once, verified by a test.
   4. Killing the queue worker mid-timer and running the reconciler completes every overdue upgrade exactly once.
   5. Exceeding the build queue slot limit returns BUILD_QUEUE_FULL and a max-level building returns BUILDING_MAX_LEVEL.
-**Plans**: 5 plans
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 09-01: Building catalogue import from game data
-- [ ] 09-02: Construction queue, cost debit and timer persistence
-- [ ] 09-03: Completion jobs, idempotency and the overdue reconciler
-- [ ] 09-04: Requirement and unlock evaluation
-- [ ] 09-05: Mobile building detail, upgrade flow and construction queue UI
+- [ ] 09-01-building-catalogue-balance-boundary-PLAN.md — The eighteen-building catalogue, the Palace gate as data, `game:import-data` validation and the architecture test keeping balance out of PHP (wave 1)
+- [ ] 09-02-construction-queue-contract-PLAN.md — `CityData.constructions[]` + `queue_limit`, one shared time-scaled `BuildDuration`, the documented 400 on the upgrade endpoint (wave 1)
+- [ ] 09-04-building-requirements-unlocks-PLAN.md — Generic requirement evaluation inside the lock; BUILDING_REQUIREMENTS_NOT_MET names what is missing (wave 2)
+- [ ] 09-05-mobile-upgrade-flow-queue-ui-PLAN.md — Eighteen building glyphs, the five-state upgrade CTA on the server snapshot, the construction queue strip (wave 2)
+- [ ] 09-03-completion-idempotency-reconciler-PLAN.md — Job idempotency, worker death + reconciler, BUILD_QUEUE_FULL / BUILDING_MAX_LEVEL and server-owned UTC timers (wave 3)
 
 ### Phase 10: Technology & Research
 **Goal**: A player researches technologies from an acyclic tree whose effects measurably modify their empire.
