@@ -49,6 +49,14 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 
+// Stub the upgrade mutation rather than wrapping this suite in a
+// QueryClientProvider — the same hook-stubbing pattern resource-bar.test.tsx
+// uses. What the mutation does is building-upgrade.test.tsx's subject; here it
+// only needs to not demand a query client.
+jest.mock('../src/features/city/api/useUpgradeBuilding', () => ({
+  useUpgradeBuilding: () => ({ mutate: jest.fn(), isPending: false, error: null }),
+}));
+
 // `@expo/vector-icons` pulls in `expo-font` -> `expo-asset`, which is not
 // resolvable from Jest's plain Node resolution in this workspace (a pre-existing
 // hoisting gap, not something this plan's code introduces). Mock it the same
@@ -173,9 +181,9 @@ describe('CityScene', () => {
     expect(getByText('city.slot_empty')).toBeTruthy();
   });
 
-  it('opens the sheet with building details and no upgrade CTA when an occupied plot is pressed', () => {
+  it('opens the sheet with building details and the upgrade CTA when an occupied plot is pressed', () => {
     const city = buildCity();
-    const { getByLabelText, getAllByRole, getByText, queryByText } = render(
+    const { getByLabelText, getAllByRole, getByText } = render(
       <CityScene city={city} isRefreshing={false} onRefresh={jest.fn()} />,
     );
 
@@ -189,7 +197,57 @@ describe('CityScene', () => {
 
     expect(useCitySelectionStore.getState().selectedSlot).toBe('plot_01');
     expect(getByText('building.level {"level":1}')).toBeTruthy();
-    expect(queryByText('building.upgrade')).toBeNull();
+    // Phase 07 removed this CTA client-side and promised Phase 09 would restore
+    // it. This assertion is that promise, reversed.
+    expect(getByText('building.upgrade')).toBeTruthy();
+  });
+
+  it('renders one queue pip per configured slot', () => {
+    const city = buildCity();
+    const { getByLabelText, getAllByRole } = render(
+      <CityScene city={city} isRefreshing={false} onRefresh={jest.fn()} />,
+    );
+
+    const sceneFrame = getByLabelText('city.scene_accessibility');
+    fireEvent(sceneFrame, 'layout', {
+      nativeEvent: { layout: { width: 390, height: 600, x: 0, y: 0 } },
+    });
+
+    expect(getByLabelText('city.queue_accessibility {"active":0,"max":4}')).toBeTruthy();
+    // Empty pips are Views, not buttons — the strip adds no accessibility nodes
+    // to an idle queue, so the one-button-per-plot count is unaffected.
+    expect(getAllByRole('button')).toHaveLength(18);
+  });
+
+  it('jumps to the building a filled queue pip stands for', () => {
+    const now = Date.now();
+    const city = buildCity();
+    city.server_time = new Date(now).toISOString();
+    city.constructions = [
+      {
+        id: 'order-1',
+        building_code: 'farm',
+        target_level: 2,
+        started_at: new Date(now - 10_000).toISOString(),
+        finishes_at: new Date(now + 10_000).toISOString(),
+      },
+    ] as unknown as CityData['constructions'];
+
+    const { getByLabelText } = render(
+      <CityScene city={city} isRefreshing={false} onRefresh={jest.fn()} />,
+    );
+
+    const sceneFrame = getByLabelText('city.scene_accessibility');
+    fireEvent(sceneFrame, 'layout', {
+      nativeEvent: { layout: { width: 390, height: 600, x: 0, y: 0 } },
+    });
+
+    expect(getByLabelText('city.queue_accessibility {"active":1,"max":4}')).toBeTruthy();
+
+    fireEvent.press(getByLabelText('city.queue_slot_accessible {"building":"buildings.farm"}'));
+
+    // plot_02 is the farm in buildCity()'s roster.
+    expect(useCitySelectionStore.getState().selectedSlot).toBe('plot_02');
   });
 
   it('ticks a timer on every plot with an open order, not just the soonest', () => {
