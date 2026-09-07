@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 06: World Map Rendering** - Skia map canvas, pan/zoom, culling, LOD, tile cache, markers (completed 2026-09-03)
 - [x] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel (completed 2026-09-05)
 - [x] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency (completed 2026-09-06)
-- [ ] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation
+- [x] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation (completed 2026-09-07)
 - [ ] **Phase 10: Technology & Research** - Research tree with explicit dependencies, effects and a cycle validator
 - [ ] **Phase 11: Unit System** - Unit catalogue, stats, counter matrix, power contribution
 - [ ] **Phase 12: Training System** - Barracks queues, batch training, upkeep, cancellation and refunds
@@ -294,7 +294,7 @@ Plans:
   3. A completion job is idempotent: running it twice completes the upgrade once, verified by a test.
   4. Killing the queue worker mid-timer and running the reconciler completes every overdue upgrade exactly once.
   5. Exceeding the build queue slot limit returns BUILD_QUEUE_FULL and a max-level building returns BUILDING_MAX_LEVEL.
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans complete
 
 Plans:
 - [x] 09-01-building-catalogue-balance-boundary-PLAN.md — The eighteen-building catalogue, the Palace gate as data, `game:import-data` validation and the architecture test keeping balance out of PHP (wave 1) (completed 2026-09-06)
@@ -1190,7 +1190,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 06. World Map Rendering | 5/5 | Complete    | 2026-09-03 |
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
 | 08. Resources & Economy | 5/5 | Complete    | 2026-09-06 |
-| 09. Buildings & Construction | 4/5 | In Progress|  |
+| 09. Buildings & Construction | 5/5 | Complete   | 2026-09-07 |
 | 10. Technology & Research | 0/4 | Not started | - |
 | 11. Unit System | 0/4 | Not started | - |
 | 12. Training System | 0/4 | Not started | - |
