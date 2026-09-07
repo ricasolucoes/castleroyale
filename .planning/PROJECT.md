@@ -122,8 +122,37 @@ that assumption rather than patched for it later.
 
 ## Current Understanding
 
-Phases 00 through 08 are done and committed (including the inserted Phase 02.1).
-Phase 09 — Buildings & Construction — is the next executable phase.
+Phases 00 through 09 are done and committed (including the inserted Phase 02.1).
+Phase 10 — Technology & Research — is the next executable phase.
+
+Phase 09 (2026-09-07) made construction real. All five ROADMAP criteria verified
+independently: the eighteen planned buildings load from versioned game data with the
+Palace gate expressed as a `requirements[]` row rather than PHP, and a new architecture
+test forbids any cost, duration, effect table or building-code literal inside
+`modules/Construction`; starting an upgrade debits atomically and stamps `started_at` /
+`finishes_at` from the injected Clock in UTC, with a test proving a request body carrying
+its own timestamps, duration, cost and target level changes nothing; the completion job
+run twice completes once; and killing the queue worker mid-timer leaves the reconciler to
+finish every overdue order exactly once — a second pass and the resurrected job both
+change nothing, with exactly one `CityStateChanged` across the whole sequence.
+`BUILD_QUEUE_FULL` and `BUILDING_MAX_LEVEL` both return 400, and the queue ceiling is read
+from config rather than hardcoded. Requirement evaluation runs inside the same lock that
+spends the cost, so a prerequisite cannot be raced.
+
+Phase 09 also corrected a false confidence in its own plan. The prescribed falsification —
+remove the `whereNull('completed_at')` guard from `ConstructionCompletionService` and watch
+the job test fail — does not fail, because `CompleteConstruction` short-circuits on its own
+guard first. The service guard that the *reconciler* depends on was therefore unproven. A
+fifth test calling the service directly was added; it does fail without the guard (two
+`CityStateChanged` events instead of one), and the verifier reproduced that split
+independently. The lesson is recorded: a falsification must target the specific guard, not
+merely a guard.
+
+The mobile client regained the upgrade CTA Phase 07 deliberately removed, now in five
+mutually exclusive server-decided states, above a construction queue strip that shows
+occupancy and jumps to whatever is building. Affordability is computed from
+`resources.current` alone — never the interpolated resource bar, which ticks between polls
+and would offer a button the server is about to refuse.
 
 Phase 08 (2026-09-06) made the economy trustworthy. All five ROADMAP criteria verified:
 production is still computed from elapsed server time on read (a city closed six hours and
@@ -148,11 +177,18 @@ touch floor, the private `city.{id}` channel is proven on one allow and three de
 and CITY_NOT_OWNED returns 400 — never 404 — leaking nothing. REQ-01 is materially
 advanced but still spans later phases, so it stays Active.
 
-One item from Phase 07 is outstanding and needs a human: the four generated city-scene art
-assets. `tools/generate-city-assets.py` is written and ready, but the Gemini "Jogos" GCP
-project (436393374436) has a hard image-generation quota of 0 — a billing gate, not a rate
-limit. The scene ships on `bg.sunken` with interim vector glyphs until billing is enabled
-and that script is run (UI-SPEC Flagged Assumption 3).
+One item from Phase 07 is still outstanding and needs a human: the four generated
+city-scene art assets. `tools/generate-city-assets.py` is written and ready, but the Gemini
+"Jogos" GCP project (436393374436) has a hard image-generation quota of 0 — a billing gate,
+not a rate limit — and the OpenAI fallback is out of credit. The scene ships on `bg.sunken`
+with interim vector glyphs until billing is enabled and that script is run (UI-SPEC Flagged
+Assumption 3). Phase 09's eighteen building glyphs ship the same way, which 09-CONTEXT.md
+had already scoped: building *visuals* belong to Phase 44 (Visual Polish), not here.
+
+(On 2026-09-06 four concept images — castle, village house, legendary sword, royal soldier —
+were generated outside this pipeline and left untracked in `assets/`, each with a provenance
+`.prompt.md`. They are marketing-scale concept art, not the chroma-keyed game-ready sprites
+the asset rules describe, and they are not wired into the client.)
 
 Phase 02 (2026-08-26) implemented the design system and mobile shell, validating REQ-08 (touch targets, tokens, premium UI) and REQ-13 (localization pt-BR, en, es). The mobile app now contains core components (built on the local `@castleroyale/tooling/design-tokens`; `@shopify/restyle` was removed in Phase 02 to avoid a second styling vocabulary), an Expo Router tab shell, light/dark mode support, and an automated touch-target testing suite.
 
@@ -172,4 +208,4 @@ pre-written CONTEXT.md locking its implementation decisions. Executing agents ar
 to read and follow, not to re-plan. A genuine limitation discovered mid-flight is recorded
 as an ADR or a DECISIONS entry — it is not silently designed around.
 
-Last updated: 2026-09-06
+Last updated: 2026-09-07
