@@ -1,7 +1,7 @@
 ---
 phase: 10
 slug: technology-research
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-09-07
@@ -176,6 +176,24 @@ user can use better than the alternative below, and it reopens exactly the
 "alignment on a 390pt-wide viewport" problem addressed below by leaning on it
 instead of avoiding it.
 
+### Primary visual anchor
+
+**What the eye lands on first: the in-progress node, when one exists.** It is the
+only card on the screen carrying a moving element (the 1 Hz progress bar) and the
+only one tinted `accent.bronze`, and motion plus the reserved action colour beat
+everything static around it. That is the correct focal point because it answers the
+question a returning player actually has — *is something cooking, and how long?* —
+before they decide anything else.
+
+**When no research is running, the anchor is the category jump strip**, which sits
+sticky at the top and is the widest continuous horizontal element on screen. That is
+also correct: with nothing in flight, the player's question becomes *what can I
+start?*, and the strip is the fastest route to the category they care about.
+
+Nothing else competes for that role. The screen header is deliberately `heading`
+rather than `display` (see Typography) partly so it does not — a 32px title would
+pull the eye to a word the player already knows, having just tapped to get here.
+
 **Chosen: category sections stacked vertically, each containing horizontally-
 scrolling tier lanes — the "Netflix-row" pattern, not a graph.**
 
@@ -244,6 +262,14 @@ scrolling tier lanes — the "Netflix-row" pattern, not a graph.**
    piece of this (highlighting *which* chip is currently in view while scrolling)
    that is genuinely optional polish.
 
+   **Each chip is a 44×44pt minimum touch target**, met by an explicit
+   `minHeight: theme.minTouchTarget` plus `hitSlop` where the visual chip is
+   shorter. `sm` (8pt) horizontal padding sizes the chip visually and is not a
+   touch guarantee. This is stated because `__tests__/touch-targets.test.tsx`
+   exercises `Button` and `BottomSheet` directly — it will NOT catch an
+   undersized bespoke `Pressable` built for this screen, so the obligation has to
+   live in the contract instead of relying on the existing test to find it.
+
 ---
 
 ## Spacing Scale
@@ -279,13 +305,21 @@ Inherited verbatim from `docs/design-system/tokens.md` (locked Phase 02):
 
 | Role | Size | Weight | Line Height | Use in this deliverable |
 |------|------|--------|-------------|--------------------------|
-| `display` | 32px | 700 | 40px | Screen header ("Research") — same role `CityScene` uses for the city name and `military.tsx` uses for its screen title |
-| `heading` | 18px | 600 | 24px | Category section header, detail sheet's technology name |
-| `label` | 14px | 500 | 20px | Node card name, category jump-chip label, CTA button text (via `Button`, unchanged) |
+| `heading` | 18px | 600 | 24px | Screen header ("Research"), category section header, detail sheet's technology name |
 | `numeric` | 16px | 600 | 20px (tabular) | Cost-chip amounts, static duration preview, in-progress node's live remaining-time text — reuses `Timer`/`formatDuration`, identical tabular figures |
+| `label` | 14px | 500 | 20px | Node card name, category jump-chip label, CTA button text (via `Button`, unchanged) |
 | `caption` | 12px | 400 | 16px | Node card's "→ prerequisite" hint, level pip text, requires-chip text in the sheet |
 
-No new typography role is introduced.
+No new typography role is introduced, and this screen declares **four** sizes.
+
+**Why the screen header is `heading` and not `display`.** `military.tsx` titles
+itself with `display` (32px), and copying that would have made five sizes on one
+screen. Phase 07 hit the same fork for the city screen and narrowed to four; this
+follows that precedent rather than re-litigating it. `heading` is additionally the
+better fit here: this screen's job is dense comparison across many small nodes, and
+a 32px title spends vertical space that the first tier lane needs more. It also
+matches the detail sheet's own `heading` treatment of a technology name, so the
+same role reads as "names a thing" in both surfaces.
 
 ---
 
@@ -301,7 +335,7 @@ does **not** reopen `accent.gold`'s narrow reservation from Phase 07/09.
 | Dominant (60%) | `bg.base` | Screen background (matches every other screen) |
 | Secondary (30%) | `surface.raised` / `bg.sunken` + `border.subtle` dashed | Node card fill for available/in-progress/completed states (`surface.raised`, solid `border.strong`); locked node card fill (`bg.sunken`, dashed `border.subtle`) — **the identical visual grammar `CitySlot` gives an empty plot and `ConstructionQueueStrip` gives an empty pip**, reused deliberately: "not yet actionable" is one visual rule in this app, not three |
 | Accent (10%) | `accent.bronze` | **Two uses, both direct extensions of the rule Phase 09 established ("primary action / active work in progress"), not a new meaning:** (1) the enabled "Research" button; (2) the in-progress node's corner badge fill and bottom progress bar |
-| Confirmation | `success` | The completed/max-level node's corner badge fill only. This is the **first** use of `success` in a building/technology context in this project (previously only `military.tsx`'s "server sync" badge used it) — it is a direct, unforced fit for tokens.md's own canonical definition, "Confirmation, victory," applied to a technology that is now permanently, successfully done |
+| Confirmation | `success` | The completed/max-level node's corner badge fill only. This is the **first** use of `success` in a building/technology context in this project (it is already used elsewhere for status badges — `military.tsx`'s "server sync" and `profile.tsx`'s "active" — but never yet to mark a piece of player progression as permanently done) — it is a direct, unforced fit for tokens.md's own canonical definition, "Confirmation, victory," applied to a technology that is now permanently, successfully done |
 | **Explicitly not used** | `accent.gold` | Deliberately excluded. Phase 09 reserved gold *only* for the empty-build-slot "buildable" glyph; extending it here to mean "available technology" would blur that narrow reservation the same way reusing it for an empty queue pip would have (09-UI-SPEC's own reasoning, applied again here) |
 | Insufficient / blocked state | `text.secondary` | "Locked" and "Not enough resources" and "Research in progress" disabled-button labels, the requires-caption text, the lock badge's glyph and ring. **Never `danger`** — same rule Phase 09 already proved: a normal, temporary, resolvable-by-playing-more gate is not an error |
 | Destructive | `danger` | **Not used.** Starting research is not classified as destructive in this project's taxonomy — see Copywriting Contract → Destructive confirmation |
@@ -442,8 +476,9 @@ same as `military.tsx` and `gallery.tsx` already do with `useSafeAreaInsets()`.
 - Back control: icon-only `Pressable`, glyph `arrow-left` (verified), 44×44pt hit
   area via `hitSlop`, `accessibilityLabel={t('technology.back_accessible')}`,
   `onPress={() => router.back()}`.
-- Header title: `Text variant="display"` = `t('technology.tree_title')`, matching
-  `military.tsx`'s own `variant="display"` screen-title treatment.
+- Header title: `Text variant="heading"` = `t('technology.tree_title')`. Deliberately
+  NOT `display` — see Typography above; `military.tsx` uses `display` for its title
+  but matching it would put five font sizes on this screen.
 - Loading state: `Skeleton` blocks, same shape/count convention `military.tsx`
   already uses for its own `isPending` branch.
 - Fetch-error state: reuses `errors.generic` / `errors.network` + a `common.retry`
@@ -464,11 +499,22 @@ Fixed 96×120pt (see Spacing Scale), `radius.md`, one `Pressable` per node,
 | **In-progress** | `active_research?.technology_code === tech.code` | solid, `border.strong`, fill `surface.raised` | `progress-clock`, fill `accent.bronze`, glyph `text.inverse` | 4pt progress bar, track `border.subtle`, fill `accent.bronze` — identical mechanism to `ConstructionQueueStrip`'s pip, same 1Hz recompute cadence, same "plain update, no animated roll" policy |
 | **Completed** | `tech.level >= tech.max_level` | solid, `border.strong`, fill `surface.raised` | `check-circle`, fill `success`, glyph `text.inverse` | none |
 
-Every state pair differs in **at least two independent shape channels** (border
-style, badge shape/presence, progress-bar presence) — none rely on the corner
-badge's fill color alone, and the category icon itself never changes tint or
-opacity across states, so a colourblind or greyscale rendering still disambiguates
-all four.
+Every state pair differs in **at least one shape channel** (border style, badge
+shape/presence, progress-bar presence), and most differ in two. The one pair that
+differs in a single channel is **Available vs Completed**: both use a solid
+`border.strong` and neither shows a progress bar, so the only distinction is the
+corner badge — absent when available, a filled `check-circle` when completed.
+
+That is still a *shape* distinction, not a colour one, which is what the
+colourblind-safety rule requires: in a greyscale or bright-sunlight rendering the
+badge is present or it is not, and presence reads at a glance. It is called out
+here rather than smoothed over because a later phase adding a badge to the
+available state would silently collapse the only channel separating these two —
+if that happens, the available state must gain a distinct border treatment in the
+same change.
+
+The category icon itself never changes tint or opacity across states, so no state
+is identified by colour at all.
 
 **Why only four states, not six:** the roadmap criterion names exactly four —
 locked, available, in-progress, completed. "Researchable but another research is
