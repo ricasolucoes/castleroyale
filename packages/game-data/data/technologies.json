@@ -1,0 +1,485 @@
+[
+  {
+    "code": "agriculture",
+    "name_key": "technologies.agriculture",
+    "description_key": "technologies.agriculture_desc",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 80, "stone": 50 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 150, "wood": 180, "stone": 120 },
+        "research_time_seconds": 50,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 300, "wood": 350, "stone": 250 },
+        "research_time_seconds": 90,
+        "requirements": [],
+        "effects": [{ "target": "production.food", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "mining",
+    "name_key": "technologies.mining",
+    "description_key": "technologies.mining_desc",
+    "category": "economy",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 60, "stone": 90 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "production.iron", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 100, "wood": 150, "stone": 150 },
+        "research_time_seconds": 55,
+        "requirements": [],
+        "effects": [{ "target": "production.iron", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 220, "wood": 300, "stone": 300 },
+        "research_time_seconds": 95,
+        "requirements": [],
+        "effects": [{ "target": "production.iron", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "weaponsmithing",
+    "name_key": "technologies.weaponsmithing",
+    "description_key": "technologies.weaponsmithing_desc",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 60, "iron": 90 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 100, "wood": 150, "iron": 150 },
+        "research_time_seconds": 55,
+        "requirements": [],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 220, "wood": 300, "iron": 300 },
+        "research_time_seconds": 95,
+        "requirements": [],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "tactics",
+    "name_key": "technologies.tactics",
+    "description_key": "technologies.tactics_desc",
+    "category": "military",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "wood": 180, "iron": 150 },
+        "research_time_seconds": 45,
+        "requirements": [{ "type": "technology", "code": "weaponsmithing", "level": 1 }],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "wood": 320, "iron": 280, "gold": 30 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 500, "iron": 450, "gold": 70 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "unit.attack", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "ironworking",
+    "name_key": "technologies.ironworking",
+    "description_key": "technologies.ironworking_desc",
+    "category": "defense",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 60, "stone": 90 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 100, "wood": 140, "stone": 160 },
+        "research_time_seconds": 55,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 220, "wood": 280, "stone": 320 },
+        "research_time_seconds": 95,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "fortress_doctrine",
+    "name_key": "technologies.fortress_doctrine",
+    "description_key": "technologies.fortress_doctrine_desc",
+    "category": "defense",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "stone": 200, "iron": 80 },
+        "research_time_seconds": 45,
+        "requirements": [{ "type": "technology", "code": "ironworking", "level": 1 }],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "stone": 350, "iron": 150 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "stone": 550, "iron": 280, "gold": 40 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "logistics_core",
+    "name_key": "technologies.logistics_core",
+    "description_key": "technologies.logistics_core_desc",
+    "category": "logistics",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "wood": 150, "stone": 100 },
+        "research_time_seconds": 45,
+        "requirements": [
+          { "type": "technology", "code": "agriculture", "level": 2 },
+          { "type": "technology", "code": "masonry", "level": 1 }
+        ],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "wood": 280, "stone": 200, "iron": 50 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1150 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 450, "stone": 350, "iron": 100 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1200 }]
+      }
+    ]
+  },
+  {
+    "code": "supply_lines",
+    "name_key": "technologies.supply_lines",
+    "description_key": "technologies.supply_lines_desc",
+    "category": "logistics",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 300, "wood": 300, "stone": 250, "iron": 80 },
+        "research_time_seconds": 80,
+        "requirements": [{ "type": "technology", "code": "logistics_core", "level": 2 }],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 500, "wood": 500, "stone": 450, "iron": 150 },
+        "research_time_seconds": 120,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 750, "wood": 750, "stone": 700, "iron": 250, "gold": 50 },
+        "research_time_seconds": 170,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "masonry",
+    "name_key": "technologies.masonry",
+    "description_key": "technologies.masonry_desc",
+    "category": "construction",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 70, "stone": 60 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 120, "wood": 160, "stone": 180 },
+        "research_time_seconds": 50,
+        "requirements": [],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 260, "wood": 340, "stone": 380 },
+        "research_time_seconds": 90,
+        "requirements": [],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "engineering",
+    "name_key": "technologies.engineering",
+    "description_key": "technologies.engineering_desc",
+    "category": "construction",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "wood": 200, "stone": 150 },
+        "research_time_seconds": 45,
+        "requirements": [{ "type": "technology", "code": "masonry", "level": 1 }],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "wood": 380, "stone": 300 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 600, "stone": 500, "iron": 80 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "build.speed", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "cartography",
+    "name_key": "technologies.cartography",
+    "description_key": "technologies.cartography_desc",
+    "category": "exploration",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 60, "wood": 90 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 150, "wood": 130, "stone": 100 },
+        "research_time_seconds": 55,
+        "requirements": [],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 300, "wood": 260, "stone": 220 },
+        "research_time_seconds": 95,
+        "requirements": [],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "pathfinding",
+    "name_key": "technologies.pathfinding",
+    "description_key": "technologies.pathfinding_desc",
+    "category": "exploration",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "wood": 180, "stone": 100 },
+        "research_time_seconds": 45,
+        "requirements": [{ "type": "technology", "code": "cartography", "level": 1 }],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "wood": 320, "stone": 200, "iron": 40 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 500, "stone": 350, "iron": 80 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "scout.range", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "diplomatic_relations",
+    "name_key": "technologies.diplomatic_relations",
+    "description_key": "technologies.diplomatic_relations_desc",
+    "category": "alliance",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 60, "gold": 20 },
+        "research_time_seconds": 30,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 150, "wood": 100, "gold": 40 },
+        "research_time_seconds": 55,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 300, "wood": 220, "gold": 80 },
+        "research_time_seconds": 95,
+        "requirements": [],
+        "effects": [{ "target": "unit.defense", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "trade_agreements",
+    "name_key": "technologies.trade_agreements",
+    "description_key": "technologies.trade_agreements_desc",
+    "category": "alliance",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "food": 150, "wood": 150, "gold": 30 },
+        "research_time_seconds": 45,
+        "requirements": [{ "type": "technology", "code": "diplomatic_relations", "level": 1 }],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "food": 280, "wood": 280, "gold": 60 },
+        "research_time_seconds": 70,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "food": 450, "wood": 450, "gold": 100 },
+        "research_time_seconds": 110,
+        "requirements": [],
+        "effects": [{ "target": "march.speed", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  },
+  {
+    "code": "siege_engineering",
+    "name_key": "technologies.siege_engineering",
+    "description_key": "technologies.siege_engineering_desc",
+    "category": "siege",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 300, "stone": 250, "iron": 150 },
+        "research_time_seconds": 90,
+        "requirements": [{ "type": "technology", "code": "masonry", "level": 3 }],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 2,
+        "cost": { "wood": 500, "stone": 450, "iron": 300 },
+        "research_time_seconds": 130,
+        "requirements": [],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1200 }]
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 750, "stone": 700, "iron": 500, "gold": 80 },
+        "research_time_seconds": 180,
+        "requirements": [],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1300 }]
+      }
+    ]
+  },
+  {
+    "code": "fortification_breaking",
+    "name_key": "technologies.fortification_breaking",
+    "description_key": "technologies.fortification_breaking_desc",
+    "category": "siege",
+    "max_level": 3,
+    "levels": [
+      {
+        "level": 1,
+        "cost": { "wood": 350, "stone": 300, "iron": 200 },
+        "research_time_seconds": 100,
+        "requirements": [{ "type": "technology", "code": "siege_engineering", "level": 1 }],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1050 }]
+      },
+      {
+        "level": 2,
+        "cost": { "wood": 550, "stone": 500, "iron": 350, "gold": 40 },
+        "research_time_seconds": 140,
+        "requirements": [],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1100 }]
+      },
+      {
+        "level": 3,
+        "cost": { "wood": 800, "stone": 750, "iron": 550, "gold": 100 },
+        "research_time_seconds": 190,
+        "requirements": [],
+        "effects": [{ "target": "siege.damage", "operation": "multiply", "value": 1150 }]
+      }
+    ]
+  }
+]
