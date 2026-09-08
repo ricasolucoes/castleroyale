@@ -33,6 +33,13 @@ export type WorldViewport = components['schemas']['WorldViewport'];
 export type WorldTile = components['schemas']['WorldTile'];
 export type MilitaryData = components['schemas']['MilitaryData'];
 export type AllianceData = components['schemas']['AllianceData'];
+export type Technology = components['schemas']['Technology'];
+export type TechnologyLevel = components['schemas']['TechnologyLevel'];
+export type TechnologyEffect = components['schemas']['TechnologyEffect'];
+export type TechnologyPrerequisite = components['schemas']['TechnologyPrerequisite'];
+export type ActiveResearch = components['schemas']['ActiveResearch'];
+export type ResearchOrder = components['schemas']['ResearchOrder'];
+export type TechnologyTreeData = components['schemas']['TechnologyTreeData'];
 
 /** The success envelope. Every endpoint returns this or an {@link ErrorResponse}. */
 export type ApiSuccess<TData, TMeta = Record<string, unknown>> = {
