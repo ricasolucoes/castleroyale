@@ -314,7 +314,7 @@ Plans:
   3. Only one research runs at a time per player; a second returns RESEARCH_IN_PROGRESS.
   4. A completed technology's effect is observable in a recomputed value, for example production rate rising by the documented amount.
   5. The technology tree screen renders dependencies and shows locked, available, in-progress and completed states distinctly.
-**Plans**: 5/5 plans complete
+**Plans**: 6 plans (5 complete, 1 gap closure pending)
 
 Plans:
 - [x] 10-01-technology-catalogue-effects-model-PLAN.md — The eighteen-plus technology tree as versioned game data, its schema, its translations and the catalogue read path (wave 1) (completed 2026-09-08)
@@ -322,6 +322,7 @@ Plans:
 - [x] 10-03-research-queue-effects-PLAN.md — Persistence, the shared add-then-multiply permille EffectResolver, the TechnologyGraph tier computation, and the completion service (wave 2) (completed 2026-09-08)
 - [x] 10-05-research-command-reconciler-PLAN.md — The research command and its three refusals, the tree endpoint, the reconciler, and the effect proven observable in a recomputed rate (wave 3) (completed 2026-09-08)
 - [x] 10-04-mobile-technology-tree-PLAN.md — The tree screen, the four node states, the six-way CTA and the Academy entry point (wave 4) (completed 2026-09-08)
+- [ ] 10-06-observable-effect-gap-closure-PLAN.md — Gap closure: the flat production bonus that survives intdiv truncation, proven on the real starter city through ratesPerHour() and GET /game/city (wave 5)
 
 ### Phase 11: Unit System
 **Goal**: A complete, data-driven unit roster with stats and a counter system richer than rock-paper-scissors.
