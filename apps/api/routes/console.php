@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Game\Construction\Application\ConstructionReconciler;
+use Game\Technology\Application\ResearchReconciler;
 use Illuminate\Support\Facades\Schedule;
 
 /*
@@ -40,4 +41,9 @@ Schedule::command('sanctum:prune-expired --hours=24')
 Schedule::call(static fn (): int => app(ConstructionReconciler::class)->run())
     ->everyMinute()
     ->name('construction-reconcile')
+    ->withoutOverlapping();
+
+Schedule::call(static fn (): int => app(ResearchReconciler::class)->run())
+    ->everyMinute()
+    ->name('research-reconcile')
     ->withoutOverlapping();
