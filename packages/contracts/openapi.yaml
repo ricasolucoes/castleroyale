@@ -620,6 +620,67 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+
+  /game/technologies:
+    get:
+      tags: [Game]
+      summary: Read the technology tree with server-computed state
+      operationId: gameTechnologies
+      responses:
+        '200':
+          description: The technology tree
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TechnologyTreeData'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /game/technologies/{code}/research:
+    post:
+      tags: [Game]
+      summary: Start a server-computed research
+      operationId: gameStartResearch
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Research started
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    required: [research]
+                    properties:
+                      research:
+                        $ref: '#/components/schemas/ResearchOrder'
+        '400':
+          description: >-
+            The research cannot be started: TECHNOLOGY_MAX_LEVEL,
+            TECHNOLOGY_LOCKED, RESEARCH_IN_PROGRESS or INSUFFICIENT_RESOURCES.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
 components:
   headers:
     XRequestId:
@@ -850,6 +911,144 @@ components:
           type: string
           format: date-time
         finishes_at:
+          type: string
+          format: date-time
+
+    TechnologyPrerequisite:
+      type: object
+      required: [code, level]
+      properties:
+        code:
+          type: string
+        level:
+          type: integer
+          minimum: 1
+
+    TechnologyEffect:
+      type: object
+      required: [target, operation, value]
+      properties:
+        target:
+          type: string
+        operation:
+          type: string
+          enum: [add, multiply]
+        value:
+          type: integer
+
+    TechnologyLevel:
+      type: object
+      required: [cost, research_time_seconds, effects]
+      properties:
+        cost:
+          $ref: '#/components/schemas/ResourceBundle'
+        research_time_seconds:
+          type: integer
+          minimum: 0
+        effects:
+          type: array
+          items:
+            $ref: '#/components/schemas/TechnologyEffect'
+
+    Technology:
+      type: object
+      required:
+        - code
+        - name_key
+        - description_key
+        - category
+        - tier
+        - prerequisites
+        - level
+        - max_level
+        - state
+        - next_level
+      properties:
+        code:
+          type: string
+        name_key:
+          type: string
+        description_key:
+          type: string
+        category:
+          type: string
+        tier:
+          type: integer
+          minimum: 0
+          description: >-
+            Topological depth from Game\Technology\Domain\TechnologyGraph — the
+            approved layout groups lanes by this field.
+        prerequisites:
+          type: array
+          description: >-
+            The technology's own technology-type unlock requirements. Always
+            present, even at max level — never nested only inside `next_level`,
+            which is null once a technology is maxed.
+          items:
+            $ref: '#/components/schemas/TechnologyPrerequisite'
+        level:
+          type: integer
+          minimum: 0
+        max_level:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum: [locked, available, in_progress, completed]
+          description: Computed server-side. The client renders it and never re-derives it.
+        next_level:
+          description: 'null only at max level.'
+          oneOf:
+            - $ref: '#/components/schemas/TechnologyLevel'
+            - type: 'null'
+
+    ActiveResearch:
+      type: object
+      required: [technology_code, target_level, started_at, finishes_at]
+      properties:
+        technology_code:
+          type: string
+        target_level:
+          type: integer
+        started_at:
+          type: string
+          format: date-time
+        finishes_at:
+          type: string
+          format: date-time
+
+    ResearchOrder:
+      type: object
+      required: [id, technology_code, from_level, target_level, started_at, finishes_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/Ulid'
+        technology_code:
+          type: string
+        from_level:
+          type: integer
+        target_level:
+          type: integer
+        started_at:
+          type: string
+          format: date-time
+        finishes_at:
+          type: string
+          format: date-time
+
+    TechnologyTreeData:
+      type: object
+      required: [technologies, research, server_time]
+      properties:
+        technologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Technology'
+        research:
+          oneOf:
+            - $ref: '#/components/schemas/ActiveResearch'
+            - type: 'null'
+        server_time:
           type: string
           format: date-time
 

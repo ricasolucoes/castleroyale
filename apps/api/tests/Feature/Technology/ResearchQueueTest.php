@@ -219,3 +219,37 @@ it('ignores a client-supplied cost, duration and target level', function (): voi
     expect($before->wood - $after->wood)->toBe(80)
         ->and($before->stone - $after->stone)->toBe(50);
 });
+
+it('serves the tree with tier, prerequisites and a server-computed state', function (): void {
+    freezeClock('2026-09-08T13:00:00+00:00');
+
+    $ctx = enterCityForResearchQueue('research-tree');
+    // Fixture-set, bypassing the real gate, purely to exercise a completed
+    // technology's response shape — the real gate that would normally prevent
+    // this is the very thing the tests above prove.
+    setPlayerTechnologyLevel($ctx['worldId'], $ctx['playerId'], 'fortress_doctrine', 3);
+
+    $response = test()->withToken($ctx['token'])->getJson('/api/v1/game/technologies');
+    $response->assertOk();
+
+    $technologies = collect($response->json('data.technologies'));
+
+    $agriculture = $technologies->firstWhere('code', 'agriculture');
+    expect($agriculture['tier'])->toBe(0)
+        ->and($agriculture['state'])->toBe('available')
+        ->and($agriculture['prerequisites'])->toBe([]);
+
+    // tactics requires weaponsmithing level 1, never researched — locked, and
+    // one tier above its unresearched prerequisite.
+    $tactics = $technologies->firstWhere('code', 'tactics');
+    expect($tactics['tier'])->toBeGreaterThanOrEqual(1)
+        ->and($tactics['state'])->toBe('locked')
+        ->and($tactics['prerequisites'])->toBe([['code' => 'weaponsmithing', 'level' => 1]]);
+
+    // fortress_doctrine is maxed via the fixture above: next_level is null,
+    // but its own prerequisite must still be present, not dropped.
+    $fortressDoctrine = $technologies->firstWhere('code', 'fortress_doctrine');
+    expect($fortressDoctrine['state'])->toBe('completed')
+        ->and($fortressDoctrine['next_level'])->toBeNull()
+        ->and($fortressDoctrine['prerequisites'])->toBe([['code' => 'ironworking', 'level' => 1]]);
+});
