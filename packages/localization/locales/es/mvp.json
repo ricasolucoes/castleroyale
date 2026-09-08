@@ -67,7 +67,8 @@
     "queue_slots": "{active} de {max} espacios en uso",
     "queue_accessibility": "Cola de construcción: {active} de {max} espacios en uso",
     "queue_slot_accessible": "{building}, en construcción",
-    "queue_slot_free": "Espacio de cola disponible"
+    "queue_slot_free": "Espacio de cola disponible",
+    "open_research": "Abrir Investigación"
   },
   "world": {
     "title": "Mundo",
@@ -214,6 +215,41 @@
     "fortification_breaking": "Ruptura de Fortificaciones",
     "fortification_breaking_desc": "Aumenta aún más el daño de asedio."
   },
+  "technology": {
+    "research": "Investigar",
+    "researching": "Iniciando...",
+    "max_level": "Nivel máximo",
+    "locked": "Bloqueado",
+    "busy": "Investigación en curso",
+    "cannot_afford": "Recursos insuficientes",
+    "no_cost": "Sin coste",
+    "requires": "Requiere: {names}",
+    "cost_accessible": "Coste: {cost}",
+    "duration_accessible": "Tiempo de investigación: {duration}",
+    "research_accessible": "Investigar {technology}",
+    "tree_title": "Investigación",
+    "tree_empty": "Aún no hay tecnologías disponibles.",
+    "tree_empty_hint": "Vuelve después de la próxima actualización.",
+    "category_economy": "Economía",
+    "category_military": "Militar",
+    "category_defense": "Defensa",
+    "category_logistics": "Logística",
+    "category_construction": "Construcción",
+    "category_exploration": "Exploración",
+    "category_alliance": "Alianza",
+    "category_siege": "Asedio",
+    "back_accessible": "Atrás",
+    "effect_target": {
+      "production_food": "Producción de comida",
+      "production_iron": "Producción de hierro",
+      "build_speed": "Velocidad de construcción",
+      "march_speed": "Velocidad de marcha",
+      "scout_range": "Alcance de exploración",
+      "siege_damage": "Daño de asedio",
+      "unit_attack": "Ataque de las unidades",
+      "unit_defense": "Defensa de las unidades"
+    }
+  },
   "errors": {
     "generic": "No se pudo completar la acción.",
     "network": "El servidor no está disponible. Comprueba tu conexión.",
@@ -222,6 +258,9 @@
     "CITY_BUSY": "Este edificio ya está mejorando.",
     "BUILDING_MAX_LEVEL": "Este edificio ya está en el nivel máximo.",
     "BUILDING_REQUIREMENTS_NOT_MET": "Esta mejora aún no está disponible.",
+    "RESEARCH_IN_PROGRESS": "Ya hay otra investigación en curso.",
+    "TECHNOLOGY_LOCKED": "Esta tecnología aún no está desbloqueada.",
+    "TECHNOLOGY_MAX_LEVEL": "Esta tecnología ya está en el nivel máximo.",
     "ALLIANCE_NAME_TAKEN": "Ese nombre o sigla ya está en uso.",
     "ALREADY_IN_ALLIANCE": "Ya perteneces a una alianza.",
     "TOKEN_EXPIRED": "Tu sesión ha caducado.",

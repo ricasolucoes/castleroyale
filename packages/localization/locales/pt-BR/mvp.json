@@ -67,7 +67,8 @@
     "queue_slots": "{active} de {max} vagas em uso",
     "queue_accessibility": "Fila de construção: {active} de {max} vagas em uso",
     "queue_slot_accessible": "{building}, em construção",
-    "queue_slot_free": "Vaga de fila disponível"
+    "queue_slot_free": "Vaga de fila disponível",
+    "open_research": "Abrir Pesquisa"
   },
   "world": {
     "title": "Mundo",
@@ -214,6 +215,41 @@
     "fortification_breaking": "Ruptura de Fortificações",
     "fortification_breaking_desc": "Aumenta ainda mais o dano de cerco."
   },
+  "technology": {
+    "research": "Pesquisar",
+    "researching": "Iniciando...",
+    "max_level": "Nível máximo",
+    "locked": "Bloqueado",
+    "busy": "Pesquisa em andamento",
+    "cannot_afford": "Recursos insuficientes",
+    "no_cost": "Sem custo",
+    "requires": "Requer: {names}",
+    "cost_accessible": "Custo: {cost}",
+    "duration_accessible": "Tempo de pesquisa: {duration}",
+    "research_accessible": "Pesquisar {technology}",
+    "tree_title": "Pesquisa",
+    "tree_empty": "Nenhuma tecnologia disponível ainda.",
+    "tree_empty_hint": "Volte após a próxima atualização.",
+    "category_economy": "Economia",
+    "category_military": "Militar",
+    "category_defense": "Defesa",
+    "category_logistics": "Logística",
+    "category_construction": "Construção",
+    "category_exploration": "Exploração",
+    "category_alliance": "Aliança",
+    "category_siege": "Cerco",
+    "back_accessible": "Voltar",
+    "effect_target": {
+      "production_food": "Produção de comida",
+      "production_iron": "Produção de ferro",
+      "build_speed": "Velocidade de construção",
+      "march_speed": "Velocidade de marcha",
+      "scout_range": "Alcance de exploração",
+      "siege_damage": "Dano de cerco",
+      "unit_attack": "Ataque das unidades",
+      "unit_defense": "Defesa das unidades"
+    }
+  },
   "errors": {
     "generic": "Não foi possível concluir a ação.",
     "network": "Servidor indisponível. Verifique sua conexão.",
@@ -222,6 +258,9 @@
     "CITY_BUSY": "Este edifício já está em melhoria.",
     "BUILDING_MAX_LEVEL": "Esta edificação já está no nível máximo.",
     "BUILDING_REQUIREMENTS_NOT_MET": "Esta melhoria ainda não está disponível.",
+    "RESEARCH_IN_PROGRESS": "Outra pesquisa já está em andamento.",
+    "TECHNOLOGY_LOCKED": "Esta tecnologia ainda não foi desbloqueada.",
+    "TECHNOLOGY_MAX_LEVEL": "Esta tecnologia já está no nível máximo.",
     "ALLIANCE_NAME_TAKEN": "Esse nome ou sigla já está em uso.",
     "ALREADY_IN_ALLIANCE": "Você já pertence a uma aliança.",
     "TOKEN_EXPIRED": "Sua sessão expirou.",

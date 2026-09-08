@@ -1,6 +1,8 @@
 import { getLocales } from 'expo-localization';
 import { CATALOGUES, resolveLocale } from '@castleroyale/localization';
 
+export type TranslateFn = (key: string, values?: Record<string, string | number>) => string;
+
 export function useTranslation() {
   const locales = getLocales();
   const languageTag = locales && locales.length > 0 ? locales[0].languageTag : undefined;

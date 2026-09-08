@@ -67,7 +67,8 @@
     "queue_slots": "{active} of {max} slots in use",
     "queue_accessibility": "Construction queue: {active} of {max} slots in use",
     "queue_slot_accessible": "{building}, under construction",
-    "queue_slot_free": "Queue slot available"
+    "queue_slot_free": "Queue slot available",
+    "open_research": "Open Research"
   },
   "world": {
     "title": "World",
@@ -214,6 +215,41 @@
     "fortification_breaking": "Fortification Breaking",
     "fortification_breaking_desc": "Further increases siege damage."
   },
+  "technology": {
+    "research": "Research",
+    "researching": "Starting...",
+    "max_level": "Max level",
+    "locked": "Locked",
+    "busy": "Research in progress",
+    "cannot_afford": "Not enough resources",
+    "no_cost": "No cost",
+    "requires": "Requires: {names}",
+    "cost_accessible": "Cost: {cost}",
+    "duration_accessible": "Research time: {duration}",
+    "research_accessible": "Research {technology}",
+    "tree_title": "Research",
+    "tree_empty": "No technologies available yet.",
+    "tree_empty_hint": "Check back after the next update.",
+    "category_economy": "Economy",
+    "category_military": "Military",
+    "category_defense": "Defense",
+    "category_logistics": "Logistics",
+    "category_construction": "Construction",
+    "category_exploration": "Exploration",
+    "category_alliance": "Alliance",
+    "category_siege": "Siege",
+    "back_accessible": "Back",
+    "effect_target": {
+      "production_food": "Food production",
+      "production_iron": "Iron production",
+      "build_speed": "Build speed",
+      "march_speed": "March speed",
+      "scout_range": "Scout range",
+      "siege_damage": "Siege damage",
+      "unit_attack": "Unit attack",
+      "unit_defense": "Unit defense"
+    }
+  },
   "errors": {
     "generic": "The action could not be completed.",
     "network": "The server is unavailable. Check your connection.",
@@ -222,6 +258,9 @@
     "CITY_BUSY": "This building is already being upgraded.",
     "BUILDING_MAX_LEVEL": "This building is already at its maximum level.",
     "BUILDING_REQUIREMENTS_NOT_MET": "This upgrade is not available yet.",
+    "RESEARCH_IN_PROGRESS": "Another research is already in progress.",
+    "TECHNOLOGY_LOCKED": "This technology is not unlocked yet.",
+    "TECHNOLOGY_MAX_LEVEL": "This technology is already at its maximum level.",
     "ALLIANCE_NAME_TAKEN": "That name or tag is already in use.",
     "ALREADY_IN_ALLIANCE": "You are already in an alliance.",
     "TOKEN_EXPIRED": "Your session has expired.",
