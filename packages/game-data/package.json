@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "description": "Versioned, data-driven game balance. JSON is authored here, validated in CI, and imported into the database by the API.",
+  "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
     "validate": "node --experimental-strip-types src/validate.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --max-warnings=0"
+    "lint": "eslint . --max-warnings=0",
+    "test": "node --experimental-strip-types --test test/*.test.ts"
   }
 }
