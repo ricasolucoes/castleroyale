@@ -28,7 +28,43 @@ final readonly class BuildingRequirementEvaluator
      */
     public function unmet(string $buildingCode, int $targetLevel, array $currentLevels): array
     {
-        $level = $this->catalog->buildingLevel($buildingCode, $targetLevel);
+        $missing = [];
+        foreach ($this->unmetFor('building', $buildingCode, $targetLevel, $currentLevels, []) as $code => $requirement) {
+            $missing[$code] = $requirement['level'];
+        }
+
+        return $missing;
+    }
+
+    /**
+     * The generalised gate: evaluates a building's or a technology's
+     * data-declared `requirements[]` at a specific target level against a
+     * player's current building AND technology levels.
+     *
+     * `$type` ('building' or 'technology') selects which catalogue method
+     * supplies the target level's own `requirements[]`. Each individual
+     * requirement is then checked against the map matching ITS OWN type, so a
+     * technology may require a building and a building may require a
+     * technology, without either caller needing to know about the other's
+     * data (10-CONTEXT.md's cross-module requirement case).
+     *
+     * @param array<string, int> $currentBuildingLevels building_code => level, for one city
+     * @param array<string, int> $currentTechnologyLevels technology_code => level, for one player
+     * @return array<string, array{type: string, level: int}> requirement code => what it needed
+     */
+    public function unmetFor(
+        string $type,
+        string $code,
+        int $targetLevel,
+        array $currentBuildingLevels,
+        array $currentTechnologyLevels,
+    ): array {
+        $level = match ($type) {
+            'building' => $this->catalog->buildingLevel($code, $targetLevel),
+            'technology' => $this->catalog->technologyLevel($code, $targetLevel),
+            default => null,
+        };
+
         if ($level === null) {
             return [];
         }
@@ -49,9 +85,24 @@ final readonly class BuildingRequirementEvaluator
                 continue;
             }
 
-            $currentLevel = $currentLevels[$requirement->code] ?? 0;
-            if (! $requirement->isSatisfiedBy($currentLevel)) {
-                $missing[$requirement->code] = $requirement->level;
+            $currentLevel = match ($requirement->type) {
+                'building' => $currentBuildingLevels[$requirement->code] ?? 0,
+                'technology' => $currentTechnologyLevels[$requirement->code] ?? 0,
+                // 'nobility' and 'player_level' requirements have no owning map
+                // yet (Phases 29 and 04 respectively). Skipping them here is
+                // correct today because no authored dataset gates on them, but
+                // it is a deliberate gap, not an oversight — treating an
+                // unrecognised type as satisfied would silently unlock content
+                // no subsystem has actually granted the day one is authored.
+                default => null,
+            };
+
+            if ($currentLevel === null) {
+                continue;
+            }
+
+            if ($currentLevel < $requirement->level) {
+                $missing[$requirement->code] = ['type' => $requirement->type, 'level' => $requirement->level];
             }
         }
 

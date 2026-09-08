@@ -11,6 +11,8 @@ use Game\Identity\Interface\Http\AuthController;
 use Game\Military\Interface\Http\MilitaryController;
 use Game\Platform\Interface\Http\HealthController;
 use Game\Player\Interface\Http\GameBootstrapController;
+use Game\Technology\Interface\Http\ResearchController;
+use Game\Technology\Interface\Http\TechnologyTreeController;
 use Game\World\Interface\Http\WorldController;
 use Game\World\Interface\Http\WorldSelectionController;
 use Game\World\Interface\Http\WorldViewportController;
@@ -60,6 +62,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('/game/alliance', CreateAllianceController::class)->name('game.alliance.create');
         Route::post('/game/city/buildings/{code}/upgrade', BuildingUpgradeController::class)
             ->name('game.city.buildings.upgrade');
+        Route::get('/game/technologies', TechnologyTreeController::class)->name('game.technologies');
+        Route::post('/game/technologies/{code}/research', ResearchController::class)
+            ->name('game.technologies.research');
     });
 
 });
