@@ -278,6 +278,16 @@ noted in the SUMMARY — an inert target is not a dangling reference.
   least two technologies each so the UI-SPEC's eight category sections are all
   non-empty.
 
+**On the alliance category.** CONTEXT.md defers "Alliance technology (Phase 22)". That
+defers the alliance *system* — alliance-wide bonus distribution, which needs the Alliance
+module Phase 22 builds — not the category's existence in the taxonomy. Author the two
+alliance technologies now so the eighth category section is not empty, and give them
+inert targets from the list above (`unit.defense` and `march.speed` are the natural fits)
+rather than inventing an `alliance.*` target no resolver reads. Note in the SUMMARY that
+these two are taxonomy placeholders whose effects are deliberately ordinary, and that
+Phase 22 owns whatever alliance-scoped effect vocabulary it needs. Do not invent an
+off-contract target.
+
 **Level-1 cost budget.** The starter city holds 500 food / 500 wood / 500 stone /
 250 iron / 100 gold (read `starter.json` to confirm before authoring). Every tier-1
 level-1 cost must be affordable from that grant alone, or 10-03's happy-path test

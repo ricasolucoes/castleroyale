@@ -314,13 +314,14 @@ Plans:
   3. Only one research runs at a time per player; a second returns RESEARCH_IN_PROGRESS.
   4. A completed technology's effect is observable in a recomputed value, for example production rate rising by the documented amount.
   5. The technology tree screen renders dependencies and shows locked, available, in-progress and completed states distinctly.
-**Plans**: 4 plans
+**Plans**: 5 plans in 4 waves
 
 Plans:
-- [ ] 10-01: Technology schema, effects model and game data import
-- [ ] 10-02: Dependency graph validation and the cycle detector
-- [ ] 10-03: Research queue, timers and effect application
-- [ ] 10-04: Mobile technology tree screen and detail view
+- [ ] 10-01-technology-catalogue-effects-model-PLAN.md — The eighteen-plus technology tree as versioned game data, its schema, its translations and the catalogue read path (wave 1)
+- [ ] 10-02-validator-completion-PLAN.md — The three missing validator rules (translation keys, unsatisfiable requirements, cross-dataset refs), every rule under test for the first time, wired into CI (wave 2)
+- [ ] 10-03-research-queue-effects-PLAN.md — Persistence, the shared add-then-multiply permille EffectResolver, the TechnologyGraph tier computation, and the completion service (wave 2)
+- [ ] 10-05-research-command-reconciler-PLAN.md — The research command and its three refusals, the tree endpoint, the reconciler, and the effect proven observable in a recomputed rate (wave 3)
+- [ ] 10-04-mobile-technology-tree-PLAN.md — The tree screen, the four node states, the six-way CTA and the Academy entry point (wave 4)
 
 ### Phase 11: Unit System
 **Goal**: A complete, data-driven unit roster with stats and a counter system richer than rock-paper-scissors.

@@ -2,8 +2,8 @@
 phase: 10-technology-research
 plan: 04
 type: execute
-wave: 3
-depends_on: ["10-01", "10-03"]
+wave: 4
+depends_on: ["10-01", "10-03", "10-05"]
 files_modified:
   - apps/mobile/src/shared/components/technologyIcons.ts
   - apps/mobile/src/features/technology/api/useTechnologyQuery.ts
@@ -90,20 +90,36 @@ unmount, server-skew-corrected deadline, plain update with no animated roll.
 `citySelectionStore.ts` is the selection-store template (Zustand, stores only the
 selected id; the entity is derived from the query cache).
 
-**The server contract 10-03 produces** (confirm against the regenerated
+**The server contract 10-05 produces** (confirm against the regenerated
 `packages/contracts/src/generated/api.ts` before writing against it — do not code to
 this summary):
 
 ```
 GET /game/technologies -> data.technologies[]: {
-  code, name_key, description_key, category, level, max_level,
-  next_level: { cost, research_time_seconds, requirements[], effects[] } | null,
-  state: "locked" | "available" | "in_progress" | "completed"
+  code, name_key, description_key, category,
+  tier,                              // integer topological depth — lanes group by this
+  prerequisites: [{ code, level }],  // ALWAYS present, never null, even at max level
+  level, max_level,
+  state: "locked" | "available" | "in_progress" | "completed",
+  next_level: { cost, research_time_seconds, effects } | null   // null only at max level
 }
 data.research: { technology_code, target_level, started_at, finishes_at } | null
 data.server_time
 POST /game/technologies/{code}/research
 ```
+
+**Two fields exist because the plan checker caught their absence.** The first draft of
+the backend contract omitted `tier` — the field `10-UI-SPEC.md` calls "the single most
+load-bearing field in this contract" and on which the entire approved lane layout
+depends — and nested prerequisites inside `next_level`, which is `null` at max level and
+would have made a *completed* technology lose the data its own on-card caption and
+requires-chips need. Both are now top-level and unconditional. Do not re-derive either
+client-side; they are served.
+
+**Endpoint path is plural.** `10-UI-SPEC.md`'s Data Contract section writes
+`/game/technology` (singular); 10-05 fixes the route as `/game/technologies`. The
+plural form wins — the "UI-SPEC wins on disagreement" rule in this plan's objective
+governs visual and interaction decisions, not a URL the backend already fixed.
 
 **`state` is computed server-side.** Render it; do not re-derive it. The UI-SPEC's
 condition table describes what the server means by each state, not a client computation
@@ -277,7 +293,9 @@ is genuinely identical, extract it to a shared helper and use it from both, and 
 in the SUMMARY.
 
 **`TechnologyCategorySection`.** A `Text variant="heading"` header plus one horizontal
-`ScrollView` per tier. Nesting a horizontal `ScrollView` inside the screen's vertical one
+`ScrollView` per tier — group this category's technologies by the server's `tier` field
+and render one lane per non-empty tier, ascending. Do not compute tiers client-side; the
+server serves them. Nesting a horizontal `ScrollView` inside the screen's vertical one
 is the whole point of the chosen layout — a tier's node count is never bounded by the
 390pt viewport because it scrolls rather than wraps.
 
@@ -364,7 +382,16 @@ true. No spinner, no new `Button` prop.
 §E's rows above the CTA (states 3–6 only): the requires row with
 `{name} · {category}` chips and a `check-circle-outline` prefix when satisfied; the cost
 row reusing `formatResourceCost` and `RESOURCE_ICONS`; the duration row using the
-exported `formatDuration`; the effect row. All `text.secondary` — never `danger`, never
+exported `formatDuration`; the effect row.
+
+**The effect row's sign convention is settled — do not guess it.** `10-UI-SPEC.md`'s
+Flagged Assumption 1 left this open and warned it is "a backend semantic the UI cannot
+resolve by itself and should not guess silently". 10-01 has since fixed it: a `multiply`
+effect's `value` is **full permille**, where 1000 is the identity (1100 = +10%). So a
+`multiply` effect renders as `((value - 1000) / 10)` percent with an explicit sign —
+1100 becomes `+10%`, 900 becomes `-10%` — never the raw 1100. An `add` effect renders
+its value directly with a sign. Close out Flagged Assumption 1 in the SUMMARY, naming
+this as the resolution. All `text.secondary` — never `danger`, never
 `success`, because these are informational, not confirmations or refusals.
 
 **The requires chip is load-bearing.** The UI-SPEC's checker flagged that tier stacking

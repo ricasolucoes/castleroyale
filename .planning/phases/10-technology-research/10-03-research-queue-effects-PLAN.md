@@ -9,63 +9,50 @@ files_modified:
   - apps/api/modules/Technology/Infrastructure/PlayerTechnology.php
   - apps/api/modules/Technology/Infrastructure/ResearchOrder.php
   - apps/api/modules/Technology/Domain/EffectResolver.php
-  - apps/api/modules/Technology/Application/ResearchService.php
+  - apps/api/modules/Technology/Domain/TechnologyGraph.php
   - apps/api/modules/Technology/Application/ResearchCompletionService.php
-  - apps/api/modules/Technology/Application/ResearchReconciler.php
-  - apps/api/modules/Technology/Interface/Jobs/CompleteResearch.php
-  - apps/api/modules/Technology/Interface/Http/ResearchController.php
-  - apps/api/modules/Technology/Interface/Http/TechnologyTreeController.php
   - apps/api/modules/Economy/Application/CityEconomyService.php
   - apps/api/modules/Shared/Infrastructure/GameData/GameDataCatalog.php
-  - apps/api/routes/api.php
-  - apps/api/routes/console.php
-  - packages/contracts/openapi.yaml
-  - packages/contracts/src/generated/api.ts
-  - apps/api/tests/Feature/Technology/ResearchQueueTest.php
-  - apps/api/tests/Feature/Technology/ResearchEffectTest.php
-  - apps/api/tests/Feature/Technology/ResearchCompletionTest.php
+  - apps/api/tests/Feature/Technology/EffectResolverTest.php
+  - apps/api/tests/Feature/Technology/TechnologyGraphTest.php
 autonomous: true
-requirements: [REQ-05, REQ-06, REQ-09]
+requirements: [REQ-06, REQ-09]
 
 must_haves:
   truths:
-    - "Starting a research debits resources atomically inside a lock and writes started_at and finishes_at in UTC from the injected Clock"
-    - "A second concurrent research returns RESEARCH_IN_PROGRESS; a locked technology returns TECHNOLOGY_LOCKED; a maxed one returns TECHNOLOGY_MAX_LEVEL — all at HTTP 400"
-    - "A completed technology's effect is observable in a recomputed value: production rate rises by the documented permille amount"
-    - "The completion job is idempotent and a dead worker costs nothing — the reconciler finishes every overdue research exactly once"
+    - "Research has persistence, and 'one research at a time' is a database invariant rather than an application convention"
+    - "One pure resolver turns effect descriptors into numbers for buildings and technologies, with percentages as integer permille truncated downward"
+    - "Every technology has a server-computed `tier` (topological depth) and a prerequisite list that survives max level"
+    - "Completing a research raises the level exactly once, guarded on completed_at IS NULL"
+    - "A city with no researched technologies produces byte-identical rates to before this plan"
   artifacts:
     - path: "apps/api/modules/Technology/Domain/EffectResolver.php"
       provides: "The pure add-then-multiply permille resolver shared by buildings and technologies"
       contains: "permille"
-    - path: "apps/api/tests/Feature/Technology/ResearchEffectTest.php"
-      provides: "ROADMAP criterion 4 — the effect observable in a recomputed rate, not merely a row"
-      contains: "ratesPerHour"
-    - path: "apps/api/tests/Feature/Technology/ResearchQueueTest.php"
-      provides: "ROADMAP criteria 2 and 3 — the three refusal codes"
-      contains: "ResearchInProgress"
+    - path: "apps/api/modules/Technology/Domain/TechnologyGraph.php"
+      provides: "The tier (topological depth) computation the whole tree layout depends on"
+      contains: "tier"
   key_links:
     - from: "apps/api/modules/Economy/Application/CityEconomyService.php"
       to: "Game\\Technology\\Domain\\EffectResolver"
       via: "ratesPerHour() resolves building and technology effects through the shared resolver"
       pattern: "EffectResolver"
-    - from: "apps/api/modules/Technology/Application/ResearchReconciler.php"
-      to: "Game\\Technology\\Application\\ResearchCompletionService"
-      via: "run() calls completeOverdueLocked per player"
-      pattern: "completeOverdueLocked"
 ---
 
 <objective>
-Make research a real timed, paid, server-owned operation whose completion measurably
-changes the empire.
+Lay the foundation research is built on: persistence, the shared effect resolver, the
+technology graph's tier computation, and the completion service.
 
-This is where ROADMAP criteria 2, 3 and 4 are earned. Criterion 4 is the one that can
-quietly fail: CONTEXT.md is explicit that "a completed technology's effect must be
-observable in a recomputed value — test it, do not just assert the row exists."
+This plan deliberately stops short of the research *command* (10-05). It was split at
+the layering seam after the plan checker flagged it at 19 files across 4 tasks, well
+above this project's own precedent of 13 files and 3 tasks. Two smaller plans also lose
+less work if an executor dies mid-run, which has happened repeatedly in this milestone.
 
-Phase 09 built the analogue of nearly all of this for buildings. The instruction here
-is to **reuse its seams**, not to re-derive them — and where a Phase 09 component was
-deliberately written generic (`BuildingRequirementEvaluator`), to use it rather than
-writing a technology-shaped twin.
+Everything here is either persistence or a pure domain computation — nothing in this
+plan handles an HTTP request.
+
+Phase 09 built the analogue of much of this for buildings. Reuse its seams rather than
+re-deriving them.
 </objective>
 
 <context>
@@ -380,304 +367,193 @@ further change, because both already read from the effect map.
   </done>
 </task>
 
+
 <task type="auto" tdd="true">
-  <name>Task 3: Starting a research — the locked spend, the three refusals, the timers</name>
+  <name>Task 3: The technology graph — tier, and prerequisites that survive max level</name>
 
   <read_first>
-    - apps/api/modules/Construction/Application/BuildingUpgradeService.php (the ENTIRE start() method — the transaction, the lock, the check order, the debit, the order write, the conditional job dispatch. This is the template.)
-    - apps/api/modules/Construction/Application/BuildingRequirementEvaluator.php (the generic evaluator to extend, not clone)
-    - apps/api/modules/Construction/Domain/BuildDuration.php (the one place time_scale is applied)
-    - apps/api/modules/Construction/Interface/Http/BuildingUpgradeController.php (controller thinness, idempotency-key handling, response shape)
-    - apps/api/modules/Shared/Application/Error/ErrorCode.php (confirm the three codes already exist)
-    - apps/api/routes/api.php (route style and middleware)
-    - packages/contracts/openapi.yaml (confirm the three codes are already documented; find where a new endpoint's schema goes)
+    - packages/game-data/src/validate.ts (its `findCycle` DFS and how it builds a dependency graph from `requirements[]` — the same graph shape, computed in PHP here)
+    - apps/api/modules/Shared/Infrastructure/GameData/GameDataCatalog.php (technologies() / technologyLevel() as 10-01 leaves them)
+    - .planning/phases/10-technology-research/10-UI-SPEC.md § Layout Strategy and § Data Contract (why `tier` exists and what depends on it)
+    - apps/api/modules/Construction/Domain/BuildDuration.php (the shape of a pure domain class in this codebase — no imports, no framework)
   </read_first>
 
   <files>
-    apps/api/modules/Technology/Application/ResearchService.php,
-    apps/api/modules/Construction/Application/BuildingRequirementEvaluator.php,
-    apps/api/modules/Technology/Interface/Http/ResearchController.php,
-    apps/api/modules/Technology/Interface/Http/TechnologyTreeController.php,
-    apps/api/routes/api.php,
-    packages/contracts/openapi.yaml,
-    packages/contracts/src/generated/api.ts,
-    apps/api/tests/Feature/Technology/ResearchQueueTest.php
+    apps/api/modules/Technology/Domain/TechnologyGraph.php,
+    apps/api/tests/Feature/Technology/TechnologyGraphTest.php
   </files>
 
   <behavior>
-    - `POST /game/technologies/{code}/research` debits the city atomically inside a lock and writes an order whose `started_at`/`finishes_at` come from the injected Clock in UTC
-    - A second research while one is open returns `RESEARCH_IN_PROGRESS` at HTTP 400 and spends nothing
-    - A technology whose prerequisites are unmet returns `TECHNOLOGY_LOCKED` at HTTP 400, naming what is missing
-    - A technology already at `max_level` returns `TECHNOLOGY_MAX_LEVEL` at HTTP 400
-    - Refusal precedence is fixed and tested: max level, then locked, then in progress, then insufficient resources
-    - A request body carrying its own cost, duration or target level changes nothing
-    - `GET /game/technologies` returns the whole tree with each technology's current level, its requirements and its computed state
+    - `tier(string $code)` returns the technology's topological depth: 0 when it has no technology prerequisite, otherwise 1 + the maximum tier of its technology prerequisites
+    - `prerequisites(string $code)` returns the technology-type requirements for the technology's FIRST level, available regardless of the player's current level
+    - Both are computed from the catalogue alone — no player, no database, no clock
+    - A cycle in the data does not hang or overflow the stack; it is reported, not survived silently
+    - Tiers are memoised so a tree of N technologies is walked once, not once per query
   </behavior>
 
   <action>
-**3a. Generalise `BuildingRequirementEvaluator`.** It currently calls
-`GameDataCatalog::buildingLevel`. Give it a second method rather than changing the
-existing signature (09-04's tests depend on `unmet()` as it stands):
+**Why this class exists.** `10-UI-SPEC.md` calls `tier` *"the single most load-bearing
+field in this contract"*: the approved Layout Strategy renders one horizontal lane per
+non-empty tier within each category, and without a tier there are no lanes and no tree —
+only a flat list. Nothing computes it today. This is that computation.
+
+Create `Game\Technology\Domain\TechnologyGraph`, a pure class constructed from the
+catalogue's technology array (pass the array in; do not inject `GameDataCatalog`, so the
+class stays framework-free and unit-testable exactly like `BuildDuration`):
 
 ```php
+/** @param list<array<string,mixed>> $technologies the catalogue array */
+public function __construct(private array $technologies) {}
+
+/** Topological depth. 0 for a technology with no technology prerequisite. */
+public function tier(string $code): int;
+
 /**
- * @param array<string,int> $currentBuildingLevels
- * @param array<string,int> $currentTechnologyLevels
- * @return array<string,array{type:string,level:int}> requirement code => what it needed
+ * The technology-type requirements of this technology's FIRST level.
+ * @return list<array{code:string,level:int}>
  */
-public function unmetFor(string $type, string $code, int $targetLevel,
-                         array $currentBuildingLevels, array $currentTechnologyLevels): array
+public function prerequisites(string $code): array;
+
+/** @return array<string,int> code => tier, for every technology */
+public function tiers(): array;
 ```
 
-`$type` is `'building'` or `'technology'` and selects which catalogue method supplies
-the `requirements[]`. Each requirement is then checked against the map matching its own
-`type` — a technology may require a building and vice versa. Requirement types with no
-map yet (`nobility`, `player_level`) are skipped with an explicit `continue` and a
-comment; silently treating them as satisfied is the correct behaviour today but must be
-deliberate.
+**Tier algorithm.** Depth-first with memoisation over technology-type requirements only
+(a `building` requirement does not create a technology tier — a technology gated on a
+building is still tier 0 within the technology graph, and the UI-SPEC's lanes are about
+technology depth). For each technology, `tier = 0` when it has no technology
+prerequisite, otherwise `1 + max(tier(prereq))`.
 
-Reimplement the existing `unmet()` as a call to `unmetFor('building', ...)` so there is
-one code path, and confirm 09-04's `BuildingRequirementsTest` still passes untouched.
+**Cycle safety.** 10-02's validator rejects cycles at authoring time and CI runs it, so a
+cycle cannot normally reach production. But this class must not infinite-loop if one ever
+does: track an in-progress set during the walk and, on re-entry, throw a
+`DomainException` naming the code rather than recursing. A validator that runs elsewhere
+is not a reason for this class to be fragile.
 
-**3b. `ResearchService::start()`** — model it on `BuildingUpgradeService::start()`,
-which you must read in full first. Signature:
+**`prerequisites()` reads level 1's requirements deliberately.** The checker on this
+phase's plans caught that nesting prerequisite data only inside a `next_level` field
+would make it `null` for a completed technology — so a maxed technology would lose the
+ability to render its own `→ prerequisite` caption and its requires-chips. A technology's
+unlock prerequisites are a property of the technology, not of whichever level the player
+happens to be looking at next, so they are read from level 1 and served unconditionally.
 
-```php
-public function start(Account $account, string $worldId, string $cityId,
-                      string $technologyCode, string $idempotencyKey): array
-```
-
-Inside one `DB::transaction`, in this exact order:
-
-1. Lock the city (`lockForUpdate`), resolve the owning player, refuse `CITY_NOT_OWNED`
-   if the account does not own it — copy the existing check verbatim.
-2. Complete any overdue research first (`ResearchCompletionService::completeOverdueLocked`),
-   the same way `BuildingUpgradeService` completes overdue construction — otherwise a
-   player whose research finished but whose job has not run yet is wrongly told
-   `RESEARCH_IN_PROGRESS`.
-3. Read current technology levels for the player, scoped by `world_id`.
-4. `TECHNOLOGY_MAX_LEVEL` if `currentLevel >= max_level`.
-5. `TECHNOLOGY_LOCKED` if `unmetFor('technology', ...)` returns anything, with the
-   unmet map in the exception's `details['missing']`, exactly as 09-04 does for
-   `BUILDING_REQUIREMENTS_NOT_MET`.
-6. `RESEARCH_IN_PROGRESS` if an open `research_orders` row exists for this player.
-7. Recompute the cost server-side from the catalogue and `debitLocked` it —
-   `INSUFFICIENT_RESOURCES` propagates from there. Reason `'technology.research'`,
-   reference the idempotency key, `LedgerParty` matching how 09 does it.
-8. Write the `ResearchOrder` with `BuildDuration::scaled($level['research_time_seconds'], (int) config('game.time_scale'))`.
-9. Dispatch `CompleteResearch` on the `gameplay` queue delayed to `finishes_at`
-   `->afterCommit()`, guarded by `config('queue.default') !== 'sync'` — copy the guard
-   verbatim from `BuildingUpgradeService`.
-
-**Precedence is a decision, not an accident.** The order above tells a player the
-permanent reason (maxed) before the structural one (locked) before the transient one
-(in progress) before the economic one (cannot afford). Assert all four boundaries in
-tests.
-
-**3c. Controllers.** `ResearchController` (invokable, thin — read
-`BuildingUpgradeController` and match it exactly) and `TechnologyTreeController`
-returning the tree. The tree response, per 10-UI-SPEC's Data Contract section:
-
-```
-data.technologies[]: { code, name_key, description_key, category, level, max_level,
-                       next_level: { cost, research_time_seconds, requirements[], effects[] } | null,
-                       state: "locked"|"available"|"in_progress"|"completed" }
-data.research: { technology_code, target_level, started_at, finishes_at } | null
-data.server_time
-```
-
-`state` is computed server-side. The client must not re-derive it — that is the same
-rule that made Phase 09's CTA read the server snapshot.
-
-**3d. Routes** in `apps/api/routes/api.php`, matching the existing group and middleware:
-`GET /game/technologies` → `TechnologyTreeController`,
-`POST /game/technologies/{code}/research` → `ResearchController`.
-
-**3e. `openapi.yaml`** — add both endpoints and the `Technology`/`ResearchOrder` schemas.
-The three error codes are already in the enum; confirm with grep and do not duplicate
-them. Regenerate `packages/contracts/src/generated/api.ts` with
-`npm run contracts:generate` and verify with `npm run contracts:check`.
-
-**3f. `ResearchQueueTest.php`** — guest → bootstrap → act, following
-`ConstructionQueueLimitTest`'s helper style (a uniquely-named local helper; PHPUnit
-loads every `*Test.php` in one process, so a duplicated top-level function name is a
-fatal redeclare — this bit Phase 09).
-
-- *"starts a research, debiting the city and stamping the injected clock in UTC"* —
-  assert `started_at`/`finishes_at` format `+00:00`, the debit matches the catalogue,
-  and the ledger rows carry the idempotency key as reference.
-- *"refuses a second concurrent research with RESEARCH_IN_PROGRESS"* — and assert the
-  second request spent nothing and created no second order.
-- *"refuses a locked technology and names the missing prerequisite"*.
-- *"refuses a maxed technology with TECHNOLOGY_MAX_LEVEL"*.
-- *"reports TECHNOLOGY_MAX_LEVEL over an unmet prerequisite"* and
-  *"reports TECHNOLOGY_LOCKED over RESEARCH_IN_PROGRESS"* — the precedence pair.
-- *"ignores a client-supplied cost, duration and target level"* — post a body with
-  `research_time_seconds: 0`, `cost: {}`, `target_level: 99`; assert the persisted order
-  and the debit are the catalogue's.
-- *"serves the tree with a server-computed state per technology"* — assert a tier-1
-  technology is `available`, one behind an unmet prerequisite is `locked`, and after
-  starting one it is `in_progress`.
+**Tests** (`TechnologyGraphTest.php`), against the real catalogue plus small in-memory
+fixtures:
+- *"gives a technology with no prerequisite tier 0"*.
+- *"gives a technology tier one more than its deepest prerequisite"* — build a fixture
+  `a` (no prereq), `b` requires `a`, `c` requires `a` and `b`; assert tiers 0, 1, 2.
+  `c` requiring both `a` (tier 0) and `b` (tier 1) must be tier 2, not tier 1 — this is
+  the max-not-min case, and getting it wrong puts a node in a lane before its own
+  prerequisite.
+- *"ignores building requirements when computing tier"* — a technology whose only
+  requirement is a building is tier 0.
+- *"serves prerequisites for a maxed technology"* — the case the plan checker caught:
+  assert `prerequisites()` returns the list regardless of level.
+- *"throws naming the code rather than hanging on a cyclic dataset"* — feed `a→b→a`,
+  assert a `DomainException` whose message contains both codes.
+- *"assigns every real authored technology a tier"* — over the actual catalogue, assert
+  every code has an integer tier and at least one technology has tier ≥ 1 (otherwise
+  10-01 authored a flat tree and the whole lane layout is untested).
   </action>
 
   <acceptance_criteria>
-    - `grep -c "function unmetFor" apps/api/modules/Construction/Application/BuildingRequirementEvaluator.php` is 1
-    - `docker compose exec -T api ./vendor/bin/pest --filter=BuildingRequirements` still reports 6 passing — 09-04's tests unchanged and unbroken
-    - `grep -c "ResearchInProgress" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is ≥ 2
-    - `grep -c "TechnologyLocked" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is ≥ 2
-    - `grep -c "TechnologyMaxLevel" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is ≥ 2
-    - `grep -c "assertStatus(400)" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is ≥ 3
-    - `grep -c "+00:00" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is ≥ 2
-    - `grep -cE "\bnow\(\)|Carbon::now" apps/api/tests/Feature/Technology/ResearchQueueTest.php` is 0 — the frozen clock only
-    - `grep -c "BuildDuration::scaled" apps/api/modules/Technology/Application/ResearchService.php` is 1 — the shared duration function, not a reimplementation
-    - `docker compose exec -T api ./vendor/bin/pest --filter=ResearchQueue` reports 8 passing tests
-    - `npm run contracts:check` exits 0
-    - `docker compose exec -T api ./vendor/bin/phpstan analyse --memory-limit=1G` — 0 errors; `pint --test` clean
+    - `grep -cE "^use " apps/api/modules/Technology/Domain/TechnologyGraph.php` is ≤ 1 (only DomainException, if imported) — the class is framework-free
+    - `grep -cE "\b(config|now|app|DB)\(" apps/api/modules/Technology/Domain/TechnologyGraph.php` is 0
+    - `grep -c "function tier" apps/api/modules/Technology/Domain/TechnologyGraph.php` is ≥ 1
+    - `grep -c "function prerequisites" apps/api/modules/Technology/Domain/TechnologyGraph.php` is 1
+    - `docker compose exec -T api ./vendor/bin/pest --filter=TechnologyGraph` reports 6 passing tests
+    - `docker compose exec -T api ./vendor/bin/phpstan analyse --memory-limit=1G` — 0 errors
   </acceptance_criteria>
 
   <verify>
-    <automated>docker compose exec -T api ./vendor/bin/pest --filter=Research &amp;&amp; npm run contracts:check</automated>
+    <automated>docker compose exec -T api ./vendor/bin/pest --filter=TechnologyGraph</automated>
   </verify>
 
   <done>
-    Research costs resources, takes server-controlled time, refuses for three distinct
-    reasons in a fixed and tested precedence, and cannot be influenced by the request
-    body.
+    Every technology has a tier the tree layout can group by, and a prerequisite list
+    that does not vanish when the technology is maxed.
   </done>
 </task>
 
 <task type="auto" tdd="true">
-  <name>Task 4: Completion, the reconciler, and the effect made observable</name>
+  <name>Task 4: Completion — raising the level exactly once</name>
 
   <read_first>
-    - apps/api/modules/Construction/Application/ConstructionCompletionService.php (the whereNull guard and the per-order loop)
-    - apps/api/modules/Construction/Application/ConstructionReconciler.php (the open-world loop and what run() returns)
-    - apps/api/modules/Construction/Interface/Jobs/CompleteConstruction.php (the job's own orderExists guard — note it short-circuits before the service)
-    - apps/api/routes/console.php (the every-minute construction-reconcile entry to mirror)
-    - apps/api/tests/Feature/Construction/ConstructionReconcilerTest.php (the worker-death test shape to copy)
-    - apps/api/tests/Feature/Construction/ConstructionCompletionTest.php (both idempotency tests, including the service-direct one 09-03 had to add)
-    - apps/api/modules/Economy/Application/CityEconomyService.php (ratesPerHour — the recomputed value criterion 4 needs)
+    - apps/api/modules/Construction/Application/ConstructionCompletionService.php (the whereNull guard, the per-order loop, the broadcast — the template)
+    - apps/api/modules/City/Interface/Broadcasting/CityStateChanged.php (the event to dispatch and its constructor)
+    - apps/api/modules/Technology/Infrastructure/ResearchOrder.php (as Task 1 leaves it)
+    - apps/api/tests/Feature/Construction/ConstructionCompletionTest.php (the service-direct idempotency test 09-03 had to add, and why)
   </read_first>
 
   <files>
     apps/api/modules/Technology/Application/ResearchCompletionService.php,
-    apps/api/modules/Technology/Application/ResearchReconciler.php,
-    apps/api/modules/Technology/Interface/Jobs/CompleteResearch.php,
-    apps/api/routes/console.php,
-    apps/api/tests/Feature/Technology/ResearchCompletionTest.php,
-    apps/api/tests/Feature/Technology/ResearchEffectTest.php
+    apps/api/tests/Feature/Technology/EffectResolverTest.php
   </files>
 
   <behavior>
-    - Completing raises the player's technology level by one and stamps `completed_at`, guarded on `completed_at IS NULL`
-    - Running the job twice completes once; calling the service twice completes once
-    - With the worker dead, one reconciler pass completes every overdue research exactly once; a second pass changes nothing; the late job changes nothing
-    - After a production-multiplier technology completes, `ratesPerHour` returns the documented higher number
-    - Two ranks of the same technology stack additively on the permille surplus
+    - `completeOverdueLocked(Player $player, DateTimeImmutable $now)` completes every overdue open research for that player
+    - Completing upserts `player_technologies` to `target_level` and stamps `completed_at`
+    - Calling it twice completes once — guarded on `completed_at IS NULL`
+    - One broadcast per completed order, not one per call
   </behavior>
 
   <action>
-**4a. `ResearchCompletionService::completeOverdueLocked(Player $player, DateTimeImmutable $now)`**
-— mirror `ConstructionCompletionService` exactly: select `research_orders` where
-`finishes_at <= now` AND `completed_at IS NULL`, `lockForUpdate`; per order upsert
-`player_technologies` to `target_level`, stamp `completed_at`, and dispatch the
-appropriate state-changed broadcast (read how Phase 07/09 dispatch `CityStateChanged`
-and follow it; if a player-level channel does not exist yet, dispatch `CityStateChanged`
-for the order's `city_id` and note in the SUMMARY that a player-scoped channel is a
-Phase 33 concern).
+**4a. `ResearchCompletionService`** — mirror `ConstructionCompletionService` exactly. Read
+it first; select `research_orders` where `finishes_at <= $now` AND `completed_at IS NULL`,
+`lockForUpdate`, then per order upsert `player_technologies` to `target_level`, stamp
+`completed_at`, and dispatch the state-changed broadcast.
 
-**4b. `ResearchReconciler::run(): int`** — mirror `ConstructionReconciler`: iterate open
-worlds, find distinct players with overdue open orders, and complete per player in a
-transaction. Return the number completed.
+For the broadcast: read how Phase 07/09 dispatch `CityStateChanged` and follow it,
+using the order's `city_id`. A player-scoped channel does not exist yet; note in the
+SUMMARY that a player-level channel is Phase 33's concern and that using the city
+channel is the deliberate interim, not an oversight.
 
-09-03 recorded a concern that `ConstructionReconciler` scans only open worlds, so an
-order in a world closed for maintenance never completes. **Mirror that behaviour here
-rather than diverging**, and note in the SUMMARY that both reconcilers now share the
-limitation, so whichever phase fixes it fixes both. Divergence between the two would be
-worse than the shared limitation.
+This service lives in this plan rather than with the research *start* logic because
+`ResearchService::start()` (10-05) must call it before deciding whether a player is
+already busy — a player whose research finished but whose job has not run yet must not
+be told `RESEARCH_IN_PROGRESS`. Putting completion in the earlier wave makes that
+dependency a real one rather than a circular one.
 
-**4c. `CompleteResearch` job** — mirror `CompleteConstruction`, including its own
-`whereNull('completed_at')` existence pre-check.
-
-**4d. `routes/console.php`** — add a `research-reconcile` every-minute entry mirroring
-`construction-reconcile`, matching its exact style and comment.
-
-**4e. `ResearchCompletionTest.php`** — copy 09-03's shape, including the lesson it
-learned:
-
-- *"completes once when the job runs twice"* — `Queue::fake()`, advance the clock, run
-  `app()->call([$job,'handle'])` twice, assert one level gain and one broadcast.
-- *"completes once when the service itself is called twice"* — **this test is not
-  optional.** 09-03 discovered the job short-circuits on its own guard, so the job test
-  does not exercise the service's guard at all, and the reconciler depends on the
-  service's guard. Call `completeOverdueLocked` directly twice.
-- *"a dead worker costs nothing: the reconciler finishes the research exactly once"* —
-  `Queue::fake()` and never process; assert nothing completed unaided, then
-  `run()` returns 1, a second `run()` returns 0, and the late job changes nothing, with
-  exactly one broadcast across the whole sequence.
-- *"leaves a research that is not due yet alone"*.
-
-**Prove the guards bite.** After the tests pass, temporarily remove
-`whereNull('completed_at')` from `ResearchCompletionService` and confirm the
-*service-direct* test fails (not necessarily the job test — see the trap). Restore it
-and confirm `git status --porcelain apps/api/modules` is empty. Record in the SUMMARY
-which test failed and which did not.
-
-**4f. `ResearchEffectTest.php` — ROADMAP criterion 4, the one that matters most.**
-
-- *"a completed production technology raises the city's rate by the documented amount"* —
-  freeze the clock, guest, bootstrap. Capture `GET /game/city`'s
-  `data.resources.rate.food`. Read the *documented* multiplier straight from the
-  catalogue (`app(GameDataCatalog::class)->technologyLevel('agriculture', 1)`) rather
-  than hardcoding 1100, so a designer's rebalance does not turn this into a false
-  failure. Start the research, advance past `finishes_at`, complete it via the
-  reconciler (**not** via an HTTP call — the read path would complete it and the test
-  would prove nothing). Then assert the recomputed rate equals
-  `intdiv($baseRate * $permille, 1000)` and, separately, that it is strictly greater
-  than the base rate. **Both assertions matter**: the equality pins the arithmetic, and
-  the strict inequality catches a permille of 1000 or a dropped effect that the equality
-  alone would happily accept.
-- *"two ranks stack additively, not multiplicatively"* — research the same technology to
-  level 2, assert the rate matches a surplus sum, and assert explicitly that it is
-  **not** the compounded value. Skip only if the authored tree has no technology whose
-  first two levels both carry a production multiplier — and if you skip, say so in the
-  SUMMARY.
-- *"an unresearched empire's rates are unchanged"* — a regression pin that the resolver
-  refactor did not shift baseline numbers.
+**4b. `EffectResolverTest.php`** — the arithmetic Task 2 specified, pinned:
+- *"applies add before multiply"* — baseline 100, an `add` of 50 and a `multiply` of
+  1100; assert 165 (`(100+50) * 1100 / 1000`), not 160 (`100*1100/1000 + 50`).
+- *"stacks two multipliers additively, not multiplicatively"* — two 1100 effects on a
+  baseline of 100; assert 120, and assert explicitly it is **not** 121.
+- *"truncates downward"* — baseline 10 with 1105; assert 11.
+- *"treats 1000 as the identity"* — assert an unchanged value.
+- *"creates a target the baseline did not seed"* — an `add` to `march.speed` (a target
+  10-01 authors but nothing reads yet) appears in the output rather than being dropped,
+  proving the `array_key_exists` guard really was removed.
+- *"leaves an empty effect set equal to the baseline"*.
   </action>
 
   <acceptance_criteria>
     - `grep -c "whereNull('completed_at')" apps/api/modules/Technology/Application/ResearchCompletionService.php` is ≥ 1
-    - `grep -c "research-reconcile" apps/api/routes/console.php` is 1
-    - `grep -c "ratesPerHour\|resources.rate" apps/api/tests/Feature/Technology/ResearchEffectTest.php` is ≥ 2
-    - `grep -c "intdiv" apps/api/tests/Feature/Technology/ResearchEffectTest.php` is ≥ 1 — the expected value is computed from the catalogue, not hardcoded
-    - `grep -cE "\bgetJson\(|postJson\(" apps/api/tests/Feature/Technology/ResearchEffectTest.php` — verify by reading that no HTTP call occurs between `advanceSeconds` and the assertion under test
-    - `docker compose exec -T api ./vendor/bin/pest --filter=ResearchCompletion` reports 4 passing
-    - `docker compose exec -T api ./vendor/bin/pest --filter=ResearchEffect` reports 3 passing (2 if the stacking test was justifiably skipped)
-    - `git status --porcelain apps/api/modules` is empty after the falsification experiment
-    - `docker compose exec -T api ./vendor/bin/pest` fully green; `phpstan` 0 errors; `pint --test` clean
+    - `grep -c "lockForUpdate" apps/api/modules/Technology/Application/ResearchCompletionService.php` is ≥ 1
+    - `grep -c "world_id" apps/api/modules/Technology/Application/ResearchCompletionService.php` is ≥ 1
+    - `docker compose exec -T api ./vendor/bin/pest --filter=EffectResolver` reports 6 passing tests
+    - `docker compose exec -T api ./vendor/bin/pest` fully green
+    - `docker compose exec -T api ./vendor/bin/phpstan analyse --memory-limit=1G` — 0 errors; `pint --test` clean
   </acceptance_criteria>
 
   <verify>
-    <automated>docker compose exec -T api ./vendor/bin/pest --filter=Research &amp;&amp; docker compose exec -T api ./vendor/bin/pest</automated>
+    <automated>docker compose exec -T api ./vendor/bin/pest --filter=EffectResolver &amp;&amp; docker compose exec -T api ./vendor/bin/pest</automated>
   </verify>
 
   <done>
-    Research completes reliably even when the worker dies, completion is idempotent at
-    both the job and the service layer, and a finished technology is observable as a
-    higher production rate computed from the catalogue's own documented multiplier.
+    Completion raises a technology's level exactly once, and the resolver's add-then-
+    multiply permille arithmetic is pinned including the non-obvious cases.
   </done>
 </task>
+
 
 </tasks>
 
 <verification>
-- `docker compose exec -T api ./vendor/bin/pest` — green, ≥ 15 new tests
-- `docker compose exec -T api ./vendor/bin/pest --filter=Economy` — green with unchanged numbers for an unresearched empire
-- `docker compose exec -T api ./vendor/bin/pest --filter=BuildingRequirements` — 6 passing, 09-04 unbroken
+- `docker compose exec -T api php artisan migrate:fresh --seed` — exits 0
+- `docker compose exec -T api ./vendor/bin/pest` — green, ≥ 12 new tests
+- `docker compose exec -T api ./vendor/bin/pest --filter=Economy` — green with UNCHANGED expected numbers for an unresearched empire (the resolver refactor must not shift a baseline)
 - `docker compose exec -T api ./vendor/bin/phpstan analyse --memory-limit=1G` — 0 errors
 - `docker compose exec -T api ./vendor/bin/pint --test` — clean
-- `npm run contracts:check` — exits 0
-- `npm run typecheck && npm run lint && npm test` — green
-- `git status --porcelain apps/api/modules` — empty (the falsification experiment restored)
+- `grep -rn "effectsForBuildings" apps/api/modules` — every caller still compiles; the old signature survives
 </verification>
