@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 10-01-technology-catalogue-effects-model-PLAN.md
-last_updated: "2026-09-08T16:16:58.373Z"
+stopped_at: Completed 10-02-validator-completion-PLAN.md (wave 2 of Phase 10 complete alongside 10-03)
+last_updated: "2026-09-08T16:35:44.682Z"
 progress:
   total_phases: 69
   completed_phases: 10
   total_plans: 50
-  completed_plans: 47
+  completed_plans: 49
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 10 (technology-research) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5 (wave 2 — 10-02 validator completion, 10-03 research queue — both complete; wave 3, 10-05, next)
 
 ## Performance Metrics
 
@@ -71,6 +71,8 @@ Plan: 2 of 5
 | Phase 09 P02 | 15min | 3 tasks | 9 files |
 | Phase 09-buildings-construction P01 | 25min | 3 tasks | 14 files |
 | Phase 10-technology-research P01 | 20min | 3 tasks | 8 files |
+| Phase 10-technology-research P02 | 15min | 3 tasks | 8 files |
+| Phase 10-technology-research P03 | 16min | 4 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -133,6 +135,10 @@ Recent decisions affecting current work:
 - [Phase 09 P01]: Failure messages that must contain a literal locale name (for grep-based verification) are built with explicit per-locale if/return branches, not string interpolation — interpolating a loop variable puts the variable reference, not its value, into the file's source bytes.
 - [Phase 09 P01]: $this->artisan(...)->expectsOutputToContain() cannot assert two substrings that both live on the same single output line — each call backs a separate Mockery expectation on doWrite(), and one real call only satisfies one of them. Use Artisan::call() + Artisan::output() with plain str_contains-based assertions instead when a failure message must be checked for multiple substrings at once.
 - [Phase 10]: [Phase 10 P01]: Technology dataset reuses buildings.schema.json's requirement/effect/resourceCost $defs byte-identical; alliance technologies (diplomatic_relations, trade_agreements) are Phase-22-deferred taxonomy placeholders using inert unit.defense/march.speed targets rather than an off-contract alliance.* target.
+- [Phase 10-technology-research]: [Phase 10 P03] research_orders_one_open_per_player is an unconditional partial unique index (no driver guard) — verified on both SQLite and PostgreSQL.
+- [Phase 10-technology-research]: [Phase 10 P03] EffectResolver::resolve() is shared by GameDataCatalog::effectsFor() for both buildings and technologies; effectsForBuildings() kept as a thin wrapper, no remaining direct caller but signature preserved for future/back-compat use.
+- [Phase 10-technology-research]: [Phase 10 P02] Every validator rule in packages/game-data/src/rules.ts is a pure function (data in, Problem[] out); validate.ts is a thin CLI. findCycle moved verbatim, not rewritten. Task 4 (wire validator into CI) required no ci.yml change — the existing "Mobile & packages" job already ran gamedata:validate and workspace-wide npm test, which picked up game-data's new test script automatically.
+- [Phase 10-technology-research]: [Phase 10 P02] Fixed a pre-existing bug the new checkTranslationKeys rule caught: units.json's "militia" name_key resolved in no locale catalogue at all (PHP's ImportGameDataCommand::checkTranslations only ever validated buildings, never units). Added a "units" namespace to en/pt-BR/es mvp.json.
 
 ### Pending Todos
 
@@ -160,22 +166,23 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T16:16:58.370Z
-Stopped at: Completed 10-01-technology-catalogue-effects-model-PLAN.md. Wave 1 of Phase 10 is fully
-  complete. 10-01 shipped all 3 tasks: the 16-technology dataset (all 8 categories, a real DAG with a
-  two-prerequisite node and a cross-category edge) at packages/game-data/data/technologies.json, its
-  schema at packages/game-data/schema/technologies.schema.json reusing buildings.schema.json's $defs
-  byte-identically, translations in en/pt-BR/es mvp.json, GameDataCatalog::technologies()/
-  technology()/technologyLevel() mirroring the building read path, and game:import-data technology
-  validation (level-sequence, max_level, name/description key convention). Full suite green: 195 Pest
-  tests, PHPStan 0 errors, Pint clean, npm run gamedata:validate/typecheck/lint clean.
-Resume with: `/gsd:autonomous --from 10` (execute wave 2: 10-02 ∥ 10-03, both depend only on 10-01)
+Last session: 2026-09-08T16:35:44.679Z
+Stopped at: Wave 2 of Phase 10 is fully complete — 10-02 (validator completion) and 10-03 (research
+  queue, timers, effect application) both finished. 10-02 completed all six
+  docs/game-design/technology.md rules (checkTranslationKeys, checkRequirementSatisfiable,
+  checkCrossDatasetReferences added; existing rules extracted into packages/game-data/src/rules.ts as
+  pure, individually-tested functions), 12 new node --test tests, and fixed a pre-existing dangling
+  units.militia translation key the new rule caught. 10-03 shipped the research queue, timers and
+  effect application (see its own SUMMARY for detail). npm run gamedata:validate/typecheck/lint clean;
+  npm test green (98 tests: 86 prior + 12 new game-data tests).
+Resume with: `/gsd:autonomous --from 10` (execute wave 3: 10-05 research command/reconciler, depends on
+  10-01, 10-03)
 Resume file: None
 
 Wave plan for 10 (from each plan's depends_on frontmatter):
   wave 1: 10-01 (catalogue, schema, effects model)                — no shared files — DONE
-  wave 2: 10-02 (validator completion) ∥ 10-03 (research queue)   — both depend only on 10-01 — next
-  wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03
+  wave 2: 10-02 (validator completion) ∥ 10-03 (research queue)   — both depend only on 10-01 — DONE
+  wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03 — next
   wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
