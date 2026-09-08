@@ -6,6 +6,8 @@ namespace Game\Shared\Infrastructure\GameData;
 
 use Game\City\Infrastructure\CityBuilding;
 use Game\Shared\Domain\Economy\ResourceType;
+use Game\Technology\Domain\EffectResolver;
+use Game\Technology\Infrastructure\PlayerTechnology;
 use Illuminate\Support\Collection;
 use JsonException;
 use RuntimeException;
@@ -216,34 +218,55 @@ final class GameDataCatalog
      */
     public function effectsForBuildings(Collection $buildings): array
     {
-        $effects = [];
+        return $this->effectsFor($buildings, collect());
+    }
+
+    /**
+     * @param Collection<int, PlayerTechnology> $technologies
+     * @return array<string, int>
+     */
+    public function effectsForTechnologies(Collection $technologies): array
+    {
+        return $this->effectsFor(collect(), $technologies);
+    }
+
+    /**
+     * Every building's and every technology's current-level effects, resolved
+     * through the one shared {@see EffectResolver}.
+     *
+     * Unlike the accumulator this replaces, an effect target the baseline did
+     * not seed is no longer silently dropped — 10-01 authors targets like
+     * `build.speed` and `march.speed` that no consumer reads yet, and silently
+     * discarding an unknown target would hide a typo forever. Consumers simply
+     * read only the keys they know.
+     *
+     * @param Collection<int, CityBuilding> $buildings
+     * @param Collection<int, PlayerTechnology> $technologies
+     * @return array<string, int>
+     */
+    public function effectsFor(Collection $buildings, Collection $technologies): array
+    {
+        $baseline = [];
         foreach (ResourceType::all() as $resource) {
-            $effects['production.'.$resource->value] = 0;
-            $effects['storage.'.$resource->value] = 0;
+            $baseline['production.'.$resource->value] = 0;
+            $baseline['storage.'.$resource->value] = 0;
         }
+
+        $effectSets = [];
 
         foreach ($buildings as $cityBuilding) {
-            $level = $this->buildingLevel($cityBuilding->building_code, (int) $cityBuilding->level);
-            if ($level === null || ! is_array($level['effects'] ?? null)) {
-                continue;
-            }
-
-            foreach ($level['effects'] as $effect) {
-                if (! is_array($effect)) {
-                    continue;
-                }
-
-                $target = (string) ($effect['target'] ?? '');
-                $operation = (string) ($effect['operation'] ?? '');
-                $value = (int) ($effect['value'] ?? 0);
-
-                if ($operation === 'add' && array_key_exists($target, $effects)) {
-                    $effects[$target] += $value;
-                }
-            }
+            $effectSets[] = $this->levelEffects(
+                $this->buildingLevel($cityBuilding->building_code, (int) $cityBuilding->level),
+            );
         }
 
-        return $effects;
+        foreach ($technologies as $playerTechnology) {
+            $effectSets[] = $this->levelEffects(
+                $this->technologyLevel($playerTechnology->technology_code, (int) $playerTechnology->level),
+            );
+        }
+
+        return EffectResolver::resolve($baseline, $effectSets);
     }
 
     /**
@@ -315,6 +338,32 @@ final class GameDataCatalog
         }
 
         return $result;
+    }
+
+    /**
+     * @param array<string, mixed>|null $level
+     * @return list<array{target:string,operation:string,value:int}>
+     */
+    private function levelEffects(?array $level): array
+    {
+        if ($level === null || ! is_array($level['effects'] ?? null)) {
+            return [];
+        }
+
+        $effects = [];
+        foreach ($level['effects'] as $effect) {
+            if (! is_array($effect)) {
+                continue;
+            }
+
+            $effects[] = [
+                'target' => (string) ($effect['target'] ?? ''),
+                'operation' => (string) ($effect['operation'] ?? ''),
+                'value' => (int) ($effect['value'] ?? 0),
+            ];
+        }
+
+        return $effects;
     }
 
     /**

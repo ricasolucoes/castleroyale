@@ -15,6 +15,7 @@ use Game\Shared\Application\Error\GameException;
 use Game\Shared\Domain\Economy\ResourceBundle;
 use Game\Shared\Domain\Economy\ResourceType;
 use Game\Shared\Infrastructure\GameData\GameDataCatalog;
+use Game\Technology\Infrastructure\PlayerTechnology;
 
 final readonly class CityEconomyService
 {
@@ -272,6 +273,13 @@ final readonly class CityEconomyService
             ->where('city_id', $city->getKey())
             ->get();
 
-        return $this->catalog->effectsForBuildings($buildings);
+        // Technology belongs to the player, not the city, but a city's rates
+        // reflect its owner's research (docs/game-design/technology.md § Effects).
+        $technologies = PlayerTechnology::query()
+            ->where('world_id', $city->world_id)
+            ->where('player_id', $city->player_id)
+            ->get();
+
+        return $this->catalog->effectsFor($buildings, $technologies);
     }
 }
