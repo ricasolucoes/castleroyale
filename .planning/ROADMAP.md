@@ -314,10 +314,10 @@ Plans:
   3. Only one research runs at a time per player; a second returns RESEARCH_IN_PROGRESS.
   4. A completed technology's effect is observable in a recomputed value, for example production rate rising by the documented amount.
   5. The technology tree screen renders dependencies and shows locked, available, in-progress and completed states distinctly.
-**Plans**: 5 plans in 4 waves
+**Plans**: 1/5 plans executed
 
 Plans:
-- [ ] 10-01-technology-catalogue-effects-model-PLAN.md — The eighteen-plus technology tree as versioned game data, its schema, its translations and the catalogue read path (wave 1)
+- [x] 10-01-technology-catalogue-effects-model-PLAN.md — The eighteen-plus technology tree as versioned game data, its schema, its translations and the catalogue read path (wave 1) (completed 2026-09-08)
 - [ ] 10-02-validator-completion-PLAN.md — The three missing validator rules (translation keys, unsatisfiable requirements, cross-dataset refs), every rule under test for the first time, wired into CI (wave 2)
 - [ ] 10-03-research-queue-effects-PLAN.md — Persistence, the shared add-then-multiply permille EffectResolver, the TechnologyGraph tier computation, and the completion service (wave 2)
 - [ ] 10-05-research-command-reconciler-PLAN.md — The research command and its three refusals, the tree endpoint, the reconciler, and the effect proven observable in a recomputed rate (wave 3)
@@ -1192,7 +1192,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
 | 08. Resources & Economy | 5/5 | Complete    | 2026-09-06 |
 | 09. Buildings & Construction | 5/5 | Complete    | 2026-09-07 |
-| 10. Technology & Research | 0/4 | Not started | - |
+| 10. Technology & Research | 1/5 | In Progress  | - |
 | 11. Unit System | 0/4 | Not started | - |
 | 12. Training System | 0/4 | Not started | - |
 | 13. Heroes | 0/5 | Not started | - |

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 09-01-building-catalogue-balance-boundary-PLAN.md. Wave 1 (09-01 + 09-02) is
-last_updated: "2026-09-07T02:53:19.080Z"
+stopped_at: Completed 10-01-technology-catalogue-effects-model-PLAN.md
+last_updated: "2026-09-08T16:16:58.373Z"
 progress:
   total_phases: 69
   completed_phases: 10
-  total_plans: 45
-  completed_plans: 46
+  total_plans: 50
+  completed_plans: 47
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 09 — buildings-construction
+**Current focus:** Phase 10 — technology-research
 
 ## Current Position
 
-Phase: 09 (buildings-construction) — EXECUTING
-Plan: 2 of 5 complete (09-01, 09-02 done — wave 1 complete; 09-04/09-05 wave 2 next; 09-03 wave 3)
+Phase: 10 (technology-research) — EXECUTING
+Plan: 2 of 5
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Plan: 2 of 5 complete (09-01, 09-02 done — wave 1 complete; 09-04/09-05 wave 2
 | Phase 08-resources-economy P04 | 7min | 3 tasks | 2 files |
 | Phase 09 P02 | 15min | 3 tasks | 9 files |
 | Phase 09-buildings-construction P01 | 25min | 3 tasks | 14 files |
+| Phase 10-technology-research P01 | 20min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,7 @@ Recent decisions affecting current work:
 - [Phase 09 P01]: ADR-020 defers ADR-013's database-import clause — packages/game-data JSON stays the runtime source of truth through Phase 09; game:import-data is still the real, load-bearing import-time validator. Revisit at Phase 31 (Events & LiveOps) or Phase 34 (Admin), whichever lands first.
 - [Phase 09 P01]: Failure messages that must contain a literal locale name (for grep-based verification) are built with explicit per-locale if/return branches, not string interpolation — interpolating a loop variable puts the variable reference, not its value, into the file's source bytes.
 - [Phase 09 P01]: $this->artisan(...)->expectsOutputToContain() cannot assert two substrings that both live on the same single output line — each call backs a separate Mockery expectation on doWrite(), and one real call only satisfies one of them. Use Artisan::call() + Artisan::output() with plain str_contains-based assertions instead when a failure message must be checked for multiple substrings at once.
+- [Phase 10]: [Phase 10 P01]: Technology dataset reuses buildings.schema.json's requirement/effect/resourceCost $defs byte-identical; alliance technologies (diplomatic_relations, trade_agreements) are Phase-22-deferred taxonomy placeholders using inert unit.defense/march.speed targets rather than an off-contract alliance.* target.
 
 ### Pending Todos
 
@@ -158,24 +160,23 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-06T03:06:17.952Z
-Stopped at: Completed 09-01-building-catalogue-balance-boundary-PLAN.md. Wave 1 (09-01 + 09-02) is
-  now fully complete. 09-01 shipped all 3 tasks: the eighteen-building catalogue with the Palace gate
-  as data, packages/game-data/schema/buildings.schema.json, php artisan game:import-data (naming the
-  offending code on shape/level/duplicate/dangling-reference/Palace-gate/translation/starter-integrity
-  failures), the architecture test forbidding balance tables in PHP (proven to bite), and ADR-020
-  (defers ADR-013's database-import clause; JSON stays the runtime source through Phase 09). Note: due
-  to a shared-git-index race with the concurrent 09-02 agent, Task 3's four files (ArchitectureTest.php,
-  config/game.php, ADR-020, DECISIONS.md) landed inside 09-02's completion commit (`1b6b52f`) rather
-  than a dedicated 09-01 commit — content confirmed intact via `git show --stat`/`git show -- <path>`,
-  nothing lost, see 09-01-SUMMARY.md § Issues Encountered.
-Resume with: `/gsd:autonomous --from 9` (execute wave 2: 09-04 ∥ 09-05, then wave 3: 09-03)
+Last session: 2026-09-08T16:16:58.370Z
+Stopped at: Completed 10-01-technology-catalogue-effects-model-PLAN.md. Wave 1 of Phase 10 is fully
+  complete. 10-01 shipped all 3 tasks: the 16-technology dataset (all 8 categories, a real DAG with a
+  two-prerequisite node and a cross-category edge) at packages/game-data/data/technologies.json, its
+  schema at packages/game-data/schema/technologies.schema.json reusing buildings.schema.json's $defs
+  byte-identically, translations in en/pt-BR/es mvp.json, GameDataCatalog::technologies()/
+  technology()/technologyLevel() mirroring the building read path, and game:import-data technology
+  validation (level-sequence, max_level, name/description key convention). Full suite green: 195 Pest
+  tests, PHPStan 0 errors, Pint clean, npm run gamedata:validate/typecheck/lint clean.
+Resume with: `/gsd:autonomous --from 10` (execute wave 2: 10-02 ∥ 10-03, both depend only on 10-01)
 Resume file: None
 
-Wave plan for 09, already verified collision-free for parallel execution in one tree:
-  wave 1: 09-01 (catalogue) ∥ 09-02 (queue contract)   — no shared files — BOTH DONE
-  wave 2: 09-04 (requirements) ∥ 09-05 (mobile)        — no shared files — next
-  wave 3: 09-03 (completion/reconciler proof suite)
+Wave plan for 10 (from each plan's depends_on frontmatter):
+  wave 1: 10-01 (catalogue, schema, effects model)                — no shared files — DONE
+  wave 2: 10-02 (validator completion) ∥ 10-03 (research queue)   — both depend only on 10-01 — next
+  wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03
+  wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
 https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 (green, 4 jobs).
