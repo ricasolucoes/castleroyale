@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import type { CitySlot, Construction, ResourceBundle } from '@castleroyale/contracts';
 import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
@@ -165,6 +166,14 @@ export function CitySlotDetailSheet({
 
             {upgrade.error && (
               <Text color={theme.color.text.secondary}>{t(upgradeErrorKey(upgrade.error))}</Text>
+            )}
+
+            {building.code === 'academy' && (
+              <Button
+                variant="secondary"
+                title={t('city.open_research')}
+                onPress={() => router.push('/technology')}
+              />
             )}
           </View>
         )}
