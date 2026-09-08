@@ -177,6 +177,9 @@
     "duration_accessible": "Tempo de construção: {duration}",
     "upgrade_accessible": "Melhorar {building}"
   },
+  "units": {
+    "militia": "Milícia"
+  },
   "technologies": {
     "agriculture": "Agricultura",
     "agriculture_desc": "Aumenta a produção de comida.",

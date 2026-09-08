@@ -26,6 +26,10 @@ import {
   buildDependencyGraph,
   findCycle,
   checkSameDatasetReferences,
+  checkTranslationKeys,
+  checkRequirementSatisfiable,
+  checkCrossDatasetReferences,
+  buildMaxLevelsByTypeAndCode,
 } from './rules.ts';
 
 const dataDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
@@ -38,6 +42,29 @@ function fail(dataset: string, message: string): void {
 
 function readDataset(file: string): unknown {
   return JSON.parse(readFileSync(join(dataDir, file), 'utf-8'));
+}
+
+/**
+ * Locale catalogues live at packages/localization/locales/{locale}/mvp.json,
+ * sibling to packages/game-data. Returns null if the package itself is
+ * missing, so the caller can report that once instead of crashing.
+ */
+function loadCatalogues(): Record<string, unknown> | null {
+  const localesDir = join(
+    dirname(fileURLToPath(import.meta.url)),
+    '..',
+    '..',
+    'localization',
+    'locales',
+  );
+  if (!existsSync(localesDir)) return null;
+
+  const catalogues: Record<string, unknown> = {};
+  for (const locale of readdirSync(localesDir)) {
+    const file = join(localesDir, locale, 'mvp.json');
+    if (existsSync(file)) catalogues[locale] = JSON.parse(readFileSync(file, 'utf-8'));
+  }
+  return catalogues;
 }
 
 if (!existsSync(dataDir)) {
@@ -78,6 +105,22 @@ for (const { name, rows } of datasets) {
   const graph = buildDependencyGraph(name, rows);
   const cycle = findCycle(graph);
   if (cycle !== null) fail(name, `dependency cycle: ${cycle.join(' -> ')}`);
+}
+
+problems.push(...checkCrossDatasetReferences(datasets));
+
+const maxLevelsByTypeAndCode = buildMaxLevelsByTypeAndCode(datasets);
+for (const { name, rows } of datasets) {
+  problems.push(...checkRequirementSatisfiable(name, rows, maxLevelsByTypeAndCode));
+}
+
+const catalogues = loadCatalogues();
+if (catalogues === null) {
+  fail('localization', 'packages/localization is missing — translation key checks were skipped');
+} else {
+  for (const { name, rows } of datasets) {
+    problems.push(...checkTranslationKeys(name, rows, catalogues));
+  }
 }
 
 // The fixed build-plot roster and the starter buildings that address it. This

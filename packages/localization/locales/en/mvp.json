@@ -177,6 +177,9 @@
     "duration_accessible": "Build time: {duration}",
     "upgrade_accessible": "Upgrade {building}"
   },
+  "units": {
+    "militia": "Militia"
+  },
   "technologies": {
     "agriculture": "Agriculture",
     "agriculture_desc": "Increases food production.",
