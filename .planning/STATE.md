@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 10-02-validator-completion-PLAN.md (wave 2 of Phase 10 complete alongside 10-03)
-last_updated: "2026-09-08T16:35:44.682Z"
+stopped_at: Completed 10-05-research-command-reconciler-PLAN.md (wave 3 of Phase 10 complete); wave 4 (10-04 mobile technology tree) next
+last_updated: "2026-09-08T17:06:17.324Z"
 progress:
   total_phases: 69
   completed_phases: 10
   total_plans: 50
-  completed_plans: 49
+  completed_plans: 50
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-08-25)
 ## Current Position
 
 Phase: 10 (technology-research) — EXECUTING
-Plan: 3 of 5 (wave 2 — 10-02 validator completion, 10-03 research queue — both complete; wave 3, 10-05, next)
+Plan: 4 of 5 (wave 3 — 10-05 research command/reconciler — complete; wave 4, 10-04 mobile technology tree, next)
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Plan: 3 of 5 (wave 2 — 10-02 validator completion, 10-03 research queue — bo
 | Phase 10-technology-research P01 | 20min | 3 tasks | 8 files |
 | Phase 10-technology-research P02 | 15min | 3 tasks | 8 files |
 | Phase 10-technology-research P03 | 16min | 4 tasks | 12 files |
+| Phase 10-technology-research P05 | 35min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -139,6 +140,9 @@ Recent decisions affecting current work:
 - [Phase 10-technology-research]: [Phase 10 P03] EffectResolver::resolve() is shared by GameDataCatalog::effectsFor() for both buildings and technologies; effectsForBuildings() kept as a thin wrapper, no remaining direct caller but signature preserved for future/back-compat use.
 - [Phase 10-technology-research]: [Phase 10 P02] Every validator rule in packages/game-data/src/rules.ts is a pure function (data in, Problem[] out); validate.ts is a thin CLI. findCycle moved verbatim, not rewritten. Task 4 (wire validator into CI) required no ci.yml change — the existing "Mobile & packages" job already ran gamedata:validate and workspace-wide npm test, which picked up game-data's new test script automatically.
 - [Phase 10-technology-research]: [Phase 10 P02] Fixed a pre-existing bug the new checkTranslationKeys rule caught: units.json's "militia" name_key resolved in no locale catalogue at all (PHP's ImportGameDataCommand::checkTranslations only ever validated buildings, never units). Added a "units" namespace to en/pt-BR/es mvp.json.
+- [Phase 10-technology-research]: Renamed ResearchCompletionServiceTest.php to ResearchScopeTest.php and dropped its duplicated idempotency test — Pest's --filter substring-matched the old name against the new ResearchCompletionTest.php, breaking 10-05's own acceptance criterion
+- [Phase 10-technology-research]: ResearchEffectTest.php resolves GameDataCatalog::effectsFor() against synthetic unpersisted CityBuilding rows to survive integer truncation of the placeholder +1/second building production, while still driving the real HTTP research command and reconciler for the PlayerTechnology data
+- [Phase 10-technology-research]: BuildingRequirementEvaluator::unmetFor(type, code, targetLevel, buildingLevels, technologyLevels) generalises the Palace-gate mechanism for both buildings and technologies; unmet() is now a thin wrapper preserving 09-04's array<string,int> contract
 
 ### Pending Todos
 
@@ -166,24 +170,25 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T16:35:44.679Z
-Stopped at: Wave 2 of Phase 10 is fully complete — 10-02 (validator completion) and 10-03 (research
-  queue, timers, effect application) both finished. 10-02 completed all six
-  docs/game-design/technology.md rules (checkTranslationKeys, checkRequirementSatisfiable,
-  checkCrossDatasetReferences added; existing rules extracted into packages/game-data/src/rules.ts as
-  pure, individually-tested functions), 12 new node --test tests, and fixed a pre-existing dangling
-  units.militia translation key the new rule caught. 10-03 shipped the research queue, timers and
-  effect application (see its own SUMMARY for detail). npm run gamedata:validate/typecheck/lint clean;
-  npm test green (98 tests: 86 prior + 12 new game-data tests).
-Resume with: `/gsd:autonomous --from 10` (execute wave 3: 10-05 research command/reconciler, depends on
-  10-01, 10-03)
+Last session: 2026-09-08T17:06:17.320Z
+Stopped at: Completed 10-05-research-command-reconciler-PLAN.md (wave 3 of Phase 10 complete).
+  10-05 shipped POST /game/technologies/{code}/research (locked debit, fixed
+  max/locked/in-progress/insufficient-resources refusal precedence),
+  GET /game/technologies (tier, prerequisites, server-computed state), the
+  ResearchReconciler/CompleteResearch job pair mirroring Construction's, and
+  proof of ROADMAP criterion 4 (a completed technology's effect observable in
+  a recomputed production rate, not merely a database row) — see
+  10-05-research-command-reconciler-SUMMARY.md for detail. Full pest suite 223
+  passed; PHPStan 0 errors; Pint clean; npm run contracts:check exits 0.
+Resume with: `/gsd:autonomous --from 10` (execute wave 4: 10-04 mobile technology tree, depends on
+  10-01, 10-03, 10-05 — all now done)
 Resume file: None
 
 Wave plan for 10 (from each plan's depends_on frontmatter):
   wave 1: 10-01 (catalogue, schema, effects model)                — no shared files — DONE
   wave 2: 10-02 (validator completion) ∥ 10-03 (research queue)   — both depend only on 10-01 — DONE
-  wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03 — next
-  wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05
+  wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03 — DONE
+  wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05 — next
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
 https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 (green, 4 jobs).
