@@ -33,6 +33,7 @@ final class ImportGameDataCommand extends Command
     public function handle(GameDataCatalog $catalog): int
     {
         $buildings = $catalog->buildings();
+        $technologies = $catalog->technologies();
         $problems = [
             ...$this->checkShape($buildings),
             ...$this->checkLevels($buildings),
@@ -41,6 +42,9 @@ final class ImportGameDataCommand extends Command
             ...$this->checkPalaceGate($buildings),
             ...$this->checkTranslations($buildings),
             ...$this->checkStarterIntegrity($catalog),
+            ...$this->checkTechnologyLevelSequence($technologies),
+            ...$this->checkTechnologyMaxLevel($technologies),
+            ...$this->checkTechnologyKeys($technologies),
         ];
 
         if ($problems !== []) {
@@ -56,7 +60,13 @@ final class ImportGameDataCommand extends Command
             $buildings,
         ));
 
+        $technologyLevelCount = array_sum(array_map(
+            static fn (array $technology): int => is_array($technology['levels'] ?? null) ? count($technology['levels']) : 0,
+            $technologies,
+        ));
+
         $this->line(sprintf('buildings: %d definitions, %d levels', count($buildings), $levelCount));
+        $this->line(sprintf('technologies: %d definitions, %d levels', count($technologies), $technologyLevelCount));
         $this->line(sprintf('city-slots: %d plots', count($catalog->citySlots())));
         $this->line(sprintf(
             'starter: %d buildings, %d unit stack%s',
@@ -364,6 +374,99 @@ final class ImportGameDataCommand extends Command
 
             if (! in_array($slot, $slots, true)) {
                 $problems[] = "starter: building \"{$code}\" is assigned unknown slot \"{$slot}\"";
+            }
+        }
+
+        return $problems;
+    }
+
+    /**
+     * `levels[]` must be a contiguous 1..N sequence, where N is the number of
+     * authored levels — independent of what `max_level` claims (that is
+     * checkTechnologyMaxLevel's job).
+     *
+     * @param list<array<string, mixed>> $technologies
+     * @return list<string>
+     */
+    private function checkTechnologyLevelSequence(array $technologies): array
+    {
+        $problems = [];
+
+        foreach ($technologies as $technology) {
+            $code = (string) ($technology['code'] ?? '<unknown>');
+            $levels = is_array($technology['levels'] ?? null) ? $technology['levels'] : [];
+
+            $levelNumbers = [];
+            foreach ($levels as $level) {
+                if (is_array($level) && is_int($level['level'] ?? null)) {
+                    $levelNumbers[] = $level['level'];
+                }
+            }
+
+            $sorted = $levelNumbers;
+            sort($sorted);
+            $expected = range(1, count($levelNumbers));
+
+            if ($sorted !== $expected) {
+                $problems[] = sprintf(
+                    'technology "%s" has levels [%s]; expected a contiguous 1..%d',
+                    $code,
+                    implode(',', $levelNumbers),
+                    count($levelNumbers),
+                );
+            }
+        }
+
+        return $problems;
+    }
+
+    /**
+     * `max_level` must equal the number of authored levels.
+     *
+     * @param list<array<string, mixed>> $technologies
+     * @return list<string>
+     */
+    private function checkTechnologyMaxLevel(array $technologies): array
+    {
+        $problems = [];
+
+        foreach ($technologies as $technology) {
+            $code = (string) ($technology['code'] ?? '<unknown>');
+            $maxLevel = $technology['max_level'] ?? null;
+            $levels = is_array($technology['levels'] ?? null) ? $technology['levels'] : [];
+
+            if (is_int($maxLevel) && count($levels) !== $maxLevel) {
+                $problems[] = "technology \"{$code}\" declares max_level {$maxLevel} but authors ".count($levels).' levels';
+            }
+        }
+
+        return $problems;
+    }
+
+    /**
+     * `name_key` must equal `technologies.<code>` and `description_key` must
+     * equal `technologies.<code>_desc`.
+     *
+     * @param list<array<string, mixed>> $technologies
+     * @return list<string>
+     */
+    private function checkTechnologyKeys(array $technologies): array
+    {
+        $problems = [];
+
+        foreach ($technologies as $technology) {
+            $code = (string) ($technology['code'] ?? '<unknown>');
+
+            $nameKey = $technology['name_key'] ?? null;
+            $expectedNameKey = 'technologies.'.$code;
+            if (is_string($nameKey) && $nameKey !== $expectedNameKey) {
+                $problems[] = "technology \"{$code}\" has name_key \"{$nameKey}\"; expected \"{$expectedNameKey}\"";
+            }
+
+            $descriptionKey = $technology['description_key'] ?? null;
+            $expectedDescriptionKey = 'technologies.'.$code.'_desc';
+            if (is_string($descriptionKey) && $descriptionKey !== $expectedDescriptionKey) {
+                $problems[] = "technology \"{$code}\" has description_key \"{$descriptionKey}\"; expected \"{$expectedDescriptionKey}\"";
             }
         }
 

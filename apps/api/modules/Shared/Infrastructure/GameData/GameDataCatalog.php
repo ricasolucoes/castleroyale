@@ -122,6 +122,58 @@ final class GameDataCatalog
     /**
      * @return list<array<string, mixed>>
      */
+    public function technologies(): array
+    {
+        $rows = $this->read('technologies.json');
+        $technologies = [];
+
+        foreach ($rows as $row) {
+            if (is_array($row)) {
+                /** @var array<string, mixed> $row */
+                $technologies[] = $row;
+            }
+        }
+
+        return $technologies;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function technology(string $code): ?array
+    {
+        foreach ($this->technologies() as $technology) {
+            if (($technology['code'] ?? null) === $code) {
+                return $technology;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function technologyLevel(string $code, int $level): ?array
+    {
+        $technology = $this->technology($code);
+        if ($technology === null || ! is_array($technology['levels'] ?? null)) {
+            return null;
+        }
+
+        foreach ($technology['levels'] as $levelData) {
+            if (is_array($levelData) && (int) ($levelData['level'] ?? 0) === $level) {
+                /** @var array<string, mixed> $levelData */
+                return $levelData;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function units(): array
     {
         $rows = $this->read('units.json');
