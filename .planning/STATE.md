@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Foundation to Launch
 status: unknown
-stopped_at: Completed 10-05-research-command-reconciler-PLAN.md (wave 3 of Phase 10 complete); wave 4 (10-04 mobile technology tree) next
-last_updated: "2026-09-08T17:06:17.324Z"
+stopped_at: Completed 10-04-mobile-technology-tree-PLAN.md (wave 4 of Phase 10 complete; Phase 10 now feature-complete, all 5 plans done)
+last_updated: "2026-09-08T17:36:47.173Z"
 progress:
   total_phases: 69
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 50
-  completed_plans: 50
+  completed_plans: 51
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-25)
 
 **Core value:** The server owns the truth — a player's empire is exactly what the server says it is, always.
-**Current focus:** Phase 10 — technology-research
+**Current focus:** Phase 10 — technology-research — COMPLETE; next phase not yet started
 
 ## Current Position
 
-Phase: 10 (technology-research) — EXECUTING
-Plan: 4 of 5 (wave 3 — 10-05 research command/reconciler — complete; wave 4, 10-04 mobile technology tree, next)
+Phase: 10 (technology-research) — COMPLETE (5/5 plans)
+Plan: 5 of 5 — 10-04 mobile technology tree — complete. All waves of Phase 10 done.
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Plan: 4 of 5 (wave 3 — 10-05 research command/reconciler — complete; wave 4,
 | Phase 10-technology-research P02 | 15min | 3 tasks | 8 files |
 | Phase 10-technology-research P03 | 16min | 4 tasks | 12 files |
 | Phase 10-technology-research P05 | 35min | 3 tasks | 15 files |
+| Phase 10-technology-research P04 | 28min | 3 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,9 @@ Recent decisions affecting current work:
 - [Phase 10-technology-research]: Renamed ResearchCompletionServiceTest.php to ResearchScopeTest.php and dropped its duplicated idempotency test — Pest's --filter substring-matched the old name against the new ResearchCompletionTest.php, breaking 10-05's own acceptance criterion
 - [Phase 10-technology-research]: ResearchEffectTest.php resolves GameDataCatalog::effectsFor() against synthetic unpersisted CityBuilding rows to survive integer truncation of the placeholder +1/second building production, while still driving the real HTTP research command and reconciler for the PlayerTechnology data
 - [Phase 10-technology-research]: BuildingRequirementEvaluator::unmetFor(type, code, targetLevel, buildingLevels, technologyLevels) generalises the Palace-gate mechanism for both buildings and technologies; unmet() is now a thin wrapper preserving 09-04's array<string,int> contract
+- [Phase 10-technology-research]: [Phase 10 P04] packages/contracts/src/index.ts never re-exported Technology/TechnologyLevel/TechnologyEffect/TechnologyPrerequisite/ActiveResearch/ResearchOrder/TechnologyTreeData; added the seven named exports (10-05 added the schemas but not the export lines)
+- [Phase 10-technology-research]: [Phase 10 P04] TechnologyDetailSheet.tsx built during Task 2's work (not Task 3) because app/technology.tsx renders it directly and cannot typecheck without it existing; Task 3 added only the Academy button and both test files
+- [Phase 10-technology-research]: [Phase 10 P04] serverProgress.ts extracts ConstructionQueueStrip's 1Hz skew-corrected percent-complete arithmetic into a shared helper used by the new node card; ConstructionQueueStrip.tsx itself left untouched since it already ships tested
 
 ### Pending Todos
 
@@ -170,25 +174,24 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-08T17:06:17.320Z
-Stopped at: Completed 10-05-research-command-reconciler-PLAN.md (wave 3 of Phase 10 complete).
-  10-05 shipped POST /game/technologies/{code}/research (locked debit, fixed
-  max/locked/in-progress/insufficient-resources refusal precedence),
-  GET /game/technologies (tier, prerequisites, server-computed state), the
-  ResearchReconciler/CompleteResearch job pair mirroring Construction's, and
-  proof of ROADMAP criterion 4 (a completed technology's effect observable in
-  a recomputed production rate, not merely a database row) — see
-  10-05-research-command-reconciler-SUMMARY.md for detail. Full pest suite 223
-  passed; PHPStan 0 errors; Pint clean; npm run contracts:check exits 0.
-Resume with: `/gsd:autonomous --from 10` (execute wave 4: 10-04 mobile technology tree, depends on
-  10-01, 10-03, 10-05 — all now done)
+Last session: 2026-09-08T17:36:47.170Z
+Stopped at: Completed 10-04-mobile-technology-tree-PLAN.md (wave 4 of Phase 10 complete; Phase 10 now feature-complete, all 5 plans done)
+  10-04 shipped the mobile technology tree screen (category-stacked, tier-laned
+  layout), TechnologyNodeCard's four shape-distinct states, TechnologyDetailSheet's
+  six-way CTA precedence, and the Academy's Open Research entry point — built
+  directly against 10-05's live GET /game/technologies and
+  POST /game/technologies/{code}/research contract. 16 mobile test suites green
+  (105 tests); typecheck/lint clean workspace-wide; zero diff on shared
+  Button/Badge/BottomSheet — see 10-04-mobile-technology-tree-SUMMARY.md for detail.
+Resume with: next phase after Phase 10 (technology-research) — see ROADMAP.md for
+  Phase 11 onward.
 Resume file: None
 
-Wave plan for 10 (from each plan's depends_on frontmatter):
+Wave plan for 10 (from each plan's depends_on frontmatter) — ALL DONE, Phase 10 complete:
   wave 1: 10-01 (catalogue, schema, effects model)                — no shared files — DONE
   wave 2: 10-02 (validator completion) ∥ 10-03 (research queue)   — both depend only on 10-01 — DONE
   wave 3: 10-05 (research command/reconciler)                     — depends on 10-01, 10-03 — DONE
-  wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05 — next
+  wave 4: 10-04 (mobile technology tree)                          — depends on 10-01, 10-03, 10-05 — DONE
 
 **Phase 01 evidence:** `01-VERIFICATION.md` (passed 5/5), four SUMMARY.md files, CI run
 https://github.com/ricasolucoes/castleroyale/actions/runs/32802315288 (green, 4 jobs).

@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 07: City Foundation** - City entity, building slots, city screen, private city channel (completed 2026-09-05)
 - [x] **Phase 08: Resources & Economy** - Production, storage caps, the ledger, atomic spending under concurrency (completed 2026-09-06)
 - [x] **Phase 09: Buildings & Construction** - Building catalogue, upgrade queue, timers, completion jobs, reconciliation (completed 2026-09-07)
-- [ ] **Phase 10: Technology & Research** - Research tree with explicit dependencies, effects and a cycle validator
+- [x] **Phase 10: Technology & Research** - Research tree with explicit dependencies, effects and a cycle validator (completed 2026-09-08)
 - [ ] **Phase 11: Unit System** - Unit catalogue, stats, counter matrix, power contribution
 - [ ] **Phase 12: Training System** - Barracks queues, batch training, upkeep, cancellation and refunds
 - [ ] **Phase 13: Heroes** - Hero entity, rarity, levels, skills, equipment, assignment bonuses
@@ -314,14 +314,14 @@ Plans:
   3. Only one research runs at a time per player; a second returns RESEARCH_IN_PROGRESS.
   4. A completed technology's effect is observable in a recomputed value, for example production rate rising by the documented amount.
   5. The technology tree screen renders dependencies and shows locked, available, in-progress and completed states distinctly.
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans complete
 
 Plans:
 - [x] 10-01-technology-catalogue-effects-model-PLAN.md — The eighteen-plus technology tree as versioned game data, its schema, its translations and the catalogue read path (wave 1) (completed 2026-09-08)
 - [x] 10-02-validator-completion-PLAN.md — The three missing validator rules (translation keys, unsatisfiable requirements, cross-dataset refs), every rule under test for the first time, wired into CI (wave 2) (completed 2026-09-08)
 - [x] 10-03-research-queue-effects-PLAN.md — Persistence, the shared add-then-multiply permille EffectResolver, the TechnologyGraph tier computation, and the completion service (wave 2) (completed 2026-09-08)
 - [x] 10-05-research-command-reconciler-PLAN.md — The research command and its three refusals, the tree endpoint, the reconciler, and the effect proven observable in a recomputed rate (wave 3) (completed 2026-09-08)
-- [ ] 10-04-mobile-technology-tree-PLAN.md — The tree screen, the four node states, the six-way CTA and the Academy entry point (wave 4)
+- [x] 10-04-mobile-technology-tree-PLAN.md — The tree screen, the four node states, the six-way CTA and the Academy entry point (wave 4) (completed 2026-09-08)
 
 ### Phase 11: Unit System
 **Goal**: A complete, data-driven unit roster with stats and a counter system richer than rock-paper-scissors.
@@ -1192,7 +1192,7 @@ Phases execute in numeric order: 00 → 01 → 02 → ... → 53 → 54
 | 07. City Foundation | 4/4 | Complete    | 2026-09-05 |
 | 08. Resources & Economy | 5/5 | Complete    | 2026-09-06 |
 | 09. Buildings & Construction | 5/5 | Complete    | 2026-09-07 |
-| 10. Technology & Research | 4/5 | In Progress|  |
+| 10. Technology & Research | 5/5 | Complete   | 2026-09-08 |
 | 11. Unit System | 0/4 | Not started | - |
 | 12. Training System | 0/4 | Not started | - |
 | 13. Heroes | 0/5 | Not started | - |
