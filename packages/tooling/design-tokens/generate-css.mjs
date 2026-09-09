@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { motion, palette, radius, spacing, typography } from './index.ts';
+import { motion, palette, radius, resourceColors, spacing, typography } from './index.ts';
 
 const flatten = (value, prefix = []) => Object.entries(value).flatMap(([key, child]) => {
   const path = [...prefix, key];
@@ -34,6 +34,7 @@ const themeBlock = (themeName, theme) => [
   themeName === 'light' ? ':root {' : "[data-theme='" + themeName + "'] {",
   themeName === 'light' ? '    color-scheme: light;' : '    color-scheme: dark;',
   ...flatten(theme).map(([path, value]) => '    ' + cssName(path) + ': ' + value + ';'),
+  ...flatten(resourceColors, ['resource']).map(([path, value]) => '    ' + cssName(path) + ': ' + value + ';'),
   ...flatten(spacing, ['spacing']).map(([path, value]) => '    ' + cssName(path) + ': ' + unit(path, value) + ';'),
   ...flatten(radius, ['radius']).map(([path, value]) => '    ' + cssName(path) + ': ' + unit(path, value) + ';'),
   ...flatten(typography, ['typography']).map(([path, value]) => '    ' + cssName(path) + ': ' + unit(path, value) + ';'),

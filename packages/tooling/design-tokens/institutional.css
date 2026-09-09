@@ -16,6 +16,11 @@
     --token-danger: #A4212B;
     --token-success: #3F7A4F;
     --token-warning: #C08A2E;
+    --token-resource-food: #7A9A4F;
+    --token-resource-wood: #8A6236;
+    --token-resource-stone: #8C8C87;
+    --token-resource-iron: #6E7B8B;
+    --token-resource-gold: #C08A2E;
     --token-space-xs: 4px;
     --token-space-sm: 8px;
     --token-space-md: 12px;
@@ -74,6 +79,11 @@
     --token-danger: #C4323D;
     --token-success: #4F9463;
     --token-warning: #DBA748;
+    --token-resource-food: #7A9A4F;
+    --token-resource-wood: #8A6236;
+    --token-resource-stone: #8C8C87;
+    --token-resource-iron: #6E7B8B;
+    --token-resource-gold: #C08A2E;
     --token-space-xs: 4px;
     --token-space-sm: 8px;
     --token-space-md: 12px;
