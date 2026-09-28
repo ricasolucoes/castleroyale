@@ -91,7 +91,7 @@
             "./vendor/bin/pest --coverage --min=70"
         ],
         "game:validate": [
-            "@php artisan game:validate-data"
+            "@php artisan game:import-data"
         ],
         "ci": [
             "@lint:check",

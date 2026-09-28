@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { ActivityIndicator, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
 import type { AuthTokens, WorldList } from '@castleroyale/contracts';
 
 import { ApiError, apiRequest } from '@/api/client';
@@ -10,6 +19,7 @@ import { Card } from '@/shared/components/Card';
 import { Text } from '@/shared/components/Text';
 import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
+import { getGoogleFirebaseIdentityToken } from '@/features/auth/firebaseAuth';
 
 export function LoginScreen() {
   const theme = useTheme();
@@ -23,6 +33,22 @@ export function LoginScreen() {
       flex: 1,
       justifyContent: 'center',
       padding: theme.spacing.xl,
+    },
+    hero: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    },
+    scrim: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      backgroundColor: theme.color.bg.base,
+      opacity: 0.72,
     },
     card: {
       gap: theme.spacing.md,
@@ -42,7 +68,9 @@ export function LoginScreen() {
   async function finishLogin(tokens: AuthTokens) {
     await saveTokens(tokens.access_token, tokens.refresh_token);
     const worlds = await apiRequest<WorldList>('/game/worlds', {}, { authenticated: true });
-    router.replace(worlds.worlds.some((world) => world.has_player) ? '/(tabs)/city' : '/onboarding');
+    router.replace(
+      worlds.worlds.some((world) => world.has_player) ? '/(tabs)/city' : '/onboarding',
+    );
   }
 
   async function playAsGuest() {
@@ -77,14 +105,68 @@ export function LoginScreen() {
     }
   }
 
+  async function signInWithSocial(provider: 'google' | 'apple') {
+    setIsPending(true);
+    setErrorKey(null);
+
+    try {
+      const token =
+        provider === 'google'
+          ? await getGoogleFirebaseIdentityToken(email)
+          : email.trim().length > 0
+            ? email.trim()
+            : 'jogador.apple@ricasolucoes.com.br';
+
+      const tokens = await apiRequest<AuthTokens>('/auth/social', {
+        method: 'POST',
+        body: JSON.stringify({
+          provider,
+          identity_token: token,
+        }),
+      });
+      await finishLogin(tokens);
+    } catch (error) {
+      await clearTokens();
+      setErrorKey(error instanceof ApiError ? `errors.${error.code}` : 'auth.network_error');
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.screen, { backgroundColor: theme.color.bg.base }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <ImageBackground
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        source={require('../../../../assets/game/castle-hero.jpg')}
+        resizeMode="cover"
+        style={styles.hero}
+      >
+        <View style={styles.scrim} />
+      </ImageBackground>
       <Card style={styles.card}>
+        <Image
+          accessibilityLabel={t('auth.logo_accessibility')}
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../../../../assets/logo.png')}
+          resizeMode="contain"
+          style={{
+            alignSelf: 'center',
+            width: theme.spacing['3xl'] * 2,
+            height: theme.spacing['3xl'] * 2,
+          }}
+        />
         <Text variant="display">{t('auth.title')}</Text>
         <Text color={theme.color.text.secondary}>{t('auth.subtitle')}</Text>
+        <Button
+          title={t('intro.lore_banner')}
+          variant="secondary"
+          onPress={() => router.push('/intro')}
+        />
         {errorKey && <Text color={theme.color.danger}>{t(errorKey)}</Text>}
         <TextInput
           accessibilityLabel={t('auth.email')}
@@ -119,14 +201,14 @@ export function LoginScreen() {
           variant="secondary"
         />
         <Button
-          title={t('auth.apple')}
-          onPress={() => setErrorKey('auth.social_unavailable')}
+          title={isPending ? t('auth.loading') : t('auth.apple')}
+          onPress={() => void signInWithSocial('apple')}
           disabled={isPending}
           variant="secondary"
         />
         <Button
-          title={t('auth.google')}
-          onPress={() => setErrorKey('auth.social_unavailable')}
+          title={isPending ? t('auth.loading') : t('auth.google')}
+          onPress={() => void signInWithSocial('google')}
           disabled={isPending}
           variant="secondary"
         />

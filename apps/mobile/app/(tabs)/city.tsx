@@ -1,12 +1,9 @@
-import { ActivityIndicator, View } from 'react-native';
-
 import { ApiError } from '@/api/client';
 import { Button } from '@/shared/components/Button';
-import { Text } from '@/shared/components/Text';
+import { SceneMessage } from '@/shared/components/SceneMessage';
 import { CityScene } from '@/features/city/components/CityScene';
 import { useCityQuery } from '@/features/city/api/useCityQuery';
 import { useCityRealtime } from '@/features/city/realtime/useCityRealtime';
-import { useTheme } from '@/theme';
 import { useTranslation } from '@/i18n/useTranslation';
 
 function errorKey(error: unknown): string {
@@ -14,7 +11,6 @@ function errorKey(error: unknown): string {
 }
 
 export default function CityScreen() {
-  const theme = useTheme();
   const { t } = useTranslation();
   const cityQuery = useCityQuery();
 
@@ -23,34 +19,22 @@ export default function CityScreen() {
   useCityRealtime(cityQuery.data?.city.id ?? null, cityQuery.data?.realtime ?? null);
 
   if (cityQuery.isPending) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: theme.color.bg.base,
-        }}
-      >
-        <ActivityIndicator color={theme.color.accent.bronze} />
-      </View>
-    );
+    return <SceneMessage tone="working" title={t('city.loading')} />;
   }
 
   if (cityQuery.error || !cityQuery.data) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: theme.color.bg.base,
-          gap: theme.spacing.md,
-        }}
-      >
-        <Text color={theme.color.danger}>{t(errorKey(cityQuery.error))}</Text>
-        <Button variant="secondary" title={t('common.retry')} onPress={() => void cityQuery.refetch()} />
-      </View>
+      <SceneMessage
+        tone="problem"
+        title={t(errorKey(cityQuery.error))}
+        action={
+          <Button
+            variant="secondary"
+            title={t('common.retry')}
+            onPress={() => void cityQuery.refetch()}
+          />
+        }
+      />
     );
   }
 

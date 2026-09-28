@@ -10,6 +10,14 @@ type Tokens = { access: string | null; refresh: string | null };
 
 let memoryCache: Tokens | undefined;
 
+async function isSecureStoreAvailable(): Promise<boolean> {
+  try {
+    return await SecureStore.isAvailableAsync();
+  } catch {
+    return false;
+  }
+}
+
 async function authenticate(): Promise<boolean> {
   const hasHardware = await LocalAuthentication.hasHardwareAsync();
   const isEnrolled = hasHardware && (await LocalAuthentication.isEnrolledAsync());
@@ -20,9 +28,15 @@ async function authenticate(): Promise<boolean> {
 }
 
 export async function saveTokens(access: string, refresh: string): Promise<void> {
-  const options = { requireAuthentication: true };
-  await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, access, options);
-  await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refresh, options);
+  if (!(await isSecureStoreAvailable())) {
+    // Web has no native SecureStore implementation. Keep the preview usable
+    // without persisting credentials outside the device-native stores.
+    memoryCache = { access, refresh };
+    return;
+  }
+
+  await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, access);
+  await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refresh);
   // The marker is not a credential; it lets a fresh install skip an unnecessary
   // biometric prompt before there is anything protected to read.
   await SecureStore.setItemAsync(TOKEN_PRESENCE_KEY, TOKEN_PRESENCE_VALUE);
@@ -31,6 +45,11 @@ export async function saveTokens(access: string, refresh: string): Promise<void>
 
 export async function getTokens(): Promise<Tokens> {
   if (memoryCache !== undefined) return memoryCache;
+
+  if (!(await isSecureStoreAvailable())) {
+    memoryCache = { access: null, refresh: null };
+    return memoryCache;
+  }
 
   const tokenMarker = await SecureStore.getItemAsync(TOKEN_PRESENCE_KEY);
   if (tokenMarker !== TOKEN_PRESENCE_VALUE) {
@@ -51,8 +70,10 @@ export async function getTokens(): Promise<Tokens> {
 }
 
 export async function clearTokens(): Promise<void> {
-  await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
-  await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
-  await SecureStore.deleteItemAsync(TOKEN_PRESENCE_KEY);
+  if (await isSecureStoreAvailable()) {
+    await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(TOKEN_PRESENCE_KEY);
+  }
   memoryCache = { access: null, refresh: null };
 }

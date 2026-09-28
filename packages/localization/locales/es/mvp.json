@@ -1,29 +1,26 @@
 {
   "auth": {
+    "logo_accessibility": "Emblema del juego Castle Royale",
     "title": "Tu dominio empieza aquí",
     "subtitle": "Construye una ciudad. El mundo espera.",
     "play_guest": "Jugar como invitado",
-    "email": "Correo electrónico",
+    "email": "Iniciar sesión con correo",
     "password": "Contraseña",
     "email_sign_in": "Iniciar sesión con correo",
     "apple": "Iniciar sesión con Apple",
     "google": "Iniciar sesión con Google",
     "signing_in": "Iniciando sesión...",
-    "upgrade_title": "Conserva tu dominio",
+    "upgrade_title": "Protege tu progreso",
     "upgrade_copy": "Vincula un correo y una contraseña para conservar tu progreso.",
     "upgrade_cta": "Proteger mi progreso",
     "upgrading": "Guardando tu cuenta...",
     "upgrade_success": "Tu cuenta está protegida.",
-    "social_unavailable": "El inicio social estará disponible cuando se configure el proveedor.",
-    "apple": "Iniciar sesión con Apple",
-    "google": "Iniciar sesión con Google",
-    "email": "Iniciar sesión con correo",
+    "social_unavailable": "El inicio de sesión social estará disponible cuando el proveedor esté configurado.",
     "email_label": "Correo electrónico",
     "password_label": "Contraseña",
     "email_placeholder": "tu@ejemplo.com",
     "password_placeholder": "Tu contraseña",
     "sign_in": "Iniciar sesión",
-    "upgrade_title": "Protege tu progreso",
     "upgrade_subtitle": "Vincula tu cuenta para conservar tu dominio.",
     "upgrade_email": "Vincular correo",
     "upgrade_social": "Vincular cuenta social",
@@ -41,7 +38,6 @@
     "world_open": "Abierto",
     "world_full": "Lleno",
     "world_closed": "Cerrado",
-    "social_unavailable": "El inicio de sesión social estará disponible cuando el proveedor esté configurado.",
     "loading": "Preparando tu dominio...",
     "network_error": "No se pudo alcanzar el reino.",
     "generic_error": "Algo salió mal. Inténtalo de nuevo."
@@ -68,7 +64,10 @@
     "queue_accessibility": "Cola de construcción: {active} de {max} espacios en uso",
     "queue_slot_accessible": "{building}, en construcción",
     "queue_slot_free": "Espacio de cola disponible",
-    "open_research": "Abrir Investigación"
+    "open_research": "Abrir Investigación",
+    "village_image_accessibility": "Ilustración de una casa de la aldea",
+    "building_image_accessibility": "Ilustración de {building}",
+    "loading": "Abriendo las puertas..."
   },
   "world": {
     "title": "Mundo",
@@ -89,7 +88,24 @@
     "tile_stale": "Mostrando datos guardados mientras reconectamos.",
     "tile_error": "No se pudieron cargar los detalles de la casilla.",
     "terrain": "Terreno: {terrain}",
-    "region": "Región {region}"
+    "region": "Región {region}",
+    "loading": "Dibujando el mapa del reino...",
+    "sync_working": "Sincronizando territorio",
+    "sync_stale": "Mapa en caché · reconectando",
+    "distance_from_city": "{tiles} casillas desde tu ciudad",
+    "art_title": "Referencias cartográficas",
+    "art_copy": "Las ilustraciones guían el lenguaje visual; las casillas y marcadores en vivo siguen viniendo del servidor.",
+    "art_world_overview": "Ilustración del mapa mundial",
+    "art_region_detail": "Ilustración del mapa regional",
+    "art_marker_atlas": "Referencia de marcadores del mapa",
+    "art_terrain_atlas": "Referencia de terrenos",
+    "art_open": "Atlas del Reino",
+    "terrain_desc_plains": "Llanuras fértiles: terreno abierto con velocidad máxima de marcha.",
+    "terrain_desc_forest": "Bosques densos: proporcionan cobertura y ventaja defensiva a arqueros.",
+    "terrain_desc_hills": "Colinas elevadas: terreno dominante con fuerte bonificación defensiva.",
+    "terrain_desc_mountains": "Montañas escarpadas: barrera fronteriza natural infranqueable.",
+    "terrain_desc_river": "Río caudaloso: barrera acuática infranqueable salvo en vados y puentes.",
+    "terrain_desc_road": "Camino pavimentado: ruta arterial con desplazamiento acelerado."
   },
   "profile": {
     "title": "Perfil",
@@ -115,7 +131,9 @@
     "training_next": "Entrenamiento de unidades",
     "training_next_copy": "La cola de entrenamiento se habilitará en la próxima capa del MVP.",
     "server_sync": "Estado calculado por el servidor",
-    "refresh": "Actualizar ejército"
+    "refresh": "Actualizar ejército",
+    "guard_image_accessibility": "Ilustración de un guardia real",
+    "sword_image_accessibility": "Ilustración de una espada legendaria"
   },
   "alliance": {
     "title": "Alianza",
@@ -263,6 +281,9 @@
     "TECHNOLOGY_MAX_LEVEL": "Esta tecnología ya está en el nivel máximo.",
     "ALLIANCE_NAME_TAKEN": "Ese nombre o sigla ya está en uso.",
     "ALREADY_IN_ALLIANCE": "Ya perteneces a una alianza.",
+    "INVALID_CREDENTIALS": "Credenciales no válidas.",
+    "FEATURE_DISABLED": "Este método de inicio de sesión aún no está configurado.",
+    "UNAUTHENTICATED": "Autenticación requerida.",
     "TOKEN_EXPIRED": "Tu sesión ha caducado.",
     "DEVICE_SESSION_REVOKED": "Esta sesión fue revocada.",
     "WORLD_FULL": "Este mundo está lleno.",
@@ -274,6 +295,27 @@
   },
   "common": {
     "retry": "Reintentar",
-    "refresh": "Actualizar"
+    "refresh": "Actualizar",
+    "close": "Cerrar"
+  },
+  "intro": {
+    "skip": "Saltar introducción",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "start_journey": "Iniciar Travesía",
+    "lore_banner": "✦ Ver Crónica del Reino",
+    "chapter_count": "Capítulo {current} de {total}",
+    "chapter1_title": "El Ocaso del Antiguo Imperio",
+    "chapter1_subtitle": "Cenizas sobre estandartes olvidados",
+    "chapter1_body": "Bajo tormentas implacables, la antigua corona sucumbió en guerras fratricidas. Tronos milenarios ardieron en cenizas, dejando provincias indefensas ante señores de la guerra.",
+    "chapter2_title": "La Ciudadela en la Niebla",
+    "chapter2_subtitle": "Un nuevo bastión en la frontera",
+    "chapter2_body": "Entre riscos y bosques ancestrales, una chispa de esperanza renace. Aldeanos, artesanos y fugitivos se congregan junto a vuestra empalizada, aguardando un soberano firme.",
+    "chapter3_title": "La Guardia Real y la Hoja Sagrada",
+    "chapter3_subtitle": "Honor jurado en hierro y fuego",
+    "chapter3_body": "En las forjas reales, una espada legendaria despierta al calor de las brasas. Caballeros leales prestan juramento de sangre, alzando sus escudos para defender vuestro linaje.",
+    "chapter4_title": "La Conquista del Mundo",
+    "chapter4_subtitle": "Vastos territorios aguardan vuestro mando",
+    "chapter4_body": "El horizonte se extiende ante un mapa de imperios rivales y alianzas poderosas. Ha llegado el momento de guiar vuestros ejércitos y reclamar el trono de Castle Royale."
   }
 }

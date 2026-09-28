@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Construction } from '@castleroyale/contracts';
 
 import { apiRequest } from '@/api/client';
+import { commitFeedback, rejectFeedback } from '@/shared/feedback/haptics';
 
 /**
  * Start a building upgrade.
@@ -24,6 +25,11 @@ export function useUpgradeBuilding() {
         { method: 'POST' },
         { authenticated: true },
       ),
+    // Feedback follows the server's answer, never the tap: a refusal must not
+    // feel like a confirmation, and the tap itself is already acknowledged by
+    // the CTA's pressed state.
+    onSuccess: () => commitFeedback(),
+    onError: () => rejectFeedback(),
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['game', 'city'] }),
   });
 }

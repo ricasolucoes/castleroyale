@@ -86,7 +86,9 @@ function mockQueryResult(overrides: Record<string, unknown>) {
 }
 
 function flattenStyle(style: unknown): Record<string, unknown> {
-  return Array.isArray(style) ? Object.assign({}, ...style.flat(Infinity)) : (style as Record<string, unknown>);
+  return Array.isArray(style)
+    ? Object.assign({}, ...style.flat(Infinity))
+    : (style as Record<string, unknown>);
 }
 
 describe('ResourceBar', () => {
@@ -180,7 +182,7 @@ describe('ResourceBar', () => {
     expect(getByText('100')).toBeTruthy();
 
     const container = getByLabelText('resources.bar_accessibility');
-    expect(flattenStyle(container.props.style)['opacity']).toBe(0.6);
+    expect(flattenStyle(container.props['style'])['opacity']).toBe(0.6);
   });
 
   it('builds each cell accessibility label from accessible_reading/accessible_full and never a button role', () => {
@@ -195,7 +197,9 @@ describe('ResourceBar', () => {
     const { getByLabelText, queryAllByRole } = render(<ResourceBar />);
 
     expect(
-      getByLabelText('resources.accessible_reading {"resource":"resources.food","amount":100,"capacity":1000}'),
+      getByLabelText(
+        'resources.accessible_reading {"resource":"resources.food","amount":100,"capacity":1000}',
+      ),
     ).toBeTruthy();
     expect(queryAllByRole('button')).toHaveLength(0);
   });

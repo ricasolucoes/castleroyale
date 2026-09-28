@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import type { MilitaryData } from '@castleroyale/contracts';
@@ -36,6 +36,21 @@ export default function MilitaryScreen() {
     heading: { gap: theme.spacing.xs },
     powerCard: { gap: theme.spacing.sm },
     powerValue: { flexDirection: 'row', alignItems: 'flex-end', gap: theme.spacing.sm },
+    visualCard: {
+      minHeight: theme.spacing['3xl'] * 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      overflow: 'hidden',
+    },
+    guard: {
+      width: theme.spacing['3xl'] * 2,
+      height: theme.spacing['3xl'] * 4,
+    },
+    sword: {
+      width: theme.spacing['3xl'] * 2,
+      height: theme.spacing['3xl'] * 2,
+    },
     units: { gap: theme.spacing.sm },
     unitHeader: { flexDirection: 'row', justifyContent: 'space-between', gap: theme.spacing.md },
     unitCopy: { flex: 1, gap: theme.spacing.xs },
@@ -100,6 +115,23 @@ export default function MilitaryScreen() {
           </Text>
         </Card>
       </Animated.View>
+
+      <Card style={styles.visualCard}>
+        <Image
+          accessibilityLabel={t('military.guard_image_accessibility')}
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../../assets/game/royal-guard.png')}
+          resizeMode="contain"
+          style={styles.guard}
+        />
+        <Image
+          accessibilityLabel={t('military.sword_image_accessibility')}
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          source={require('../../assets/game/legendary-sword.png')}
+          resizeMode="contain"
+          style={styles.sword}
+        />
+      </Card>
 
       <View style={styles.units}>
         <Text variant="heading">{t('military.units')}</Text>

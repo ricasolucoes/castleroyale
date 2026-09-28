@@ -1,0 +1,11 @@
+# Provenance
+
+- **Asset:** `castle-hero.jpg`
+- **Source:** copied from `assets/castelo_principal.jpg`
+- **Generator:** ant-image-gen (Internal Engine)
+- **Generated:** 2026-09-06
+- **Runtime use:** login screen hero background
+
+## Prompt
+
+A magnificent high fantasy castle situated on a rocky island surrounded by a calm, deep river. The castle features intricate gothic-romanesque architecture, tall towers with vibrant blue conical roofs, and pale stone walls. A grand, long stone arch bridge connects the island to the mainland. Lush green forests surround the water. Golden hour lighting, warm sunlight illuminating the castle, soft volumetric fog in the valley, cinematic framing through out-of-focus foreground leaves. High-end 3D render, Unreal Engine 5 style, hyper-realistic medieval fantasy, intricate details, cinematic lighting, 8k resolution, ray tracing, masterful composition, photorealistic textures.

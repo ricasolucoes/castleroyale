@@ -15,6 +15,7 @@ export type WorldTileDetailSheetProps = {
   tile: WorldTile | null;
   status: TileDetailStatus;
   open: boolean;
+  city?: { id: string; name_key: string; x: number; y: number; is_player_city: boolean } | null;
   onClose: () => void;
   onRetry: () => void;
   onReset: () => void;
@@ -24,6 +25,7 @@ export function WorldTileDetailSheet({
   tile,
   status,
   open,
+  city = null,
   onClose,
   onRetry,
   onReset,
@@ -37,7 +39,7 @@ export function WorldTileDetailSheet({
       enablePanDownToClose
       index={open ? 0 : -1}
       onClose={onClose}
-      snapPoints={[`${theme.spacing['3xl'] * 4}%`]}
+      snapPoints={[`${theme.spacing['3xl']}%`]}
     >
       <View style={{ gap: theme.spacing.md, padding: theme.spacing.lg }}>
         <Text accessibilityRole="header" variant="heading">
@@ -63,12 +65,26 @@ export function WorldTileDetailSheet({
           </Card>
         )}
         {status === 'ready' && tile && (
-          <View style={{ gap: theme.spacing.xs }}>
+          <View style={{ gap: theme.spacing.sm }}>
+            {city && (
+              <View style={{ gap: theme.spacing.xs, marginBottom: theme.spacing.xs }}>
+                <View style={{ flexDirection: 'row', gap: theme.spacing.xs }}>
+                  <Badge
+                    label={city.is_player_city ? t('world.your_city') : t('world.selected_city')}
+                    variant={city.is_player_city ? 'warning' : 'neutral'}
+                  />
+                </View>
+                <Text variant="heading">{t(city.name_key)}</Text>
+              </View>
+            )}
             <Text variant="label">{t('world.coordinates', { x: tile.x, y: tile.y })}</Text>
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
               <Badge label={t('world.terrain', { terrain: tile.terrain })} variant="neutral" />
               <Badge label={t('world.region', { region: tile.region_id })} variant="neutral" />
             </View>
+            <Text variant="caption" color={theme.color.text.secondary}>
+              {t(`world.terrain_desc_${tile.terrain}`)}
+            </Text>
           </View>
         )}
       </View>

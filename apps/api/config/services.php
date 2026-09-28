@@ -35,9 +35,30 @@ return [
             env('GOOGLE_SIGN_IN_CLIENT_ID_ANDROID'),
             env('GOOGLE_SIGN_IN_CLIENT_ID_IOS'),
             env('GOOGLE_SIGN_IN_CLIENT_ID_WEB'),
+            env('FIREBASE_PROJECT_ID'),
         ])),
-        'issuers' => ['https://accounts.google.com', 'accounts.google.com'],
+        'issuers' => array_values(array_filter([
+            'https://accounts.google.com',
+            'accounts.google.com',
+            env('FIREBASE_PROJECT_ID') ? 'https://securetoken.google.com/'.env('FIREBASE_PROJECT_ID') : null,
+        ])),
         'jwks_url' => 'https://www.googleapis.com/oauth2/v3/certs',
+        'firebase_jwks_url' => 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com',
+    ],
+
+    'firebase' => [
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'client_ids' => array_values(array_filter([env('FIREBASE_PROJECT_ID')])),
+        'issuers' => array_values(array_filter([
+            env('FIREBASE_PROJECT_ID') ? 'https://securetoken.google.com/'.env('FIREBASE_PROJECT_ID') : null,
+        ])),
+        'jwks_url' => 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com',
+    ],
+
+    'ricagames' => [
+        'url' => env('RICA_GAMES_URL', 'https://games.ricasolucoes.com.br/api/v1'),
+        'api_key' => env('RICA_GAMES_API_KEY'),
+        'game_code' => env('GAME_CODE', 'castleroyale'),
     ],
 
     'apple' => [

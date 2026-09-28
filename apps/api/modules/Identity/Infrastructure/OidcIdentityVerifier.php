@@ -53,14 +53,26 @@ final class OidcIdentityVerifier implements SocialIdentityVerifier
             throw $this->invalidToken();
         }
 
-        $key = collect($this->keys($provider, $settings['jwks_url'] ?? null))
+        $isFirebase = str_starts_with($issuer, 'https://securetoken.google.com/');
+        if ($isFirebase && $provider === 'google') {
+            $signInProvider = $claims['firebase']['sign_in_provider'] ?? null;
+            if (is_string($signInProvider) && $signInProvider !== 'google.com') {
+                throw $this->invalidToken();
+            }
+        }
+
+        $jwksUrl = $isFirebase
+            ? ($settings['firebase_jwks_url'] ?? config('services.firebase.jwks_url', 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'))
+            : ($settings['jwks_url'] ?? null);
+
+        $key = collect($this->keys($provider, $jwksUrl))
             ->first(fn (mixed $candidate): bool => is_array($candidate) && ($candidate['kid'] ?? null) === $keyId);
         if (! is_array($key)) {
             throw $this->invalidToken();
         }
 
-        $signature = base64_decode($this->base64Url($parts[2]), true);
-        if (! is_string($signature) || openssl_verify($parts[0].'.'.$parts[1], $signature, $this->publicKey($key), OPENSSL_ALGO_SHA256) !== 1) {
+        $signature = $this->base64Url($parts[2]);
+        if (openssl_verify($parts[0].'.'.$parts[1], $signature, $this->publicKey($key), OPENSSL_ALGO_SHA256) !== 1) {
             throw $this->invalidToken();
         }
 
@@ -84,7 +96,8 @@ final class OidcIdentityVerifier implements SocialIdentityVerifier
             throw $this->invalidToken();
         }
 
-        $keys = Cache::remember('identity-jwks-'.$provider, 3600, static function () use ($url): array {
+        $cacheKey = 'identity-jwks-'.$provider.'-'.hash('sha256', $url);
+        $keys = Cache::remember($cacheKey, 3600, static function () use ($url): array {
             $response = Http::acceptJson()->timeout(5)->get($url);
             if (! $response->successful()) {
                 return [];
@@ -112,7 +125,9 @@ final class OidcIdentityVerifier implements SocialIdentityVerifier
 
     private function base64Url(string $value): string
     {
-        $decoded = base64_decode(strtr($value, '-_', '+/').'='.str_repeat('=', (4 - strlen($value) % 4) % 4), true);
+        $remainder = strlen($value) % 4;
+        $padding = $remainder > 0 ? str_repeat('=', 4 - $remainder) : '';
+        $decoded = base64_decode(strtr($value, '-_', '+/').$padding, true);
 
         if (! is_string($decoded)) {
             throw $this->invalidToken();

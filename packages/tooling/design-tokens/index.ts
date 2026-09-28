@@ -25,6 +25,15 @@ export type ThemeColors = {
   border: { subtle: string; strong: string };
   text: { primary: string; secondary: string; inverse: string };
   accent: { bronze: string; gold: string; steel: string };
+  /**
+   * The HUD's own surface, over the live world.
+   *
+   * Deliberately not `surface.raised`: a panel floating over the map or the
+   * city needs to read against moving, arbitrary artwork underneath, which a
+   * panel sitting on `bg.base` never has to survive. `panel` is the fill,
+   * `edge` the hairline that keeps it detached from the scene.
+   */
+  hud: { panel: string; edge: string };
   danger: string;
   success: string;
   warning: string;
@@ -37,6 +46,7 @@ export const palette: Record<ThemeName, ThemeColors> = {
     border: { subtle: '#D8CDB6', strong: '#B9A984' },
     text: { primary: '#1A1712', secondary: '#5B5344', inverse: '#F4EEE2' },
     accent: { bronze: '#B4762E', gold: '#C08A2E', steel: '#2B4B7A' },
+    hud: { panel: '#FBF7EE', edge: '#C6B896' },
     danger: '#A4212B',
     success: '#3F7A4F',
     warning: '#C08A2E',
@@ -47,6 +57,7 @@ export const palette: Record<ThemeName, ThemeColors> = {
     border: { subtle: '#242B35', strong: '#39424F' },
     text: { primary: '#ECE6DA', secondary: '#9AA3B0', inverse: '#0E1116' },
     accent: { bronze: '#C98C3E', gold: '#DBA748', steel: '#3D6299' },
+    hud: { panel: '#12171F', edge: '#3A4453' },
     danger: '#C4323D',
     success: '#4F9463',
     warning: '#DBA748',
@@ -72,6 +83,31 @@ export const rarityColors = {
   rare: '#3D6299',
   epic: '#7A4F93',
   legendary: '#C08A2E',
+} as const;
+
+/**
+ * Terrain colours for the world map.
+ *
+ * Two tones per terrain, not one. `base` fills the tile; `detail` draws the
+ * terrain's own mark on top (furrows on plains, canopy on forest, a ridge on
+ * hills, peaks on mountains, a current on river, wheel ruts on road).
+ *
+ * The mark is the point. Colour alone cannot carry terrain — a deuteranope
+ * reads plains and forest as one green, and `plains` and `forest` genuinely
+ * were the same swatch here until the map started drawing marks. Hue AND
+ * lightness AND shape differ across all six, so any one channel can fail and
+ * the map stays readable.
+ *
+ * Tuned against `bg.sunken` in the dark theme, which is what the map actually
+ * sits on.
+ */
+export const terrainColors = {
+  plains: { base: '#5E6E3A', detail: '#7E9150' },
+  forest: { base: '#28402C', detail: '#3E6042' },
+  hills: { base: '#7A5F33', detail: '#9C7B44' },
+  mountains: { base: '#4E5260', detail: '#767C8D' },
+  river: { base: '#24506F', detail: '#3E7CA6' },
+  road: { base: '#8A7047', detail: '#B99C68' },
 } as const;
 
 /** 4pt base scale. */
@@ -129,11 +165,13 @@ export const MIN_TOUCH_TARGET = 44;
 export type Theme = ThemeColors;
 export type ResourceKey = keyof typeof resourceColors;
 export type RarityKey = keyof typeof rarityColors;
+export type TerrainKey = keyof typeof terrainColors;
 
 export const tokens = {
   palette,
   resourceColors,
   rarityColors,
+  terrainColors,
   spacing,
   radius,
   typography,

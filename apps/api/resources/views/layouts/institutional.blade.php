@@ -10,12 +10,16 @@
             <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrls[$alternateLocale] }}">
         @endforeach
         <link rel="alternate" hreflang="x-default" href="{{ $alternateUrls['pt-BR'] }}">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="keywords" content="{{ config('game.name') }}, MMORTS, MMO medieval, jogo de estrategia, empire building, conquista territorial, estrategia em tempo real">
         <meta property="og:type" content="website">
         <meta property="og:title" content="@yield('title') — {{ config('game.name') }}">
         <meta property="og:description" content="@yield('description')">
         <meta property="og:url" content="{{ $canonicalUrl }}">
         <meta property="og:image" content="{{ asset('images/hero-castle.webp') }}">
+        <meta property="og:image:alt" content="{{ config('game.name') }} — {{ __('institutional.home.title') }}">
         <meta property="og:site_name" content="{{ config('game.name') }}">
+        <meta property="og:locale" content="{{ str_replace('-', '_', $locale ?? app()->getLocale()) }}">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="@yield('title') — {{ config('game.name') }}">
         <meta name="twitter:description" content="@yield('description')">
@@ -30,8 +34,55 @@
                 } catch(e) {}
             })();
         </script>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "VideoGame",
+                    "@id": "{{ config('app.url') }}/#game-root",
+                    "name": "{{ config('game.name') }}",
+                    "url": "{{ config('app.url') }}",
+                    "description": "@yield('description')",
+                    "image": "{{ asset('images/hero-castle.webp') }}",
+                    "genre": ["Massively Multiplayer Online", "Real-Time Strategy", "Empire Building", "Medieval Warfare"],
+                    "gamePlatform": ["Android", "iOS"],
+                    "applicationCategory": "Game",
+                    "operatingSystem": "Android, iOS",
+                    "inLanguage": ["pt-BR", "en", "es"],
+                    "author": {
+                        "@type": "Organization",
+                        "name": "Rica Soluções",
+                        "url": "https://ricasolucoes.com.br"
+                    },
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "BRL"
+                    }
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": "{{ config('app.url') }}/#site-root",
+                    "url": "{{ config('app.url') }}",
+                    "name": "{{ config('game.name') }}",
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Rica Soluções",
+                        "url": "https://ricasolucoes.com.br"
+                    }
+                }
+            ]
+        }
+        </script>
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endif
+        @if (!file_exists(public_path('build/manifest.json')) && !file_exists(public_path('hot')) && file_exists(public_path('css/app.css')))
+            <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+            @if (file_exists(public_path('js/app.js')))
+                <script defer src="{{ asset('js/app.js') }}"></script>
+            @endif
         @endif
     </head>
     <body class="site-body">

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { WorldTileDetailSheet } from '../src/features/world/components/WorldTileDetailSheet';
+import { spacing } from '@castleroyale/tooling/design-tokens';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -42,7 +43,7 @@ describe('WorldTileDetailSheet', () => {
   };
 
   it('renders server terrain and coordinate values when ready', () => {
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <WorldTileDetailSheet
         tile={mockTile}
         status="ready"
@@ -50,13 +51,14 @@ describe('WorldTileDetailSheet', () => {
         onClose={jest.fn()}
         onRetry={jest.fn()}
         onReset={jest.fn()}
-      />
+      />,
     );
 
     expect(getByText('world.selected_tile')).toBeTruthy();
     expect(getByText('world.coordinates {"x":10,"y":20}')).toBeTruthy();
     expect(getByText('world.terrain {"terrain":"forest"}')).toBeTruthy();
     expect(getByText('world.region {"region":"region-456"}')).toBeTruthy();
+    expect(getByTestId('gorhom-bottom-sheet').props['snapPoints']).toEqual([`${spacing['3xl']}%`]);
   });
 
   it('renders error state and localized text without guessing terrain', () => {
@@ -68,7 +70,7 @@ describe('WorldTileDetailSheet', () => {
         onClose={jest.fn()}
         onRetry={jest.fn()}
         onReset={jest.fn()}
-      />
+      />,
     );
 
     expect(getByText('world.tile_error')).toBeTruthy();
@@ -86,7 +88,7 @@ describe('WorldTileDetailSheet', () => {
         onClose={jest.fn()}
         onRetry={jest.fn()}
         onReset={onReset}
-      />
+      />,
     );
 
     expect(getByText('world.no_tiles')).toBeTruthy();
@@ -94,7 +96,7 @@ describe('WorldTileDetailSheet', () => {
     const resetButton = getByText('world.reset_to_city');
     expect(resetButton).toBeTruthy();
     expect(queryByText('world.terrain')).toBeNull();
-    
+
     fireEvent.press(resetButton);
     expect(onReset).toHaveBeenCalled();
   });
@@ -108,7 +110,7 @@ describe('WorldTileDetailSheet', () => {
         onClose={jest.fn()}
         onRetry={jest.fn()}
         onReset={jest.fn()}
-      />
+      />,
     );
 
     expect(getByText('world.tile_loading')).toBeTruthy();
@@ -121,12 +123,12 @@ describe('WorldTileDetailSheet', () => {
         onClose={jest.fn()}
         onRetry={jest.fn()}
         onReset={jest.fn()}
-      />
+      />,
     );
 
     expect(getByText('world.tile_stale')).toBeTruthy();
   });
-  
+
   it('prevents direct API calls from the detail sheet', () => {
     const source = readFileSync(
       join(__dirname, '../src/features/world/components/WorldTileDetailSheet.tsx'),

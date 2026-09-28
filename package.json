@@ -52,6 +52,7 @@
   "overrides": {
     "openapi-typescript": {
       "typescript": "$typescript"
-    }
+    },
+    "@types/react": "19.2.2"
   }
 }

@@ -32,6 +32,7 @@ jest.mock('@shopify/react-native-skia', () => {
       PictureRecorder: () => ({
         beginRecording: makeRecordingCanvas,
         finishRecordingAsPicture: () => ({}),
+        dispose: jest.fn(),
       }),
     },
   };
@@ -88,7 +89,7 @@ describe('MapCanvas Component', () => {
         bounds={{ minX: -1, maxX: 1, minY: -1, maxY: 1 }}
         playerX={0}
         playerY={0}
-      />
+      />,
     );
     expect(getAllByTestId('skia-canvas')).toHaveLength(1);
   });
@@ -100,14 +101,16 @@ describe('MapCanvas Component', () => {
         bounds={{ minX: -1, maxX: 1, minY: -1, maxY: 1 }}
         playerX={0}
         playerY={0}
-      />
+      />,
     );
 
     // The pressable has the accessibility label
     const pressable = getByLabelText('world.reset_to_city');
-    const style = pressable.props.style;
-    const flattenedStyle = Array.isArray(style) ? Object.assign({}, ...style.flat(Infinity)) : style;
-    
+    const style = pressable.props['style'];
+    const flattenedStyle = Array.isArray(style)
+      ? Object.assign({}, ...style.flat(Infinity))
+      : style;
+
     expect(flattenedStyle.minWidth).toBe(MIN_TOUCH_TARGET);
     expect(flattenedStyle.minHeight).toBe(MIN_TOUCH_TARGET);
   });
@@ -120,15 +123,15 @@ describe('MapCanvas Component', () => {
         bounds={{ minX: -1, maxX: 1, minY: -1, maxY: 1 }}
         playerX={0}
         playerY={0}
-      />
+      />,
     );
-    
+
     // Check that we are not using useState for zooming or panning
     // Since useTheme, useTranslation might use useState, we just ensure none of them are numeric values that look like camera coordinates
     const stateValues = useStateSpy.mock.calls.map((call: unknown[]) => call[0]);
     expect(stateValues).not.toContainEqual(1); // Default zoom
     expect(stateValues).not.toContainEqual(0); // Default translateX/Y
-    
+
     useStateSpy.mockRestore();
   });
 });

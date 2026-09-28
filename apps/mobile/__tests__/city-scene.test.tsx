@@ -117,7 +117,13 @@ function buildCity(): CityData {
     slots,
     constructions: [],
     queue_limit: 4,
-    realtime: { key: 'k', host: 'realtime.test', port: 443, scheme: 'https', auth_endpoint: 'https://realtime.test/auth' },
+    realtime: {
+      key: 'k',
+      host: 'realtime.test',
+      port: 443,
+      scheme: 'https',
+      auth_endpoint: 'https://realtime.test/auth',
+    },
     server_time: new Date().toISOString(),
   } as unknown as CityData;
 }
@@ -143,6 +149,28 @@ describe('CityScene', () => {
     expect(buttons).toHaveLength(18);
   });
 
+  it('renders the generated city ground once and replaces the interim plus icon', () => {
+    const city = buildCity();
+    const { getByTestId } = render(
+      <CityScene city={city} isRefreshing={false} onRefresh={jest.fn()} />,
+    );
+
+    expect(getByTestId('city-ground')).toBeTruthy();
+
+    const slotSource = readFileSync(
+      join(__dirname, '../src/features/city/components/CitySlot.tsx'),
+      'utf8',
+    );
+    expect(slotSource).toContain('slot_empty_icon.png');
+    expect(slotSource).not.toContain('plus-circle-outline');
+
+    const sceneSource = readFileSync(
+      join(__dirname, '../src/features/city/components/CityScene.tsx'),
+      'utf8',
+    );
+    expect(sceneSource.match(/city_ground\.png/g)).toHaveLength(1);
+  });
+
   it('keeps every plot at or above the 44pt touch target regardless of visual size', () => {
     const city = buildCity();
     const { getByLabelText, getAllByRole } = render(
@@ -155,10 +183,10 @@ describe('CityScene', () => {
     });
 
     for (const button of getAllByRole('button')) {
-      const style = Array.isArray(button.props.style)
-        ? Object.assign({}, ...button.props.style.flat(Infinity))
-        : button.props.style;
-      const hitSlop = typeof button.props.hitSlop === 'number' ? button.props.hitSlop : 0;
+      const style = Array.isArray(button.props['style'])
+        ? Object.assign({}, ...button.props['style'].flat(Infinity))
+        : button.props['style'];
+      const hitSlop = typeof button.props['hitSlop'] === 'number' ? button.props['hitSlop'] : 0;
       expect((style.width ?? 0) + hitSlop * 2).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     }
   });
@@ -298,7 +326,10 @@ describe('city tab screen architecture', () => {
   });
 
   it('leaves the top safe area to the resource bar and drops the duplicated resource row', () => {
-    const scene = readFileSync(join(__dirname, '../src/features/city/components/CityScene.tsx'), 'utf8');
+    const scene = readFileSync(
+      join(__dirname, '../src/features/city/components/CityScene.tsx'),
+      'utf8',
+    );
     expect(scene).not.toContain('insets.top');
     expect(scene).not.toContain('ResourceCounter');
 
@@ -306,7 +337,10 @@ describe('city tab screen architecture', () => {
     expect(layout).toContain('<ResourceBar />');
     expect(layout.indexOf('<ResourceBar />')).toBeLessThan(layout.indexOf('<Tabs'));
 
-    const bar = readFileSync(join(__dirname, '../src/features/economy/components/ResourceBar.tsx'), 'utf8');
+    const bar = readFileSync(
+      join(__dirname, '../src/features/economy/components/ResourceBar.tsx'),
+      'utf8',
+    );
     expect(bar).toContain('insets.top');
     expect(bar).not.toMatch(/height:\s*\d/);
   });

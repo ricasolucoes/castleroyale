@@ -1114,6 +1114,28 @@ html {
     }
 }
 
+.site-chronicle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--token-space-xs);
+    margin-block-end: var(--token-space-xs);
+}
+
+.site-chronicle-badge {
+    display: inline-flex;
+    align-items: center;
+    padding-inline: var(--token-space-sm);
+    padding-block: 2px;
+    border-radius: var(--token-radius-pill);
+    font-size: var(--token-type-caption-size);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--token-accent-gold);
+    background: rgba(229, 169, 60, 0.12);
+    border: thin solid rgba(229, 169, 60, 0.35);
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

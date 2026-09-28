@@ -48,7 +48,7 @@ export function resolveApiUrl(configuredUrl: string, hostUri?: string): string {
 }
 
 const configuredApiUrl =
-  process.env['EXPO_PUBLIC_API_URL'] ?? extra.apiUrl ?? 'http://localhost:8080/api/v1';
+  process.env['EXPO_PUBLIC_API_URL'] ?? extra.apiUrl ?? 'https://castleroyale.ricasolucoes.com.br/api/v1';
 
 export const API_URL = resolveApiUrl(configuredApiUrl, Constants.expoConfig?.hostUri);
 
@@ -93,6 +93,26 @@ function idempotencyKey(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 18)}`;
 }
 
+let activeApiUrl = API_URL;
+
+async function fetchWithFallback(path: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(`${activeApiUrl}${path}`, init);
+  } catch (cause) {
+    if (activeApiUrl.includes('localhost') || activeApiUrl.includes('127.0.0.1')) {
+      const fallbackUrl = activeApiUrl.replace(/localhost|127\.0\.0\.1/, '192.168.1.5');
+      try {
+        const response = await fetch(`${fallbackUrl}${path}`, init);
+        activeApiUrl = fallbackUrl;
+        return response;
+      } catch {
+        // Continue to throw original cause
+      }
+    }
+    throw cause;
+  }
+}
+
 let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
@@ -103,7 +123,7 @@ async function refreshAccessToken(): Promise<string | null> {
       const { refresh } = await getTokens();
       if (!refresh) return null;
 
-      const response = await fetch(`${API_URL}/auth/refresh`, {
+      const response = await fetchWithFallback('/auth/refresh', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -152,7 +172,7 @@ async function send<TData>(path: string, init: RequestInit, options: ApiRequestO
   }
 
   try {
-    response = await fetch(`${API_URL}${path}`, {
+    response = await fetchWithFallback(path, {
       ...init,
       headers,
     });

@@ -1,29 +1,26 @@
 {
   "auth": {
+    "logo_accessibility": "Emblema do jogo Castle Royale",
     "title": "Seu domínio começa aqui",
     "subtitle": "Construa uma cidade. O mundo espera.",
     "play_guest": "Jogar como convidado",
-    "email": "E-mail",
+    "email": "Entrar com e-mail",
     "password": "Senha",
     "email_sign_in": "Entrar com e-mail",
     "apple": "Entrar com Apple",
     "google": "Entrar com Google",
     "signing_in": "Entrando...",
-    "upgrade_title": "Proteja seu domínio",
+    "upgrade_title": "Proteja seu progresso",
     "upgrade_copy": "Vincule e-mail e senha para levar seu progresso com você.",
     "upgrade_cta": "Proteger meu progresso",
     "upgrading": "Salvando sua conta...",
     "upgrade_success": "Sua conta está protegida.",
-    "social_unavailable": "O login social ficará disponível quando o provedor for configurado.",
-    "apple": "Entrar com Apple",
-    "google": "Entrar com Google",
-    "email": "Entrar com e-mail",
+    "social_unavailable": "A autenticação social estará disponível quando o provedor estiver configurado.",
     "email_label": "E-mail",
     "password_label": "Senha",
     "email_placeholder": "voce@exemplo.com",
     "password_placeholder": "Sua senha",
     "sign_in": "Entrar",
-    "upgrade_title": "Proteja seu progresso",
     "upgrade_subtitle": "Vincule sua conta para manter seu domínio.",
     "upgrade_email": "Vincular e-mail",
     "upgrade_social": "Vincular conta social",
@@ -41,7 +38,6 @@
     "world_open": "Aberto",
     "world_full": "Lotado",
     "world_closed": "Fechado",
-    "social_unavailable": "A autenticação social estará disponível quando o provedor estiver configurado.",
     "loading": "Preparando seu domínio...",
     "network_error": "Não foi possível conectar ao reino.",
     "generic_error": "Algo saiu errado. Tente novamente."
@@ -68,7 +64,10 @@
     "queue_accessibility": "Fila de construção: {active} de {max} vagas em uso",
     "queue_slot_accessible": "{building}, em construção",
     "queue_slot_free": "Vaga de fila disponível",
-    "open_research": "Abrir Pesquisa"
+    "open_research": "Abrir Pesquisa",
+    "village_image_accessibility": "Ilustração de uma casa da vila",
+    "building_image_accessibility": "Ilustração de {building}",
+    "loading": "Abrindo os portões..."
   },
   "world": {
     "title": "Mundo",
@@ -89,7 +88,24 @@
     "tile_stale": "Exibindo dados em cache enquanto reconectamos.",
     "tile_error": "Não foi possível carregar os detalhes do tile.",
     "terrain": "Terreno: {terrain}",
-    "region": "Região {region}"
+    "region": "Região {region}",
+    "loading": "Desenhando o mapa do reino...",
+    "sync_working": "Sincronizando território",
+    "sync_stale": "Mapa em cache · reconectando",
+    "distance_from_city": "{tiles} tiles da sua cidade",
+    "art_title": "Referências cartográficas",
+    "art_copy": "As ilustrações guiam a linguagem visual; tiles e marcadores ao vivo continuam vindo do servidor.",
+    "art_world_overview": "Ilustração do mapa-múndi",
+    "art_region_detail": "Ilustração do mapa regional",
+    "art_marker_atlas": "Referência de marcadores do mapa",
+    "art_terrain_atlas": "Referência de terrenos",
+    "art_open": "Atlas do Reino",
+    "terrain_desc_plains": "Planícies férteis: terreno aberto e velocidade máxima de marcha.",
+    "terrain_desc_forest": "Florestas densas: favorecem defesa e emboscadas de arqueiros.",
+    "terrain_desc_hills": "Colinas elevadas: vantagem de terreno e bônus defensivo.",
+    "terrain_desc_mountains": "Montanhas escarpadas: barreira natural instransponível.",
+    "terrain_desc_river": "Rio corrente: barreira d'água transponível apenas em vaus e pontes.",
+    "terrain_desc_road": "Estrada pavimentada: rota comercial com deslocamento acelerado."
   },
   "profile": {
     "title": "Perfil",
@@ -115,7 +131,9 @@
     "training_next": "Treinamento de unidades",
     "training_next_copy": "A fila de treinamento será habilitada na próxima camada do MVP.",
     "server_sync": "Estado calculado pelo servidor",
-    "refresh": "Atualizar exército"
+    "refresh": "Atualizar exército",
+    "guard_image_accessibility": "Ilustração de um guarda real",
+    "sword_image_accessibility": "Ilustração de uma espada lendária"
   },
   "alliance": {
     "title": "Aliança",
@@ -263,6 +281,9 @@
     "TECHNOLOGY_MAX_LEVEL": "Esta tecnologia já está no nível máximo.",
     "ALLIANCE_NAME_TAKEN": "Esse nome ou sigla já está em uso.",
     "ALREADY_IN_ALLIANCE": "Você já pertence a uma aliança.",
+    "INVALID_CREDENTIALS": "Credenciais inválidas.",
+    "FEATURE_DISABLED": "Este método de login ainda não está configurado.",
+    "UNAUTHENTICATED": "Autenticação necessária.",
     "TOKEN_EXPIRED": "Sua sessão expirou.",
     "DEVICE_SESSION_REVOKED": "Esta sessão foi revogada.",
     "WORLD_FULL": "Este mundo está lotado.",
@@ -274,6 +295,27 @@
   },
   "common": {
     "retry": "Tentar novamente",
-    "refresh": "Atualizar"
+    "refresh": "Atualizar",
+    "close": "Fechar"
+  },
+  "intro": {
+    "skip": "Pular introdução",
+    "next": "Avançar",
+    "previous": "Anterior",
+    "start_journey": "Iniciar Jornada",
+    "lore_banner": "✦ Assistir à História do Reino",
+    "chapter_count": "Capítulo {current} de {total}",
+    "chapter1_title": "O Ocaso do Velho Império",
+    "chapter1_subtitle": "Cinzas sobre os estandartes esquecidos",
+    "chapter1_body": "Sob tempestades implacáveis, a antiga coroa desmoronou em guerras fratricidas. Tronos centenários arderam em cinzas, deixando aldeias dispersas à mercê de senhores da guerra e invasores sem honra.",
+    "chapter2_title": "A Cidadela na Névoa",
+    "chapter2_subtitle": "Um novo bastião ergue-se na fronteira",
+    "chapter2_body": "Entre desfiladeiros e florestas ancestrais, uma centelha de esperança resiste. Camponeses, artesãos e refugiados reúnem-se ao redor da sua primeira paliçada, clamando por um líder com pulso firme.",
+    "chapter3_title": "A Guarda e a Lâmina Ancestral",
+    "chapter3_subtitle": "Honra jurada em aço e brasa",
+    "chapter3_body": "Nas forjas reais, a espada lendária desperta sob o calor do braseiro. Cavaleiros leais prestam o juramento de sangue, prontos para empunhar seus escudos e defender as muralhas da sua dinastia.",
+    "chapter4_title": "A Conquista do Mundo",
+    "chapter4_subtitle": "Vastos reinos aguardam seu comando",
+    "chapter4_body": "O horizonte se abre em um tabuleiro vivo de províncias, alianças e bastiões rivais. Chegou o momento de comandar seus exércitos, expandir seu território e reivindicar o trono do Castle Royale."
   }
 }

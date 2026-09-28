@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import type { CitySlot, Construction, ResourceBundle } from '@castleroyale/contracts';
@@ -6,6 +6,7 @@ import type { ResourceKey } from '@castleroyale/tooling/design-tokens';
 
 import { ApiError } from '@/api/client';
 import { useUpgradeBuilding } from '@/features/city/api/useUpgradeBuilding';
+import { getBuildingAsset } from '@/features/city/buildingAssets';
 import { COST_SHORTFALL_ICON } from '@/shared/components/buildingIcons';
 import { Badge } from '@/shared/components/Badge';
 import { BottomSheet } from '@/shared/components/BottomSheet';
@@ -51,6 +52,7 @@ export function CitySlotDetailSheet({
   const { t } = useTranslation();
   const upgrade = useUpgradeBuilding();
   const building = slot?.building ?? null;
+  const buildingAsset = building ? getBuildingAsset(building.code, building.level) : null;
   const showConstruction = building !== null && construction !== null;
 
   const isMax = building !== null && building.level >= building.max_level;
@@ -82,11 +84,35 @@ export function CitySlotDetailSheet({
         </Text>
         {building === null ? (
           <View style={{ gap: theme.spacing.xs }}>
+            <Image
+              accessibilityLabel={t('city.village_image_accessibility')}
+              // eslint-disable-next-line @typescript-eslint/no-require-imports
+              source={require('../../../../assets/game/village-house.jpg')}
+              resizeMode="cover"
+              style={{
+                alignSelf: 'center',
+                width: theme.spacing['3xl'] * 3,
+                height: theme.spacing['3xl'] * 3,
+                borderRadius: theme.radius.md,
+              }}
+            />
             <Text>{t('city.slot_empty')}</Text>
             <Text color={theme.color.text.secondary}>{t('city.slot_empty_hint')}</Text>
           </View>
         ) : (
           <View style={{ gap: theme.spacing.xs }}>
+            {buildingAsset && (
+              <Image
+                accessibilityLabel={t('city.building_image_accessibility', { building: t(building.name_key) })}
+                source={buildingAsset}
+                resizeMode="contain"
+                style={{
+                  alignSelf: 'center',
+                  width: theme.spacing['3xl'] * 4,
+                  height: theme.spacing['3xl'] * 3,
+                }}
+              />
+            )}
             <Text variant="label">{t(building.name_key)}</Text>
             <Text color={theme.color.text.secondary}>{t('building.level', { level: building.level })}</Text>
             <Badge variant="neutral" label={t('city.slot_category', { category: building.category })} />

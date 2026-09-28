@@ -1,14 +1,27 @@
 {
   "name": "castleroyale-visual-kit",
-  "generatedAt": "2026-08-28",
+  "generatedAt": "2026-09-09",
   "source": "integrated-image-generator-fallback",
-  "flowProject": "Castle Royale — MVP Visual Kit",
+  "flowProject": "Castle Royale",
   "buildings": [
     { "id": "palace", "levels": [1, 2, 3], "files": ["buildings/palace-level-1.png", "buildings/palace-level-2.png", "buildings/palace-level-3.png"] },
     { "id": "farm", "levels": [1, 2, 3], "files": ["buildings/farm-level-1.png", "buildings/farm-level-2.png", "buildings/farm-level-3.png"] },
     { "id": "lumber_mill", "levels": [1, 2, 3], "files": ["buildings/lumber-mill-level-1.png", "buildings/lumber-mill-level-2.png", "buildings/lumber-mill-level-3.png"] },
     { "id": "quarry", "levels": [1, 2, 3], "files": ["buildings/quarry-level-1.png", "buildings/quarry-level-2.png", "buildings/quarry-level-3.png"] },
-    { "id": "warehouse", "levels": [1, 2, 3], "files": ["buildings/warehouse-level-1.png", "buildings/warehouse-level-2.png", "buildings/warehouse-level-3.png"] }
+    { "id": "warehouse", "levels": [1, 2, 3], "files": ["buildings/warehouse-level-1.png", "buildings/warehouse-level-2.png", "buildings/warehouse-level-3.png"] },
+    { "id": "barracks", "levels": [1, 2, 3], "files": ["buildings/barracks-level-1.png", "buildings/barracks-level-2.png", "buildings/barracks-level-3.png"] },
+    { "id": "archery_range", "levels": [1, 2, 3], "files": ["buildings/archery_range-level-1.png", "buildings/archery_range-level-2.png", "buildings/archery_range-level-3.png"] },
+    { "id": "stable", "levels": [1, 2, 3], "files": ["buildings/stable-level-1.png", "buildings/stable-level-2.png", "buildings/stable-level-3.png"] },
+    { "id": "siege_workshop", "levels": [1, 2, 3], "files": ["buildings/siege_workshop-level-1.png", "buildings/siege_workshop-level-2.png", "buildings/siege_workshop-level-3.png"] },
+    { "id": "academy", "levels": [1, 2, 3], "files": ["buildings/academy-level-1.png", "buildings/academy-level-2.png", "buildings/academy-level-3.png"] },
+    { "id": "embassy", "levels": [1, 2, 3], "files": ["buildings/embassy-level-1.png", "buildings/embassy-level-2.png", "buildings/embassy-level-3.png"] },
+    { "id": "marketplace", "levels": [1, 2, 3], "files": ["buildings/marketplace-level-1.png", "buildings/marketplace-level-2.png", "buildings/marketplace-level-3.png"] },
+    { "id": "hospital", "levels": [1, 2, 3], "files": ["buildings/hospital-level-1.png", "buildings/hospital-level-2.png", "buildings/hospital-level-3.png"] },
+    { "id": "walls", "levels": [1, 2, 3], "files": ["buildings/walls-level-1.png", "buildings/walls-level-2.png", "buildings/walls-level-3.png"] },
+    { "id": "watchtower", "levels": [1, 2, 3], "files": ["buildings/watchtower-level-1.png", "buildings/watchtower-level-2.png", "buildings/watchtower-level-3.png"] },
+    { "id": "iron_mine", "levels": [1, 2, 3], "files": ["buildings/iron_mine-level-1.png", "buildings/iron_mine-level-2.png", "buildings/iron_mine-level-3.png"] },
+    { "id": "treasury", "levels": [1, 2, 3], "files": ["buildings/treasury-level-1.png", "buildings/treasury-level-2.png", "buildings/treasury-level-3.png"] },
+    { "id": "tavern", "levels": [1, 2, 3], "files": ["buildings/tavern-level-1.png", "buildings/tavern-level-2.png", "buildings/tavern-level-3.png"] }
   ],
   "map": {
     "worldOverview": "map/world-overview.png",

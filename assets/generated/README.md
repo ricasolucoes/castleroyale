@@ -9,7 +9,7 @@ fallback e já estão dentro do workspace.
 ## Escopo gerado
 
 O catálogo concreto atual em `packages/game-data/data/buildings.json` possui
-cinco edificações, todas com níveis 1–3: 15 renders no total.
+18 edificações, todas com níveis 1–3: 54 renders no total.
 
 | Edificação | Níveis |
 | --- | --- |
@@ -18,6 +18,19 @@ cinco edificações, todas com níveis 1–3: 15 renders no total.
 | Lumber Mill | 1, 2, 3 |
 | Quarry | 1, 2, 3 |
 | Warehouse | 1, 2, 3 |
+| Barracks | 1, 2, 3 |
+| Archery Range | 1, 2, 3 |
+| Stable | 1, 2, 3 |
+| Siege Workshop | 1, 2, 3 |
+| Academy | 1, 2, 3 |
+| Embassy | 1, 2, 3 |
+| Marketplace | 1, 2, 3 |
+| Hospital | 1, 2, 3 |
+| Walls | 1, 2, 3 |
+| Watchtower | 1, 2, 3 |
+| Iron Mine | 1, 2, 3 |
+| Treasury | 1, 2, 3 |
+| Tavern | 1, 2, 3 |
 
 Assets de mapa:
 
@@ -31,16 +44,18 @@ Assets de mapa:
 
 ## Uso previsto
 
-Os renders são concept assets de referência, não um atlas runtime final. Eles
-devem passar por remoção/normalização de fundo, recorte, definição de escala,
-compressão e atlas packing antes de serem conectados ao Skia ou às telas do
-Expo. Não há alteração de regra de jogo, balanceamento ou contrato de API neste
-commit de assets.
+Os renders são concept assets de referência, não um atlas runtime final. Os 15
+renders de edificações foram copiados para `apps/mobile/assets/buildings/` e
+entram no detalhe de prédio da cidade em escala contida. Eles ainda não são um
+atlas para o Skia: os assets de mapa continuam exigindo remoção/normalização de
+fundo, definição de escala, compressão e atlas packing antes de serem conectados
+ao mapa dinâmico do Expo. Não há alteração de regra de jogo, balanceamento ou
+contrato de API neste commit de assets.
 
-As outras 13 edificações listadas em `docs/game-design/buildings.md` ainda não
-possuem níveis concretos no catálogo de dados. Elas devem ser geradas quando
-`buildings.json` definir seus níveis e progressão; este pacote não inventa esses
-dados.
+Todos os 18 códigos atualmente definidos no catálogo de dados possuem os três
+níveis visuais. O arquivo `missing-building-prompts.md` registra os prompts dos
+13 conjuntos gerados nesta complementação; nenhum custo, duração ou efeito foi
+inventado para produzir os renders.
 
 ## Direção visual
 

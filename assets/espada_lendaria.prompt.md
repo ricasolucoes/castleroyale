@@ -1,0 +1,3 @@
+Modelo: ant-image-gen (Internal Engine)
+Data: 2026-09-06
+Prompt: A legendary fantasy broadsword. The blade is forged from gleaming, flawless silver steel with faint, glowing blue runes etched down the center fuller. The hilt is ornate, featuring silver wings and a sapphire gemstone pommel with a dark leather grip. Solid Chroma #00FF00 background (no ground shadows), macro photography style, extreme edge detail. High-end 3D render, Unreal Engine 5 style, hyper-realistic medieval fantasy, intricate details, cinematic lighting, 8k resolution, ray tracing, masterful composition, photorealistic textures.

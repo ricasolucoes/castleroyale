@@ -123,3 +123,10 @@ test(combat): cover deterministic replay across versions
 Starts at **v0.1.0**. `v1.0.0` is reserved for a mature product in production —
 never the first release. `CHANGELOG.md` uses the **Release Notes** format with
 emoji sections and `- [x]` checkboxes. Never Keep-a-Changelog.
+
+## Restricted use of GPT APIs (OpenAI)
+
+- GPT (OpenAI) APIs must be used **exclusively** for:
+  1. **Image generation** (direct calls/scripts like DALL-E / Image Generation, without subagents or chat loops).
+  2. **Language translation and localization**.
+- It is **strictly prohibited** to use GPT APIs for reasoning, code analysis, task planning, testing, or general orchestration. All reasoning and analysis are the responsibility of the primary workspace model.

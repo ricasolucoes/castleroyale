@@ -1,6 +1,11 @@
 import React from 'react';
 import { configure, fireEvent, render } from '@testing-library/react-native';
-import type { ActiveResearch, CitySlot, Technology, TechnologyTreeData } from '@castleroyale/contracts';
+import type {
+  ActiveResearch,
+  CitySlot,
+  Technology,
+  TechnologyTreeData,
+} from '@castleroyale/contracts';
 
 import TechnologyTreeScreen from '../app/technology';
 import { CitySlotDetailSheet } from '../src/features/city/components/CitySlotDetailSheet';
@@ -106,10 +111,21 @@ function buildTreeData(): TechnologyTreeData {
   const now = Date.now();
 
   const technologies: Technology[] = [
-    buildTechnology({ code: 'economy_tech', category: 'economy', state: 'locked', prerequisites: [{ code: 'gate', level: 1 }] }),
+    buildTechnology({
+      code: 'economy_tech',
+      category: 'economy',
+      state: 'locked',
+      prerequisites: [{ code: 'gate', level: 1 }],
+    }),
     buildTechnology({ code: 'military_tech', category: 'military', state: 'available' }),
     buildTechnology({ code: 'defense_tech', category: 'defense', state: 'in_progress' }),
-    buildTechnology({ code: 'logistics_tech', category: 'logistics', state: 'completed', level: 3, max_level: 3 }),
+    buildTechnology({
+      code: 'logistics_tech',
+      category: 'logistics',
+      state: 'completed',
+      level: 3,
+      max_level: 3,
+    }),
     buildTechnology({ code: 'construction_tech', category: 'construction', state: 'available' }),
     buildTechnology({ code: 'exploration_tech', category: 'exploration', state: 'available' }),
     buildTechnology({ code: 'alliance_tech', category: 'alliance', state: 'available' }),
@@ -169,12 +185,12 @@ describe('TechnologyTreeScreen', () => {
 
       // Walk up from the label to the nearest `accessibilityRole="button"`
       // ancestor — the Pressable itself — and read its resolved style.
-      let chip: (typeof chipLabel)['parent'] = chipLabel;
+      let chip = chipLabel ?? null;
       while (chip && chip.props?.['accessibilityRole'] !== 'button') chip = chip.parent;
 
-      const style = Array.isArray(chip?.props.style)
-        ? Object.assign({}, ...chip!.props.style.flat(Infinity))
-        : chip?.props.style;
+      const style = Array.isArray(chip?.props['style'])
+        ? Object.assign({}, ...chip!.props['style'].flat(Infinity))
+        : chip?.props['style'];
       expect(style.minHeight).toBeGreaterThanOrEqual(44);
     }
   });

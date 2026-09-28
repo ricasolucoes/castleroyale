@@ -16,6 +16,7 @@ export type CameraState = {
 };
 
 export function clampZoom(zoom: number): number {
+  'worklet';
   return Math.min(MAX_MAP_ZOOM, Math.max(MIN_MAP_ZOOM, zoom));
 }
 

@@ -121,6 +121,32 @@
         </div>
     </section>
 
+    <section id="chronicles" class="site-section site-container" aria-labelledby="chronicles-title">
+        <div class="site-section-head">
+            <p class="site-eyebrow">{{ __('institutional.home.chronicles_eyebrow') }}</p>
+            <h2 id="chronicles-title" class="site-title">{{ __('institutional.home.chronicles_title') }}</h2>
+            <p class="site-lead">{{ __('institutional.home.chronicles_intro') }}</p>
+        </div>
+        <div class="site-card-grid site-chronicles-grid">
+            @foreach (__('institutional.home.chronicles') as $ch)
+                <article class="site-pillar-card site-chronicle-card">
+                    <div class="site-pillar-media">
+                        <img src="{{ asset($ch['image']) }}" alt="{{ $ch['title'] }}" loading="lazy">
+                        <div class="site-pillar-media-gradient"></div>
+                    </div>
+                    <div class="site-pillar-content">
+                        <div class="site-chronicle-header">
+                            <span class="site-pillar-tag" aria-hidden="true">{{ $ch['tag'] }}</span>
+                            <span class="site-chronicle-badge">{{ $ch['chapter'] }}</span>
+                        </div>
+                        <h3 class="site-heading">{{ $ch['title'] }}</h3>
+                        <p class="site-lead">{{ $ch['body'] }}</p>
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    </section>
+
     <section class="site-section site-forge site-container" aria-labelledby="forge-title">
         <div class="site-forge-card">
             <div class="site-forge-media">

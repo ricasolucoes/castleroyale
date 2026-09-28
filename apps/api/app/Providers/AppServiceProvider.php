@@ -19,6 +19,7 @@ final class AppServiceProvider extends ServiceProvider
         // Game rules resolve time through the Clock contract, never `now()`.
         $this->app->singleton(Clock::class, SystemClock::class);
         $this->app->singleton(SocialIdentityVerifier::class, OidcIdentityVerifier::class);
+        $this->app->singleton(\Game\Gamification\Domain\ExternalGamificationGateway::class, \Game\Gamification\Infrastructure\RicaGamesGateway::class);
     }
 
     public function boot(): void

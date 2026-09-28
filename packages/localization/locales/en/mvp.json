@@ -1,29 +1,26 @@
 {
   "auth": {
+    "logo_accessibility": "Castle Royale game emblem",
     "title": "Your dominion starts here",
     "subtitle": "Build a city. The world is waiting.",
     "play_guest": "Play as guest",
-    "email": "Email",
+    "email": "Sign in with email",
     "password": "Password",
     "email_sign_in": "Sign in with email",
     "apple": "Sign in with Apple",
     "google": "Sign in with Google",
     "signing_in": "Signing in...",
-    "upgrade_title": "Keep your dominion",
+    "upgrade_title": "Protect your progress",
     "upgrade_copy": "Bind an email and password so your progress follows you.",
     "upgrade_cta": "Protect my progress",
     "upgrading": "Saving your account...",
     "upgrade_success": "Your account is protected.",
     "social_unavailable": "Social sign-in will be available when the provider is configured.",
-    "apple": "Sign in with Apple",
-    "google": "Sign in with Google",
-    "email": "Sign in with email",
     "email_label": "Email",
     "password_label": "Password",
     "email_placeholder": "you@example.com",
     "password_placeholder": "Your password",
     "sign_in": "Sign in",
-    "upgrade_title": "Protect your progress",
     "upgrade_subtitle": "Bind your account to keep your dominion.",
     "upgrade_email": "Bind email",
     "upgrade_social": "Bind social account",
@@ -41,7 +38,6 @@
     "world_open": "Open",
     "world_full": "Full",
     "world_closed": "Closed",
-    "social_unavailable": "Social sign-in will be available when the provider is configured.",
     "loading": "Preparing your dominion...",
     "network_error": "The realm could not be reached.",
     "generic_error": "Something went wrong. Try again."
@@ -68,7 +64,10 @@
     "queue_accessibility": "Construction queue: {active} of {max} slots in use",
     "queue_slot_accessible": "{building}, under construction",
     "queue_slot_free": "Queue slot available",
-    "open_research": "Open Research"
+    "open_research": "Open Research",
+    "village_image_accessibility": "Village house illustration",
+    "building_image_accessibility": "{building} illustration",
+    "loading": "Opening the gates..."
   },
   "world": {
     "title": "World",
@@ -89,7 +88,24 @@
     "tile_stale": "Showing cached details while reconnecting.",
     "tile_error": "Tile details could not be loaded.",
     "terrain": "Terrain: {terrain}",
-    "region": "Region {region}"
+    "region": "Region {region}",
+    "loading": "Drawing the map of the realm...",
+    "sync_working": "Syncing territory",
+    "sync_stale": "Cached map · reconnecting",
+    "distance_from_city": "{tiles} tiles from your city",
+    "art_title": "Cartography references",
+    "art_copy": "Illustrations guide the visual language; live tiles and markers still come from the server.",
+    "art_world_overview": "World overview illustration",
+    "art_region_detail": "Regional map illustration",
+    "art_marker_atlas": "Map marker reference",
+    "art_terrain_atlas": "Terrain reference",
+    "art_open": "Realm Atlas",
+    "terrain_desc_plains": "Fertile plains: open ground with maximum march velocity.",
+    "terrain_desc_forest": "Dense forest: provides cover and defensive advantage for archers.",
+    "terrain_desc_hills": "Elevated hills: commanding terrain with strong defensive bonus.",
+    "terrain_desc_mountains": "Craggy mountains: impassable natural border barrier.",
+    "terrain_desc_river": "Flowing river: impassable water barrier except at crossings.",
+    "terrain_desc_road": "Paved road: arterial trade route with accelerated travel speed."
   },
   "profile": {
     "title": "Profile",
@@ -115,7 +131,9 @@
     "training_next": "Unit training",
     "training_next_copy": "The training queue will be enabled in the next MVP layer.",
     "server_sync": "State calculated by the server",
-    "refresh": "Refresh army"
+    "refresh": "Refresh army",
+    "guard_image_accessibility": "Royal guard illustration",
+    "sword_image_accessibility": "Legendary sword illustration"
   },
   "alliance": {
     "title": "Alliance",
@@ -263,6 +281,9 @@
     "TECHNOLOGY_MAX_LEVEL": "This technology is already at its maximum level.",
     "ALLIANCE_NAME_TAKEN": "That name or tag is already in use.",
     "ALREADY_IN_ALLIANCE": "You are already in an alliance.",
+    "INVALID_CREDENTIALS": "Invalid credentials.",
+    "FEATURE_DISABLED": "This sign-in method is not configured yet.",
+    "UNAUTHENTICATED": "Authentication required.",
     "TOKEN_EXPIRED": "Your session has expired.",
     "DEVICE_SESSION_REVOKED": "This session was revoked.",
     "WORLD_FULL": "This world is full.",
@@ -274,6 +295,27 @@
   },
   "common": {
     "retry": "Try again",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "close": "Close"
+  },
+  "intro": {
+    "skip": "Skip intro",
+    "next": "Next",
+    "previous": "Previous",
+    "start_journey": "Begin Journey",
+    "lore_banner": "✦ Watch Kingdom Chronicle",
+    "chapter_count": "Chapter {current} of {total}",
+    "chapter1_title": "The Fall of the Old Crown",
+    "chapter1_subtitle": "Ashes upon forgotten banners",
+    "chapter1_body": "Beneath relentless storms, the ancient empire collapsed into ruinous war. Centuries-old thrones burned to cinders, leaving scattered provinces defenseless against ruthless warlords.",
+    "chapter2_title": "The Citadel in the Mist",
+    "chapter2_subtitle": "A new stronghold rises on the frontier",
+    "chapter2_body": "Amid rugged peaks and ancient timberlands, a spark of resolve endures. Peasants, artisans, and wanderers rally around your newly raised palisade, awaiting a steadfast sovereign.",
+    "chapter3_title": "The Royal Oath & The Blade",
+    "chapter3_subtitle": "Honor forged in iron and ember",
+    "chapter3_body": "Within the citadel forge, a legendary blade is rekindled. Devoted champions swear their solemn oaths of fealty, raising their shields to defend your lineage to the last breath.",
+    "chapter4_title": "The War for Dominion",
+    "chapter4_subtitle": "Vast realms await your conquest",
+    "chapter4_body": "The horizon unfolds across boundless territories, rival keeps, and allied factions. The hour has arrived to march your armies, establish your domain, and claim supremacy in Castle Royale."
   }
 }

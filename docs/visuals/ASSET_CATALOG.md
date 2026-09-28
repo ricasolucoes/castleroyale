@@ -68,10 +68,18 @@ comunicar estado.
 
 ## Estado de geração
 
-O projeto `Castle Royale — MVP Visual Kit` foi criado no Google Flow e o
-prompt do painel triplo foi preparado. Nesta sessão, o editor do Flow retornou
-erro interno do Slate ao submeter o campo de prompt; nenhum arquivo gerado foi
-copiado para o repositório. O Google AI Studio também apresentou o modelo de
-imagem selecionado atrás de uma tela de upgrade, que não foi aceita. Assim, o
-catálogo permanece pronto para a próxima execução sem fingir que assets foram
-produzidos.
+O projeto `Castle Royale` foi verificado no Google Flow em 2026-09-09. O Flow
+está autenticado, mas a conta exibiu `0 créditos` e deixou a geração de novas
+imagens desabilitada. A direção visual e as cenas já existentes no projeto foram
+usadas como referência; os assets que faltavam foram produzidos localmente pelo
+gerador de imagens integrado, com prompts versionados ao lado de cada PNG.
+
+## Integração mobile
+
+O cliente Expo empacota e usa os assets concretos: `apps/mobile/assets/game/castle-hero.jpg`
+na entrada, `apps/mobile/assets/game/village-house.jpg` no detalhe de lote vazio,
+`apps/mobile/assets/game/royal-guard.png` e `apps/mobile/assets/game/legendary-sword.png`
+na tela militar, e os 54 renders de `apps/mobile/assets/buildings/` no detalhe
+dos prédios da cidade. Os quatro arquivos de mundo aparecem na galeria
+cartográfica como referência visual, enquanto o mapa em runtime permanece
+baseado nos tiles e marcadores autoritativos do servidor.
